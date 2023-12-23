@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Customer extends User implements Serializable {
     private int rewardPoint;
-    private List<String> voucherIDs;
+    private List<String> voucherIDs;  // TODO: Missing Voucher class
 
     public Customer() {}
 
