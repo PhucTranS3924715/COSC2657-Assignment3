@@ -6,6 +6,10 @@ android {
     namespace = "com.example.assignment3"
     compileSdk = 34
 
+    buildFeatures {
+        buildConfig = true
+    }
+
     defaultConfig {
         applicationId = "com.example.assignment3"
         minSdk = 21
@@ -14,7 +18,6 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        buildConfigField("String", "API_KEY", "\"API_KEY\"")
     }
 
     buildTypes {
