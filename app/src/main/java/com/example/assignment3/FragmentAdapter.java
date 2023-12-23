@@ -29,6 +29,8 @@ public class FragmentAdapter extends FragmentStateAdapter {
             case 1:
                 return new ActivityFragment();
             case 2:
+                return new VoucherFragment();
+            case 3:
                 return new ProfileFragment();
             default:
                 return new HomeFragment();
@@ -37,6 +39,6 @@ public class FragmentAdapter extends FragmentStateAdapter {
 
     @Override
     public int getItemCount() {
-        return 3;
+        return 4;
     }
 }

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "942348384218",
+    "project_id": "cosc2657-assignment3",
+    "storage_bucket": "cosc2657-assignment3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:942348384218:android:6a5967756387eefc9d72e3",
+        "android_client_info": {
+          "package_name": "com.example.assignment3"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyALhV1RI67-VZog3rudPhCa_TrjpW0Ccn8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
