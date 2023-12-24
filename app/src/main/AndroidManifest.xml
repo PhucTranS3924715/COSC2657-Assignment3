@@ -18,6 +18,9 @@
         android:theme="@style/Theme.Assignment3"
         tools:targetApi="31">
         <activity
+            android:name=".LoginActivity"
+            android:exported="false" />
+        <activity
             android:name=".CustomerMainActivity"
             android:exported="true" />
         <activity
