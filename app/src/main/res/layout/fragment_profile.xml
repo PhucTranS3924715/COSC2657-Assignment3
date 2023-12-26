@@ -6,9 +6,115 @@
     tools:context=".ProfileFragment">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <RelativeLayout
         android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:background="@color/blue">
+
+        <ImageView
+            android:id="@+id/iconImageView"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="1dp"
+            android:src="@drawable/back_icon"
+            android:layout_marginTop="15dp"/>
+
+        <TextView
+            android:id="@+id/settingHeading"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Setting"
+            android:textSize="30dp"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:layout_toEndOf="@id/iconImageView"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="10dp"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_marginTop="150dp"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:background="#EDEDED">
+
+        <TextView
+            android:id="@+id/editProfile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Edit rofile"
+            android:textSize="20dp"
+            android:background="@drawable/box"
+            android:padding="8dp"
+            android:textColor="@color/black"
+            android:elevation="4dp"
+            android:drawableStart="@drawable/edit_profile_icon"
+            android:drawablePadding="8dp"/>
+
+        <TextView
+            android:id="@+id/paymentMethod"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Payment method"
+            android:textSize="20dp"
+            android:background="@drawable/box"
+            android:padding="8dp"
+            android:layout_below="@id/editProfile"
+            android:layout_marginTop="20dp"
+            android:textColor="@color/black"
+            android:elevation="4dp"
+            android:drawableStart="@drawable/wallet_icon"
+            android:drawablePadding="8dp"/>
+
+        <TextView
+            android:id="@+id/message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Message"
+            android:textSize="20dp"
+            android:background="@drawable/box"
+            android:padding="8dp"
+            android:layout_below="@id/paymentMethod"
+            android:layout_marginTop="20dp"
+            android:textColor="@color/black"
+            android:elevation="4dp"
+            android:drawableStart="@drawable/message_icon"
+            android:drawablePadding="8dp"/>
+
+        <TextView
+            android:id="@+id/help"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Help"
+            android:textSize="20dp"
+            android:background="@drawable/box"
+            android:padding="8dp"
+            android:layout_below="@id/message"
+            android:layout_marginTop="20dp"
+            android:textColor="@color/black"
+            android:elevation="4dp"
+            android:drawableStart="@drawable/help_icon"
+            android:drawablePadding="8dp"/>
+
+        <TextView
+            android:id="@+id/logout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Logout"
+            android:textSize="20dp"
+            android:background="@drawable/box"
+            android:padding="8dp"
+            android:layout_below="@id/help"
+            android:layout_marginTop="20dp"
+            android:textColor="@color/black"
+            android:elevation="4dp"
+            android:drawableStart="@drawable/logout_icon"
+            android:drawablePadding="8dp"/>
+    </RelativeLayout>
 
 </FrameLayout>
