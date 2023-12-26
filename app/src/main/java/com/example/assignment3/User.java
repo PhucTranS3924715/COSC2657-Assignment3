@@ -9,12 +9,9 @@ public class User implements Serializable {
     private String gender;
     private String profilePicture;
 
-    public User(String name, String phone, String address, String gender, String profilePicture) {
+    public User(String name, String phone) {
         this.name = name;
         this.phone = phone;
-        this.address = address;
-        this.gender = gender;
-        this.profilePicture = profilePicture;
     }
 
     public User() {}

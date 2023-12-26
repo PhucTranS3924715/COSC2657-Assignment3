@@ -73,9 +73,9 @@ public class SignUpActivity extends AppCompatActivity {
                         FirebaseUser user = auth.getCurrentUser();
                         assert user != null;
                         String uid = user.getUid();
+                        String userEmail = user.getEmail();
 
-                        List<String> voucherIDs = new ArrayList<>();
-                        Customer customer = new Customer(name, phone, "", "", "", 0, voucherIDs);
+                        Customer customer = new Customer(name, phone);
                         database.collection("Customers").document(uid).set(customer);
 
                         // TODO: Create intent to user home screen
