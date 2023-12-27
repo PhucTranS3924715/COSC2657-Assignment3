@@ -46,9 +46,8 @@ public class CustomVoucherAdapter extends BaseAdapter{
 
         holder.voucherNameTextView.setText(currentVoucher.getVoucherName());
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        String formattedDate = dateFormat.format(currentVoucher.getExpirationDate());
-        holder.expirationTextView.setText(formattedDate);
+
+        holder.expirationTextView.setText(currentVoucher.getExpirationDate());
 
         return convertView;
     }
