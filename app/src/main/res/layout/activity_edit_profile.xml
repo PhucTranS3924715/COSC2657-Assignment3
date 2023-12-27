@@ -38,10 +38,25 @@
             android:layout_marginEnd="8dp"
             android:layout_marginTop="10dp"
             />
+
     </RelativeLayout>
 
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/halfImage"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:background="@drawable/avatar"
+        app:layout_constraintTop_toBottomOf="@id/headingSection"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/dataSection"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintVertical_bias="0.5"
+        android:elevation="1dp"
+        app:shapeAppearanceOverlay="@style/roundedImageViewRounded"/>
 
     <RelativeLayout
+        android:id="@+id/dataSection"
         android:layout_marginTop="150dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -58,14 +73,14 @@
             android:text="YOUR NAME"
             android:textSize="18sp"
             android:background="@android:color/transparent"
-            android:layout_marginTop="80dp"
+            android:layout_marginTop="60dp"
             android:layout_marginStart="32dp"
             android:paddingBottom="8dp"/>
 
         <EditText
             android:id="@+id/nameInput"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:layout_below="@id/nameTextView"
             android:background="@android:color/transparent"
             android:hint="Name here"
@@ -89,14 +104,14 @@
             android:textSize="18sp"
             android:background="@android:color/transparent"
             android:layout_below="@id/nameInput"
-            android:layout_marginTop="27dp"
+            android:layout_marginTop="20dp"
             android:layout_marginStart="32dp"
             android:paddingBottom="8dp"/>
 
         <EditText
             android:id="@+id/emailInput"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:layout_below="@id/emailTextView"
             android:background="@android:color/transparent"
             android:hint="Email here"
@@ -120,14 +135,14 @@
             android:textSize="18sp"
             android:background="@android:color/transparent"
             android:layout_below="@id/emailInput"
-            android:layout_marginTop="27dp"
+            android:layout_marginTop="20dp"
             android:layout_marginStart="32dp"
             android:paddingBottom="8dp"/>
 
         <EditText
             android:id="@+id/phoneInput"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:layout_below="@id/phoneTextView"
             android:background="@android:color/transparent"
             android:hint="Phone here"
@@ -151,14 +166,14 @@
             android:textSize="18sp"
             android:background="@android:color/transparent"
             android:layout_below="@id/phoneInput"
-            android:layout_marginTop="27dp"
+            android:layout_marginTop="20dp"
             android:layout_marginStart="32dp"
             android:paddingBottom="8dp"/>
 
         <EditText
             android:id="@+id/addressInput"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:layout_below="@id/addressTextView"
             android:background="@android:color/transparent"
             android:hint="address here"
