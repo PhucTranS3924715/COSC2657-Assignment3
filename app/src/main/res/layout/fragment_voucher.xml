@@ -7,7 +7,6 @@
     tools:context=".EditProfileActivity"
     android:background="@color/blue">
 
-    <!-- TODO: Update blank fragment layout -->
     <RelativeLayout
         android:id="@+id/headingSection"
         android:layout_width="match_parent"
@@ -15,6 +14,7 @@
         app:layout_constraintWidth="match_parent"
         app:layout_constraintTop_toTopOf="parent">
 
+        <!--    TODO: Remove back icon-->
         <ImageView
             android:id="@+id/backImage"
             android:layout_width="30dp"
@@ -29,7 +29,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Voucher"
-            android:textSize="30dp"
+            android:textSize="30sp"
             android:textColor="@color/white"
             android:textStyle="bold"
             android:layout_toEndOf="@id/backImage"
@@ -37,8 +37,7 @@
             android:layout_alignParentBottom="true"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
-            android:layout_marginTop="10dp"
-            />
+            android:layout_marginTop="10dp" />
 
     </RelativeLayout>
 
@@ -59,7 +58,7 @@
             android:layout_height="wrap_content"
             android:text="Voucher available"
             android:textColor="#000080"
-            android:textSize="25dp"
+            android:textSize="25sp"
             android:textStyle="bold"
             android:layout_marginStart="32dp"
             android:layout_marginTop="12dp"
