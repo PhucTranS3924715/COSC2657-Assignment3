@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Customer extends User implements Serializable {
     private int rewardPoint;
-    private List<String> voucherIDs;  // TODO: Missing Voucher class
+    private List<Voucher> voucherIDs;
 
     public Customer(String name, String phone) {
         super(name, phone);
@@ -21,11 +21,11 @@ public class Customer extends User implements Serializable {
         this.rewardPoint = rewardPoint;
     }
 
-    public List<String> getVoucherIDs() {
+    public List<Voucher> getVoucherIDs() {
         return voucherIDs;
     }
 
-    public void setVoucherIDs(List<String> voucherIDs) {
+    public void setVoucherIDs(List<Voucher> voucherIDs) {
         this.voucherIDs = voucherIDs;
     }
 }
