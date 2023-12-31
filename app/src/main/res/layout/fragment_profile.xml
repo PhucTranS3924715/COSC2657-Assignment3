@@ -3,58 +3,53 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ProfileFragment">
 
     <RelativeLayout
+        android:id="@+id/informationSection"
         android:layout_width="match_parent"
-        android:layout_height="150dp"
+        android:layout_height="200dp"
         android:background="@color/blue">
 
-        <!--    TODO: Remove back icon-->
-        <ImageView
-            android:id="@+id/backImage"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_alignParentStart="true"
-            android:layout_marginStart="1dp"
-            android:src="@drawable/back_icon"
-            android:layout_marginTop="15dp"/>
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/editIcon"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:background="@drawable/edit_icon"
+            app:shapeAppearanceOverlay="@style/roundedImageViewRounded"
+            android:layout_alignParentRight="true"
+            android:layout_marginEnd="10dp"
+            android:layout_marginTop="10dp" />
 
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/avatarImage"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:background="@drawable/avatar"
+            app:shapeAppearanceOverlay="@style/roundedImageViewRounded"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"/>
+        
         <TextView
-            android:id="@+id/settingHeading"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Setting"
-            android:textSize="30sp"
-            android:textColor="@color/white"
+            android:text="Dinh Gia Bao"
+            android:textSize="25dp"
+            android:layout_below="@id/avatarImage"
+            android:layout_centerHorizontal="true"
             android:textStyle="bold"
-            android:layout_toEndOf="@id/backImage"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginTop="10dp"/>
+            android:textColor="@color/black"/>
+
 
     </RelativeLayout>
 
     <RelativeLayout
-        android:layout_marginTop="150dp"
+        android:id="@+id/optionSection"
+        android:layout_marginTop="200dp"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:background="#EDEDED">
-
-        <TextView
-            android:id="@+id/editProfile"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Edit rofile"
-            android:textSize="20dp"
-            android:background="@drawable/box"
-            android:padding="8dp"
-            android:textColor="@color/black"
-            android:elevation="4dp"
-            android:drawableStart="@drawable/edit_profile_icon"
-            android:drawablePadding="8dp"/>
 
         <TextView
             android:id="@+id/paymentMethod"
@@ -64,8 +59,6 @@
             android:textSize="20dp"
             android:background="@drawable/box"
             android:padding="8dp"
-            android:layout_below="@id/editProfile"
-            android:layout_marginTop="20dp"
             android:textColor="@color/black"
             android:elevation="4dp"
             android:drawableStart="@drawable/wallet_icon"
