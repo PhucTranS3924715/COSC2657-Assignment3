@@ -41,7 +41,7 @@
     </RelativeLayout>
 
     <com.google.android.material.imageview.ShapeableImageView
-        android:id="@+id/halfImage"
+        android:id="@+id/avatarImage"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:background="@drawable/avatar"
