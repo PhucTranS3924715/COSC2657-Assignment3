@@ -71,7 +71,8 @@ public class LoginActivity extends AppCompatActivity {
             if (isValid) {
                 auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {  // If sign in success
-                        // TODO: Create intent to user home screen
+                        Intent intent = new Intent(LoginActivity.this, CustomerMainActivity.class);
+                        launcher.launch(intent);
                     } else {
                         Toast.makeText(this, "Sign in failed", Toast.LENGTH_SHORT).show();
                     }

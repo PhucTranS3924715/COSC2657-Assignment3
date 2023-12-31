@@ -7,12 +7,27 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.os.Bundle;
+import android.util.Log;
+import android.widget.Button;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.messaging.FirebaseMessaging;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 public class CustomerMainActivity extends AppCompatActivity {
     private ViewPager2 viewPager;
     private BottomNavigationView bottomNavigation;
+    private static final String TAG = "CustomerMainActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +89,29 @@ public class CustomerMainActivity extends AppCompatActivity {
                 super.onPageSelected(position);
                 bottomNavigation.getMenu().getItem(position).setChecked(true);
             }
+        });
+
+        // Get current token
+        String token = String.valueOf(FirebaseMessaging.getInstance().getToken());
+        Log.i(TAG, token);
+
+        // Update current user token in the database
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        FirebaseUser user = auth.getCurrentUser();
+        assert user != null;
+        String uid = user.getUid();
+
+        FirebaseFirestore database = FirebaseFirestore.getInstance();
+        database.collection("Customers").document(uid).update("fcmToken", token);
+
+        Button signoutButton = findViewById(R.id.signoutButton);
+        signoutButton.setOnClickListener(v -> {
+            database.collection("Customers").document(uid).update("fcmToken", FieldValue.delete())
+                    .addOnSuccessListener(aVoid -> {
+                        Log.d(TAG, "DocumentSnapshot successfully updated!");
+                        FirebaseAuth.getInstance().signOut();
+                        finish();
+                    }).addOnFailureListener(e -> Log.w(TAG, "Error updating document", e));
         });
 
     }

@@ -73,12 +73,12 @@ public class SignUpActivity extends AppCompatActivity {
                         FirebaseUser user = auth.getCurrentUser();
                         assert user != null;
                         String uid = user.getUid();
-                        String userEmail = user.getEmail();
 
                         Customer customer = new Customer(name, phone);
                         database.collection("Customers").document(uid).set(customer);
 
-                        // TODO: Create intent to user home screen
+                        Intent intent = new Intent(SignUpActivity.this, CustomerMainActivity.class);
+                        launcher.launch(intent);
                     }
                 });
             }

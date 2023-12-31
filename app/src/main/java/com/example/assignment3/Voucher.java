@@ -18,7 +18,7 @@ public class Voucher implements Serializable {
         this.expirationDate = expirationDate;
     }
 
-
+    public Voucher() {}
 
     public String getVoucherName() {
         return voucherName;
