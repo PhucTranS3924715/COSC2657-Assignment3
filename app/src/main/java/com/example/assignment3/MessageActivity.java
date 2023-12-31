@@ -6,16 +6,27 @@ import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.assignment3.databinding.ActivityMessageBinding;
+
 public class MessageActivity extends AppCompatActivity {
+    private ActivityMessageBinding binding;
+    private Driver currentDriver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_message);
+        binding = ActivityMessageBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
-        TextView driverName = findViewById(R.id.driverNameText);
-        TextView carType = findViewById(R.id.carTypeText);
-        ImageView driverPicture = findViewById(R.id.driverPicture);
+        TextView driverName = binding.driverNameText;
+        TextView carType = binding.carTypeText;
+        ImageView driverPicture = binding.driverPicture;
 
+        // Get the driver
+        currentDriver = (Driver) getIntent().getSerializableExtra("driver");
+        assert currentDriver != null;
+        driverName.setText(currentDriver.getName());
+        carType.setText(currentDriver.getOwnedCar().getModel());
+        // TODO: Set driver's picture
     }
 }
