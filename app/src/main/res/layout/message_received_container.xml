@@ -15,13 +15,14 @@
         android:text="Received message"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_max="wrap"
         app:layout_constraintWidth_percent="0.8"/>
 
     <TextView
         android:id="@+id/textDateTime"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="3dp"
         android:textColor="@color/black"
         android:textSize="11sp"
         android:text="Date Time"

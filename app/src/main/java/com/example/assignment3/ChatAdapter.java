@@ -60,7 +60,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
     }
 
-    // View holder for current customer (sent)
+    // View holder for current user (sent)
     static class SentMessageViewHolder extends RecyclerView.ViewHolder {
         private final MessageSentContainerBinding binding;
 
@@ -75,7 +75,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
     }
 
-    // View holder for current driver (receive)
+    // View holder for other user (received)
     static class ReceivedMessageViewHolder extends RecyclerView.ViewHolder {
         private final MessageReceivedContainerBinding binding;
 

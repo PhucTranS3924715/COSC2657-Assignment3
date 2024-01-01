@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 public class Car implements Serializable {
     private String model;
-    private String license;
+    private String licensePlate;
     private int seat;
     private String driverID;
 
@@ -18,12 +18,12 @@ public class Car implements Serializable {
         this.model = model;
     }
 
-    public String getLicense() {
-        return license;
+    public String getLicensePlate() {
+        return licensePlate;
     }
 
-    public void setLicense(String license) {
-        this.license = license;
+    public void setLicensePlate(String licensePlate) {
+        this.licensePlate = licensePlate;
     }
 
     public int getSeat() {
