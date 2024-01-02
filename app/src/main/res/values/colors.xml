@@ -11,6 +11,8 @@
     <color name="red">#FF6F61</color>
     <color name="blue">#73C2FB</color>
     <color name="green">#90EE90</color>
+    <color name="navy">#000080</color>
     <color name="light_gray_1">#EDEDED</color>
     <color name="light_gray_2">#707070</color>
+    <color name="yellow">#FFCC00</color>
 </resources>
