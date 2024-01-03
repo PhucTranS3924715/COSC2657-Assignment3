@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">Assignment3</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string-array name="users_sort_options">
+        <item>Sort…</item>
+        <item>Sort by Name</item>
+        <item>Sort by Email</item>
+    </string-array>
 </resources>

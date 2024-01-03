@@ -74,7 +74,7 @@ public class SignUpActivity extends AppCompatActivity {
                         assert user != null;
                         String uid = user.getUid();
 
-                        Customer customer = new Customer(name, phone);
+                        Customer customer = new Customer(name, phone, email);
                         database.collection("Customers").document(uid).set(customer);
 
                         Intent intent = new Intent(SignUpActivity.this, CustomerMainActivity.class);

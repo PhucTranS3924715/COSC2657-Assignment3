@@ -1,38 +1,50 @@
 package com.example.assignment3;
 
+import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.SearchView;
+import android.widget.Spinner;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class CustomerListFragment extends Fragment {
     public static final String TAG = "CustomerFragment";
+    private List<User> customers = new ArrayList<>();
+
     private ListView customerList;
     private UserListAdapter adapter;
+    private SearchView searchView;
+    private Spinner sortSpinner;
+    private ImageView addUserButton;
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
 
     public CustomerListFragment() {}
 
-    // TODO: Rename and change types and number of parameters
     public static CustomerListFragment newInstance(String param1, String param2) {
         CustomerListFragment fragment = new CustomerListFragment();
         Bundle args = new Bundle();
@@ -56,10 +68,16 @@ public class CustomerListFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_customer_list, container, false);
         customerList = view.findViewById(R.id.customerList);
+        searchView = view.findViewById(R.id.searchView);
+        sortSpinner = view.findViewById(R.id.sortSpinner);
+        addUserButton = view.findViewById(R.id.addUserButton);
 
-        // Get the database
+        // Create activity launcher
+        ActivityResultLauncher<Intent> launcher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(), result -> {});
+
+        // Get customers database and put in the list
         FirebaseFirestore database = FirebaseFirestore.getInstance();
-        List<User> customers = new ArrayList<>();
         database.collection("Customers").get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 for (QueryDocumentSnapshot document : task.getResult()) {
@@ -72,6 +90,67 @@ public class CustomerListFragment extends Fragment {
             }
         });
 
+        // Implement on click listener for item in the list
+        customerList.setOnItemClickListener(((parent, view1, position, id) -> {
+            Customer customer = (Customer) parent.getItemAtPosition(position);
+            // TODO: Create activity to view user's details
+        }));
+
+        // Implement search view
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                if (adapter != null) {
+                    adapter.getFilter().filter(newText);
+                }
+                return true;
+            }
+        });
+
+        // Set value for spinner
+        ArrayAdapter<CharSequence> sortAdapter = ArrayAdapter.createFromResource(view.getContext(), R.array.users_sort_options, R.layout.spinner_text_style);
+        sortAdapter.setDropDownViewResource(R.layout.spinner_item_text);
+        sortSpinner.setAdapter(sortAdapter);
+
+        // Implement sorting for user list (sort by name and email)
+        sortSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (position > 0) {
+
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
         return view;
+    }
+
+    private void sortUsers(int position) {
+        if (position == 1) {
+            Collections.sort(customers, new Comparator<User>() {
+                @Override
+                public int compare(User o1, User o2) {
+                    return o1.getName().compareTo(o2.getName());
+                }
+            });
+        } else if (position == 2) {
+            Collections.sort(customers, new Comparator<User>() {
+                @Override
+                public int compare(User o1, User o2) {
+                    return o1.getEmail().compareTo(o2.getEmail());
+                }
+            });
+        }
+        adapter.updateUsers(customers);
     }
 }

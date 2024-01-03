@@ -7,8 +7,9 @@ public class Customer extends User implements Serializable {
     private int rewardPoint;
     private List<Voucher> voucherIDs;
 
-    public Customer(String name, String phone) {
-        super(name, phone);
+
+    public Customer(String name, String phone, String email) {
+        super(name, phone, email);
     }
 
     public Customer() {}

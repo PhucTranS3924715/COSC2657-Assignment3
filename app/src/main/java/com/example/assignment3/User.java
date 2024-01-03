@@ -5,13 +5,15 @@ import java.io.Serializable;
 public class User implements Serializable {
     private String name;
     private String phone;
+    private String email;
     private String address;
     private String gender;
     private String profilePicture;
 
-    public User(String name, String phone) {
+    public User(String name, String phone, String email) {
         this.name = name;
         this.phone = phone;
+        this.email = email;
     }
 
     public User() {}
@@ -30,6 +32,14 @@ public class User implements Serializable {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getAddress() {

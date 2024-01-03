@@ -1,15 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".CustomerListFragment">
 
-    <ListView
-        android:id="@+id/customerList"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:divider="@color/blue"
-        android:dividerHeight="2dp"/>
+        android:layout_height="match_parent">
+
+        <SearchView
+            android:id="@+id/searchView"
+            android:layout_width="260dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/custom_edit_text"
+            android:queryHint="Enter a name"
+            android:layout_alignParentTop="true" />
+
+        <Spinner
+            android:id="@+id/sortSpinner"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/custom_edit_text"
+            android:layout_toEndOf="@id/searchView"/>
+
+        <ImageView
+            android:id="@+id/addUserButton"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="10dp"
+            android:background="@drawable/custom_edit_text"
+            android:padding="5dp"
+            app:srcCompat="@drawable/add_user_icon"
+            android:layout_toEndOf="@id/sortSpinner"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_marginTop="5dp"
+            android:background="@color/blue"
+            android:layout_below="@id/searchView"/>
+
+        <ListView
+            android:id="@+id/customerList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp"
+            android:divider="@color/blue"
+            android:dividerHeight="2dp"
+            android:layout_below="@id/searchView"/>
+    </RelativeLayout>
 
 </FrameLayout>
