@@ -1,0 +1,619 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".DriverProfileActivity">
+
+    <RelativeLayout
+        android:id="@+id/backgroundLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/background_layer">
+
+        <TextView
+            android:id="@+id/profileText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Profile"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_marginTop="24dp"
+            android:layout_centerHorizontal="true"/>
+
+        <LinearLayout
+            android:id="@+id/driverInfoLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_below="@id/profileText"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="100dp">
+
+            <ImageView
+                android:id="@+id/driverImage"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:src="@drawable/profile_icon"
+                android:background="@drawable/circular_shape"/>
+
+            <RelativeLayout
+                android:id="@+id/driverNameLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/driverName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Nguyen Van B"
+                    android:textSize="13sp"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginStart="10dp"/>
+
+                <LinearLayout
+                    android:id="@+id/driverRatingLayout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/driverName"
+                    android:layout_alignStart="@id/driverName"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="2dp">
+
+                    <ImageView
+                        android:id="@+id/driverStarIcon"
+                        android:layout_width="13sp"
+                        android:layout_height="13sp"
+                        android:src="@drawable/star_icon"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginEnd="4dp"
+                        app:tint="@color/white" />
+
+                    <TextView
+                        android:id="@+id/driverRatingScore"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="4.9"
+                        android:textSize="13sp"
+                        android:textColor="@color/white"
+                        android:textStyle="bold"/>
+                </LinearLayout>
+            </RelativeLayout>
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/driverInfoBox"
+            android:layout_width="340dp"
+            android:layout_height="120dp"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/driverInfoLayout"
+            android:layout_marginTop="40dp"
+            android:padding="10dp"
+            android:background="@drawable/custom_shape">
+
+            <LinearLayout
+                android:id="@+id/earnedTodayLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Earned Today"
+                    android:textColor="#B8B8B8"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="2dp"/>
+
+                <TextView
+                    android:id="@+id/driverIncomeToday"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="1.246.430đ"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="2dp"/>
+            </LinearLayout>
+
+            <View
+                android:id="@+id/customLine"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#B8B8B8"
+                android:layout_centerInParent="true"
+                android:layout_below="@+id/earnedTodayLayout"
+                android:layout_marginTop="4dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/customLine"
+                android:orientation="horizontal"
+                android:layout_marginTop="8dp"
+                android:gravity="center_horizontal"
+                android:baselineAligned="false">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="left">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Total Trips"
+                        android:textColor="#B8B8B8"
+                        android:textSize="13sp"
+                        android:textStyle="bold"/>
+                    <TextView
+                        android:id="@+id/driverTotalTrips"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="13"
+                        android:textColor="@color/black"
+                        android:textSize="13sp"
+                        android:textStyle="bold"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="left">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Time Online"
+                        android:textColor="#B8B8B8"
+                        android:textSize="13sp"
+                        android:textStyle="bold"/>
+                    <TextView
+                        android:id="@+id/driverTimeOnline"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="14h 23m"
+                        android:textColor="@color/black"
+                        android:textSize="13sp"
+                        android:textStyle="bold"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="left">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Total Distance"
+                        android:textColor="#B8B8B8"
+                        android:textSize="13sp"
+                        android:textStyle="bold"/>
+                    <TextView
+                        android:id="@+id/driverTotalDistance"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="75km"
+                        android:textColor="@color/black"
+                        android:textSize="13sp"
+                        android:textStyle="bold"/>
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/ongoingTripBox"
+            android:layout_width="340dp"
+            android:layout_height="120dp"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/driverInfoBox"
+            android:layout_marginTop="40dp"
+            android:padding="10dp"
+            android:background="@drawable/custom_shape">
+
+            <LinearLayout
+                android:id="@+id/ongoingTripLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Ongoing Trip"
+                        android:textColor="#B8B8B8"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="2dp"
+                        android:layout_alignParentStart="true"/>
+
+                    <TextView
+                        android:id="@+id/currentTime"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="7:34PM"
+                        android:textColor="#B8B8B8"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="2dp"
+                        android:layout_alignParentEnd="true"/>
+                </RelativeLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/customerInfoLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_below="@id/ongoingTripLayout">
+
+                <ImageView
+                    android:id="@+id/customerImage"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/profile_icon"
+                    android:background="@drawable/circular_shape"/>
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:id="@+id/customerName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Nguyen Thi A"
+                        android:textSize="13sp"
+                        android:textColor="@color/black"
+                        android:textStyle="bold"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginStart="10dp"/>
+
+                    <LinearLayout
+                        android:id="@+id/customerRatingLayout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/customerName"
+                        android:layout_alignStart="@id/customerName"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="2dp">
+
+                        <ImageView
+                            android:id="@+id/customerStarIcon"
+                            android:layout_width="13sp"
+                            android:layout_height="13sp"
+                            android:src="@drawable/star_icon"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginEnd="4dp"
+                            app:tint="#6DBAED" />
+
+                        <TextView
+                            android:id="@+id/customerRatingScore"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="4.7"
+                            android:textSize="13sp"
+                            android:textColor="@color/black"
+                            android:textStyle="bold"/>
+                    </LinearLayout>
+                </RelativeLayout>
+            </LinearLayout>
+
+            <View
+                android:id="@+id/customLine2"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#B8B8B8"
+                android:layout_centerInParent="true"
+                android:layout_below="@+id/customerInfoLayout"
+                android:layout_marginTop="4dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/customLine2"
+                android:orientation="horizontal"
+                android:layout_marginTop="8dp"
+                android:gravity="center_horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="horizontal"
+                    android:gravity="left">
+                    <ImageView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@drawable/call_icon"/>
+
+                    <TextView
+                        android:id="@+id/callBtn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Call"
+                        android:textColor="@color/black"
+                        android:textSize="13sp"
+                        android:textStyle="bold"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="horizontal"
+                    android:gravity="left">
+                    <ImageView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@drawable/chat_icon"/>
+
+                    <TextView
+                        android:id="@+id/chatBtn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Chat"
+                        android:textColor="@color/black"
+                        android:textSize="13sp"
+                        android:textStyle="bold"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="horizontal"
+                    android:gravity="left">
+                    <ImageView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@drawable/navigation_icon"/>
+
+                    <TextView
+                        android:id="@+id/navigationBtn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Navigation"
+                        android:textColor="@color/black"
+                        android:textSize="13sp"
+                        android:textStyle="bold"/>
+                </LinearLayout>
+            </LinearLayout>
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/notificationText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Notifications"
+            android:textSize="13sp"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:layout_below="@id/ongoingTripBox"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="42dp"/>
+
+        <RelativeLayout
+            android:id="@+id/notificationBox"
+            android:layout_width="340dp"
+            android:layout_height="200dp"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/ongoingTripBox"
+            android:layout_marginTop="40dp"
+            android:padding="10dp"
+            android:background="@drawable/custom_shape">
+
+            <LinearLayout
+                android:id="@+id/firstNotificationLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/firstNotificationImage"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/profile_icon"
+                    android:background="@drawable/circular_shape"/>
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:id="@+id/firstNotificationName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="User 2 Name"
+                        android:textSize="13sp"
+                        android:textColor="@color/black"
+                        android:textStyle="bold"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginStart="10dp"/>
+
+                    <LinearLayout
+                        android:id="@+id/firstNotificationRecentTextLayout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/firstNotificationName"
+                        android:layout_alignStart="@id/firstNotificationName"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="2dp">
+
+                        <TextView
+                            android:id="@+id/firstNotificationRecentText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="I am standing outside"
+                            android:textSize="8sp"
+                            android:textColor="#B8B8B8"
+                            android:textStyle="bold"/>
+                    </LinearLayout>
+                    <TextView
+                        android:id="@+id/firstNotificationSentTime"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="12 min ago"
+                        android:textColor="#B8B8B8"
+                        android:textSize="8sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="2dp"
+                        android:layout_alignParentEnd="true"/>
+                </RelativeLayout>
+            </LinearLayout>
+
+            <View
+                android:id="@+id/customLine3"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#B8B8B8"
+                android:layout_centerInParent="true"
+                android:layout_below="@+id/firstNotificationLayout"
+                android:layout_marginTop="15dp"/>
+
+            <LinearLayout
+                android:id="@+id/secondNotificationLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_below="@id/firstNotificationLayout"
+                android:layout_marginTop="30dp">
+
+                <ImageView
+                    android:id="@+id/secondNotificationImage"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/profile_icon"
+                    android:background="@drawable/circular_shape"/>
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:id="@+id/secondNotificationName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Congratulations!"
+                        android:textSize="13sp"
+                        android:textColor="@color/black"
+                        android:textStyle="bold"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginStart="10dp"/>
+
+                    <LinearLayout
+                        android:id="@+id/secondNotificationRecentTextLayout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/secondNotificationName"
+                        android:layout_alignStart="@id/secondNotificationName"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="2dp">
+
+                        <TextView
+                            android:id="@+id/secondNotificationRecentText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="You just got 5 star from User 3 Name"
+                            android:textSize="8sp"
+                            android:textColor="#B8B8B8"
+                            android:textStyle="bold"/>
+                    </LinearLayout>
+                    <TextView
+                        android:id="@+id/secondNotificationSentTime"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="38 min ago"
+                        android:textColor="#B8B8B8"
+                        android:textSize="8sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="2dp"
+                        android:layout_alignParentEnd="true"/>
+                </RelativeLayout>
+            </LinearLayout>
+
+            <View
+                android:id="@+id/customLine4"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#B8B8B8"
+                android:layout_centerInParent="true"
+                android:layout_below="@+id/secondNotificationLayout"
+                android:layout_marginTop="15dp"/>
+
+            <LinearLayout
+                android:id="@+id/thirdNotificationLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_below="@id/secondNotificationLayout"
+                android:layout_marginTop="30dp">
+
+                <ImageView
+                    android:id="@+id/thirdNotificationImage"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/profile_icon"
+                    android:background="@drawable/circular_shape"/>
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:id="@+id/thirdNotificationName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="User 3 Name"
+                        android:textSize="13sp"
+                        android:textColor="@color/black"
+                        android:textStyle="bold"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginStart="10dp"/>
+
+                    <LinearLayout
+                        android:id="@+id/thirdNotificationRecentTextLayout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/thirdNotificationName"
+                        android:layout_alignStart="@id/thirdNotificationName"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="2dp">
+
+                        <TextView
+                            android:id="@+id/thirdNotificationRecentText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="I can see your car"
+                            android:textSize="8sp"
+                            android:textColor="#B8B8B8"
+                            android:textStyle="bold"/>
+                    </LinearLayout>
+                    <TextView
+                        android:id="@+id/thirdNotificationSentTime"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="2hr ago"
+                        android:textColor="#B8B8B8"
+                        android:textSize="8sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="2dp"
+                        android:layout_alignParentEnd="true"/>
+                </RelativeLayout>
+            </LinearLayout>
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+</FrameLayout>
