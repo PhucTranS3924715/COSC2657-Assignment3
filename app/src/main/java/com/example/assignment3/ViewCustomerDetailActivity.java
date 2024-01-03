@@ -35,7 +35,7 @@ public class ViewCustomerDetailActivity extends AppCompatActivity {
         emailText.setText(customer.getEmail());
         addressText.setText(customer.getAddress());
         gender.setText(customer.getGender());
-        rewardPointText.setText(customer.getRewardPoint());
+        rewardPointText.setText(String.valueOf(customer.getRewardPoint()));
 
         ImageView backButton = binding.backButton;
         backButton.setOnClickListener(v -> finish());

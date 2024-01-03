@@ -1,7 +1,10 @@
 package com.example.assignment3;
 
+import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
@@ -69,6 +72,10 @@ public class DriverListFragment extends Fragment {
         sortSpinner = view.findViewById(R.id.sortSpinner);
         addUserButton = view.findViewById(R.id.addUserButton);
 
+        // Create activity launcher
+        ActivityResultLauncher<Intent> launcher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(), result -> {});
+
         // Get drivers database and put in the list
         FirebaseFirestore database = FirebaseFirestore.getInstance();
         database.collection("Drivers").get().addOnCompleteListener(task -> {
@@ -86,7 +93,9 @@ public class DriverListFragment extends Fragment {
         // Implement on click listener for item in the list
         driverList.setOnItemClickListener(((parent, view1, position, id) -> {
             Driver driver = (Driver) parent.getItemAtPosition(position);
-            // TODO: Create activity to view user's details
+            Intent intent = new Intent(view.getContext(), ViewDriverDetailActivity.class);
+            intent.putExtra("driver", driver);
+            launcher.launch(intent);
         }));
 
         // Implement search view

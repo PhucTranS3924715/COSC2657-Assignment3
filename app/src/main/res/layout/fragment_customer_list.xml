@@ -22,24 +22,15 @@
 
         <Spinner
             android:id="@+id/sortSpinner"
-            android:layout_width="50dp"
+            android:layout_width="0dp"
             android:layout_height="50dp"
             android:layout_marginStart="10dp"
-            android:layout_marginTop="20dp"
-            android:background="@drawable/custom_edit_text"
-            android:layout_toEndOf="@id/searchView"/>
-
-        <ImageView
-            android:id="@+id/addUserButton"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="20dp"
             android:layout_marginEnd="10dp"
+            android:layout_marginTop="20dp"
             android:background="@drawable/custom_edit_text"
-            android:padding="5dp"
-            app:srcCompat="@drawable/add_user_icon"
-            android:layout_toEndOf="@id/sortSpinner"/>
+            android:layout_alignParentTop="true"
+            android:layout_toEndOf="@id/searchView"
+            android:layout_alignParentEnd="true"/>
 
         <View
             android:layout_width="match_parent"

@@ -35,7 +35,6 @@ public class CustomerListFragment extends Fragment {
     private UserListAdapter adapter;
     private SearchView searchView;
     private Spinner sortSpinner;
-    private ImageView addUserButton;
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
@@ -70,7 +69,6 @@ public class CustomerListFragment extends Fragment {
         customerList = view.findViewById(R.id.customerList);
         searchView = view.findViewById(R.id.searchView);
         sortSpinner = view.findViewById(R.id.sortSpinner);
-        addUserButton = view.findViewById(R.id.addUserButton);
 
         // Create activity launcher
         ActivityResultLauncher<Intent> launcher = registerForActivityResult(
@@ -93,7 +91,9 @@ public class CustomerListFragment extends Fragment {
         // Implement on click listener for item in the list
         customerList.setOnItemClickListener(((parent, view1, position, id) -> {
             Customer customer = (Customer) parent.getItemAtPosition(position);
-            // TODO: Create activity to view user's details
+            Intent intent = new Intent(view.getContext(), ViewCustomerDetailActivity.class);
+            intent.putExtra("customer", customer);
+            launcher.launch(intent);
         }));
 
         // Implement search view

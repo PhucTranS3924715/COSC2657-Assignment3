@@ -12,7 +12,7 @@
 
         <SearchView
             android:id="@+id/searchView"
-            android:layout_width="260dp"
+            android:layout_width="230dp"
             android:layout_height="50dp"
             android:layout_marginStart="10dp"
             android:layout_marginTop="20dp"
@@ -22,11 +22,12 @@
 
         <Spinner
             android:id="@+id/sortSpinner"
-            android:layout_width="50dp"
+            android:layout_width="0dp"
             android:layout_height="50dp"
             android:layout_marginStart="10dp"
             android:layout_marginTop="20dp"
             android:background="@drawable/custom_edit_text"
+            android:layout_toStartOf="@id/addUserButton"
             android:layout_toEndOf="@id/searchView"/>
 
         <ImageView
@@ -39,7 +40,7 @@
             android:background="@drawable/custom_edit_text"
             android:padding="5dp"
             app:srcCompat="@drawable/add_user_icon"
-            android:layout_toEndOf="@id/sortSpinner"/>
+            android:layout_alignParentRight="true"/>
 
         <View
             android:layout_width="match_parent"
