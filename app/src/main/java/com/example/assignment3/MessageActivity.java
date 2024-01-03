@@ -65,7 +65,7 @@ public class MessageActivity extends AppCompatActivity {
 
         // Set name and picture for other user currently chatting with
         userName.setText(receiverUser.getName());
-        // TODO: Set user's picture
+        // TODO: Set user's profile picture
 
         // Implement on send message button
         binding.layoutSend.setOnClickListener(v -> {
