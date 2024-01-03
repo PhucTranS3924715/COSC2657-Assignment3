@@ -6,4 +6,5 @@
         <item>Sort by Name</item>
         <item>Sort by Email</item>
     </string-array>
+    <string name="Choose_amount"><u>Choose other amount</u></string>
 </resources>
