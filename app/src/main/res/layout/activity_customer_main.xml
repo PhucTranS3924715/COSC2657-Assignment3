@@ -6,16 +6,27 @@
     android:layout_height="match_parent"
     tools:context=".CustomerMainActivity">
 
+    <Button
+        android:id="@+id/signoutButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sign out"/>
+
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/viewPager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="50dp"
         android:layout_above="@id/bottom_navigation" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"
-        android:layout_width="match_parent"
+        android:layout_width="350dp"
         android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/custom_bottom_navigation"
+        app:itemIconTint="@color/black"
+        app:itemTextColor="@color/black"
         android:layout_alignParentBottom="true"
         app:menu="@menu/bottom_navigation_menu" />
 

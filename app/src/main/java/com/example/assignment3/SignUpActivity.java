@@ -74,11 +74,11 @@ public class SignUpActivity extends AppCompatActivity {
                         assert user != null;
                         String uid = user.getUid();
 
-                        List<String> voucherIDs = new ArrayList<>();
-                        Customer customer = new Customer(name, phone, "", "", "", 0, voucherIDs);
+                        Customer customer = new Customer(name, phone, email);
                         database.collection("Customers").document(uid).set(customer);
 
-                        // TODO: Create intent to user home screen
+                        Intent intent = new Intent(SignUpActivity.this, CustomerMainActivity.class);
+                        launcher.launch(intent);
                     }
                 });
             }

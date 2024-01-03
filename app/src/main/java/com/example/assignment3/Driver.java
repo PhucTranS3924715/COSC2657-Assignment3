@@ -8,7 +8,7 @@ public class Driver extends User implements Serializable {
     private double totalDistance;
     private String status;
     private double reputationPoint;
-    private String carID;
+    private Car ownedCar;
 
     public Driver() {}
 
@@ -52,11 +52,11 @@ public class Driver extends User implements Serializable {
         this.reputationPoint = reputationPoint;
     }
 
-    public String getCarID() {
-        return carID;
+    public Car getOwnedCar() {
+        return ownedCar;
     }
 
-    public void setCarID(String carID) {
-        this.carID = carID;
+    public void setOwnedCar(Car ownedCar) {
+        this.ownedCar = ownedCar;
     }
 }
