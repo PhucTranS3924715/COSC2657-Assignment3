@@ -16,6 +16,14 @@ public class User implements Serializable {
         this.email = email;
     }
 
+    public User(String name, String phone, String email, String address, String gender) {
+        this.name = name;
+        this.phone = phone;
+        this.email = email;
+        this.address = address;
+        this.gender = gender;
+    }
+
     public User() {}
 
     public String getName() {

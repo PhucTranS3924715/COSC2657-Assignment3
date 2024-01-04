@@ -15,15 +15,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginForCustomerActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_login_for_customer);
 
         ImageView backButton = findViewById(R.id.backButton);
         EditText emailEditText = findViewById(R.id.emailEditText);
@@ -45,7 +44,7 @@ public class LoginActivity extends AppCompatActivity {
 
         // Create launcher to move to sign up activity
         signUpText.setOnClickListener(v -> {
-            Intent intent = new Intent(LoginActivity.this, SignUpActivity.class);
+            Intent intent = new Intent(LoginForCustomerActivity.this, SignUpForCustomerActivity.class);
             launcher.launch(intent);
         });
 
@@ -71,7 +70,7 @@ public class LoginActivity extends AppCompatActivity {
             if (isValid) {
                 auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {  // If sign in success
-                        Intent intent = new Intent(LoginActivity.this, CustomerMainActivity.class);
+                        Intent intent = new Intent(LoginForCustomerActivity.this, CustomerMainActivity.class);
                         launcher.launch(intent);
                     } else {
                         Toast.makeText(this, "Sign in failed", Toast.LENGTH_SHORT).show();

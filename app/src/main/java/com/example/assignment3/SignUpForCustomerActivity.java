@@ -14,15 +14,12 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class SignUpActivity extends AppCompatActivity {
+public class SignUpForCustomerActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sign_up);
+        setContentView(R.layout.activity_sign_up_for_customer);
 
         ImageView backButton = findViewById(R.id.backButton);
         EditText nameEditText = findViewById(R.id.nameEditText);
@@ -77,7 +74,7 @@ public class SignUpActivity extends AppCompatActivity {
                         Customer customer = new Customer(name, phone, email);
                         database.collection("Customers").document(uid).set(customer);
 
-                        Intent intent = new Intent(SignUpActivity.this, CustomerMainActivity.class);
+                        Intent intent = new Intent(SignUpForCustomerActivity.this, CustomerMainActivity.class);
                         launcher.launch(intent);
                     }
                 });

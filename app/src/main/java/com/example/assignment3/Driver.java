@@ -12,6 +12,11 @@ public class Driver extends User implements Serializable {
 
     public Driver() {}
 
+    public Driver(String name, String phone, String email, String address, String gender, Car ownedCar) {
+        super(name, phone, email, address, gender);
+        this.ownedCar = ownedCar;
+    }
+
     public double getEarning() {
         return earning;
     }

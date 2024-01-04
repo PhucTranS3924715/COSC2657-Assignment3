@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/blue"
-    tools:context=".ViewDriverDetailActivity">
+    tools:context=".CreateDriverAccountActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -26,7 +26,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="60dp"
-            android:text="Driver details"
+            android:text="Create a driver"
             android:textColor="@color/white"
             android:textSize="30sp"
             android:textStyle="bold"
@@ -55,15 +55,16 @@
             app:layout_constraintBottom_toTopOf="@id/nameText"
             app:layout_constraintStart_toStartOf="@id/nameText"/>
 
-        <TextView
+        <EditText
             android:id="@+id/nameText"
             android:layout_width="300dp"
-            android:layout_height="40dp"
+            android:layout_height="50dp"
             android:layout_marginTop="25dp"
-            android:background="@drawable/custom_text_view"
-            android:text="Name"
+            android:background="@drawable/custom_edit_text"
+            android:hint="Name"
+            android:inputType="textCapWords"
             android:textColor="@color/black"
-            android:padding="10dp"
+            android:padding="15dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/driverProfilePicture" />
@@ -78,41 +79,19 @@
             app:layout_constraintBottom_toTopOf="@id/phoneText"
             app:layout_constraintStart_toStartOf="@id/phoneText"/>
 
-        <TextView
+        <EditText
             android:id="@+id/phoneText"
             android:layout_width="300dp"
-            android:layout_height="40dp"
+            android:layout_height="50dp"
             android:layout_marginTop="25dp"
-            android:background="@drawable/custom_text_view"
-            android:text="Phone"
+            android:background="@drawable/custom_edit_text"
+            android:hint="Phone"
+            android:inputType="phone"
             android:textColor="@color/black"
-            android:padding="10dp"
+            android:padding="15dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/nameText" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:text="Email"
-            android:textColor="@color/black"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@id/emailText"
-            app:layout_constraintStart_toStartOf="@id/emailText"/>
-
-        <TextView
-            android:id="@+id/emailText"
-            android:layout_width="300dp"
-            android:layout_height="40dp"
-            android:layout_marginTop="25dp"
-            android:background="@drawable/custom_text_view"
-            android:padding="10dp"
-            android:text="Email"
-            android:textColor="@color/black"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/phoneText" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -124,14 +103,63 @@
             app:layout_constraintBottom_toTopOf="@id/addressText"
             app:layout_constraintStart_toStartOf="@id/addressText"/>
 
-        <TextView
+        <EditText
             android:id="@+id/addressText"
             android:layout_width="300dp"
-            android:layout_height="40dp"
+            android:layout_height="50dp"
             android:layout_marginTop="25dp"
-            android:background="@drawable/custom_text_view"
-            android:padding="10dp"
-            android:text="Address"
+            android:background="@drawable/custom_edit_text"
+            android:padding="15dp"
+            android:hint="Address"
+            android:inputType="textCapWords"
+            android:textColor="@color/black"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/phoneText" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:text="Email"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@id/emailText"
+            app:layout_constraintStart_toStartOf="@id/emailText"/>
+
+        <EditText
+            android:id="@+id/emailText"
+            android:layout_width="300dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="25dp"
+            android:background="@drawable/custom_edit_text"
+            android:padding="15dp"
+            android:hint="Email"
+            android:inputType="textEmailAddress"
+            android:textColor="@color/black"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/addressText" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:text="Password"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@id/passwordText"
+            app:layout_constraintStart_toStartOf="@id/passwordText"/>
+
+        <EditText
+            android:id="@+id/passwordText"
+            android:layout_width="300dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="25dp"
+            android:background="@drawable/custom_edit_text"
+            android:padding="15dp"
+            android:hint="Password"
+            android:inputType="textPassword"
             android:textColor="@color/black"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -144,109 +172,18 @@
             android:text="Gender"
             android:textColor="@color/black"
             android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@id/genderText"
-            app:layout_constraintStart_toStartOf="@id/genderText"/>
+            app:layout_constraintBottom_toTopOf="@id/genderSpinner"
+            app:layout_constraintStart_toStartOf="@id/genderSpinner"/>
 
-        <TextView
-            android:id="@+id/genderText"
+        <Spinner
+            android:id="@+id/genderSpinner"
             android:layout_width="140dp"
-            android:layout_height="40dp"
-            android:layout_marginTop="25dp"
-            android:background="@drawable/custom_text_view"
-            android:padding="10dp"
-            android:text="Gender"
-            android:textColor="@color/black"
-            app:layout_constraintStart_toStartOf="@+id/addressText"
-            app:layout_constraintTop_toBottomOf="@+id/addressText" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:text="Total earnings"
-            android:textColor="@color/black"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@id/earningText"
-            app:layout_constraintStart_toStartOf="@id/earningText"/>
-
-        <TextView
-            android:id="@+id/earningText"
-            android:layout_width="140dp"
-            android:layout_height="40dp"
-            android:layout_marginTop="25dp"
-            android:background="@drawable/custom_text_view"
-            android:padding="10dp"
-            android:text="Total earning"
-            android:textColor="@color/black"
-            app:layout_constraintEnd_toEndOf="@+id/addressText"
-            app:layout_constraintTop_toBottomOf="@+id/addressText" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:text="Total trips"
-            android:textColor="@color/black"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@id/totalTripText"
-            app:layout_constraintStart_toStartOf="@id/totalTripText"/>
-
-        <TextView
-            android:id="@+id/totalTripText"
-            android:layout_width="140dp"
-            android:layout_height="40dp"
-            android:layout_marginTop="25dp"
-            android:background="@drawable/custom_text_view"
-            android:padding="10dp"
-            android:text="Total trips"
-            android:textColor="@color/black"
-            app:layout_constraintStart_toStartOf="@+id/genderText"
-            app:layout_constraintTop_toBottomOf="@+id/genderText" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:text="Distance traveled"
-            android:textColor="@color/black"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@id/totalDistanceText"
-            app:layout_constraintStart_toStartOf="@id/totalDistanceText"/>
-
-        <TextView
-            android:id="@+id/totalDistanceText"
-            android:layout_width="140dp"
-            android:layout_height="40dp"
-            android:layout_marginTop="25dp"
-            android:background="@drawable/custom_text_view"
-            android:padding="10dp"
-            android:text="Total distance"
-            android:textColor="@color/black"
-            app:layout_constraintEnd_toEndOf="@+id/earningText"
-            app:layout_constraintTop_toBottomOf="@+id/earningText" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:text="Reputation point"
-            android:textColor="@color/black"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@id/reputationPoint"
-            app:layout_constraintStart_toStartOf="@id/totalTripText"/>
-
-        <RatingBar
-            android:id="@+id/reputationPoint"
-            android:layout_width="wrap_content"
             android:layout_height="50dp"
             android:layout_marginTop="25dp"
-            android:numStars="5"
-            android:rating="3.0"
-            android:stepSize="0.1"
-            android:progressTint="@color/yellow"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/totalTripText" />
+            android:background="@drawable/custom_edit_text"
+            android:textColor="@color/black"
+            app:layout_constraintStart_toStartOf="@+id/passwordText"
+            app:layout_constraintTop_toBottomOf="@+id/passwordText" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -258,18 +195,18 @@
             app:layout_constraintBottom_toTopOf="@id/carModelText"
             app:layout_constraintStart_toStartOf="@id/carModelText"/>
 
-        <TextView
+        <EditText
             android:id="@+id/carModelText"
             android:layout_width="300dp"
-            android:layout_height="40dp"
+            android:layout_height="50dp"
             android:layout_marginTop="25dp"
-            android:background="@drawable/custom_text_view"
-            android:text="Car model"
+            android:background="@drawable/custom_edit_text"
+            android:hint="Car model"
             android:textColor="@color/black"
-            android:padding="10dp"
+            android:padding="15dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/reputationPoint" />
+            app:layout_constraintTop_toBottomOf="@id/genderSpinner" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -281,17 +218,53 @@
             app:layout_constraintBottom_toTopOf="@id/licensePlateText"
             app:layout_constraintStart_toStartOf="@id/licensePlateText"/>
 
-        <TextView
+        <EditText
             android:id="@+id/licensePlateText"
-            android:layout_width="300dp"
-            android:layout_height="40dp"
+            android:layout_width="140dp"
+            android:layout_height="50dp"
             android:layout_marginTop="25dp"
-            android:background="@drawable/custom_text_view"
-            android:text="License plate"
+            android:background="@drawable/custom_edit_text"
+            android:hint="License plate"
+            android:padding="15dp"
             android:textColor="@color/black"
-            android:padding="10dp"
+            app:layout_constraintStart_toStartOf="@+id/carModelText"
+            app:layout_constraintTop_toBottomOf="@id/carModelText" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:text="Seats"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@id/carSeatsText"
+            app:layout_constraintStart_toStartOf="@id/carSeatsText"/>
+
+        <EditText
+            android:id="@+id/carSeatsText"
+            android:layout_width="140dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="25dp"
+            android:background="@drawable/custom_edit_text"
+            android:hint="Car seats"
+            android:inputType="number"
+            android:padding="15dp"
+            android:textColor="@color/black"
+            app:layout_constraintEnd_toEndOf="@+id/carModelText"
+            app:layout_constraintTop_toBottomOf="@id/carModelText" />
+
+        <Button
+            android:id="@+id/createAccountButton"
+            android:layout_width="300dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="20dp"
+            android:text="Create account"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:background="@drawable/custom_button_red"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/carModelText" />
+            app:layout_constraintTop_toBottomOf="@+id/licensePlateText" />
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 </ScrollView>

@@ -10,6 +10,13 @@ public class Car implements Serializable {
 
     public Car() {}
 
+    public Car(String model, String licensePlate, int seat, String driverID) {
+        this.model = model;
+        this.licensePlate = licensePlate;
+        this.seat = seat;
+        this.driverID = driverID;
+    }
+
     public String getModel() {
         return model;
     }

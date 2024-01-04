@@ -91,7 +91,7 @@ public class CustomerMainActivity extends AppCompatActivity {
             }
         });
 
-        // Get current token
+        // Get current FCM token for Firebase Messaging
         String token = String.valueOf(FirebaseMessaging.getInstance().getToken());
         Log.i(TAG, token);
 
