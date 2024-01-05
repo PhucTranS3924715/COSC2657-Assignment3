@@ -18,6 +18,11 @@
         android:theme="@style/Theme.Assignment3"
         tools:targetApi="31">
         <activity
+            android:name=".UserMapActivity"
+            android:exported="false"
+            android:label="@string/title_activity_user_map"
+            android:theme="@style/Theme.Assignment3" />
+        <activity
             android:name=".CreateDriverAccountActivity"
             android:exported="false" />
         <activity
