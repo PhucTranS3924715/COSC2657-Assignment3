@@ -50,6 +50,7 @@ dependencies {
     implementation("com.google.firebase:firebase-firestore")
     implementation("com.google.firebase:firebase-messaging")
     implementation("com.google.android.gms:play-services-maps:18.2.0")
+    implementation ("com.github.imperiumlabs:GeoFirestore-Android:v1.5.0")
     implementation("androidx.navigation:navigation-fragment:2.6.0")
     implementation("androidx.navigation:navigation-ui:2.6.0")
     implementation("com.google.android.gms:play-services-location:21.0.1")
