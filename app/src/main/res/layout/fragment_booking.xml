@@ -129,7 +129,7 @@
                     android:layout_height="wrap_content"
                     android:text="5"
                     android:textSize="20dp"
-                    android:drawableStart="@drawable/star_icon"
+                    android:drawableStart="@drawable/star_driver_icon"
                     android:drawablePadding="10dp"/>
 
             </LinearLayout>
