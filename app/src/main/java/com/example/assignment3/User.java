@@ -1,5 +1,7 @@
 package com.example.assignment3;
 
+import com.google.firebase.firestore.GeoPoint;
+
 import java.io.Serializable;
 
 public class User implements Serializable {
@@ -9,6 +11,7 @@ public class User implements Serializable {
     private String address;
     private String gender;
     private String profilePicture;
+    private GeoPoint location;
 
     public User(String name, String phone, String email) {
         this.name = name;
@@ -22,6 +25,7 @@ public class User implements Serializable {
         this.email = email;
         this.address = address;
         this.gender = gender;
+        this.location = location;
     }
 
     public User() {}
@@ -73,4 +77,5 @@ public class User implements Serializable {
     public void setProfilePicture(String profilePicture) {
         this.profilePicture = profilePicture;
     }
+
 }
