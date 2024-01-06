@@ -22,6 +22,15 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.GeoPoint;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class UserMapActivity extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -30,10 +39,18 @@ public class UserMapActivity extends AppCompatActivity implements OnMapReadyCall
     private LocationRequest locationRequest;
     private LocationCallback locationCallback;
 
+    private FirebaseFirestore firestore;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_map);
+
+        // Initialize Firebase
+        FirebaseApp.initializeApp(this);
+
+        // Initialize Firestore
+        firestore = FirebaseFirestore.getInstance();
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
 
@@ -55,8 +72,8 @@ public class UserMapActivity extends AppCompatActivity implements OnMapReadyCall
 
     private void createLocationRequest() {
         locationRequest = new LocationRequest.Builder(Priority.PRIORITY_BALANCED_POWER_ACCURACY)
-                .setIntervalMillis(5000) // Update interval in milliseconds
-                .setMaxUpdates(3000) // Fastest update interval in milliseconds
+                .setIntervalMillis(2000) // Update interval in milliseconds
+                .setMaxUpdates(1000) // Fastest update interval in milliseconds
                 .build();
     }
 
@@ -97,18 +114,65 @@ public class UserMapActivity extends AppCompatActivity implements OnMapReadyCall
         }
     }
 
+    private String getUserId() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            return user.getUid();
+        } else {
+            Log.e("UserMapActivity", "User not authenticated");
+            return null;
+        }
+    }
 
     private void updateMapLocation(Location location) {
-        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-        mMap.clear(); // Clear existing markers
-        mMap.addMarker(new MarkerOptions().position(latLng).title("Current Location"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15f)); // Zoom to the current location
+        String userId = getUserId();
+
+        if (userId != null) {
+            LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+
+            // Update location field in the Customer collection
+            updateCustomerLocation(userId, new GeoPoint(location.getLatitude(), location.getLongitude()));
+
+            mMap.clear(); // Clear existing markers
+            mMap.addMarker(new MarkerOptions().position(latLng).title("Current Location"));
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15f)); // Zoom to the current location
+        } else {
+            // Handle the case where the user ID is not available
+            Log.e("UserMapActivity", "User ID is null");
+        }
+    }
+
+    private void updateCustomerLocation(String userId, GeoPoint location) {
+        // Update location field in the Customer collection
+        DocumentReference customerRef = firestore.collection("Customers").document(userId);
+
+        Map<String, Object> update = new HashMap<>();
+        update.put("location", location);
+
+        customerRef.update(update)
+                .addOnSuccessListener(aVoid -> Log.d("UserMapActivity", "Location updated in Customer collection"))
+                .addOnFailureListener(e -> Log.e("UserMapActivity", "Error updating location in Customer collection", e));
     }
 
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         mMap = googleMap;
-        // Your map-related code
+
+        // Check for location permission
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            // Request last known location and update the marker
+            fusedLocationClient.getLastLocation()
+                    .addOnSuccessListener(this, location -> {
+                        if (location != null) {
+                            LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+                            updateMapLocation(location); // Update marker immediately
+                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15f)); // Zoom to the current location
+                        }
+                    });
+        } else {
+            // If permission is not granted, handle accordingly
+            Log.e("Location", "Location permission denied");
+        }
     }
 
     @Override
@@ -123,5 +187,3 @@ public class UserMapActivity extends AppCompatActivity implements OnMapReadyCall
         fusedLocationClient.removeLocationUpdates(locationCallback);
     }
 }
-
-
