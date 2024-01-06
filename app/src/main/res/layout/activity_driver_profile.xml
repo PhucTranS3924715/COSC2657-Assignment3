@@ -315,10 +315,10 @@
                 android:id="@+id/customLine2"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="#B8B8B8"
-                android:layout_centerInParent="true"
                 android:layout_below="@+id/customerInfoLayout"
-                android:layout_marginTop="4dp"/>
+                android:layout_centerInParent="true"
+                android:layout_marginTop="4dp"
+                android:background="#B8B8B8" />
 
             <LinearLayout
                 android:layout_width="match_parent"
