@@ -4,6 +4,8 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -44,8 +46,11 @@ public class UserMapActivity extends AppCompatActivity implements OnMapReadyCall
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_user_map);
+        setContentView(R.layout.fragment_home);
 
+        Button btnBooking = findViewById(R.id.btnBooking);
+
+        btnBooking.setOnClickListener(view -> onBookingClicked());
         // Initialize Firebase
         FirebaseApp.initializeApp(this);
 
@@ -70,6 +75,68 @@ public class UserMapActivity extends AppCompatActivity implements OnMapReadyCall
         createLocationCallback();
     }
 
+    //Handle Booking
+    // TODO: Add function to type Pick-Up point and Drop off point
+    public void onBookingClicked(){
+        showLoadingScreen();
+        //Get user's current location
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            fusedLocationClient.getLastLocation()
+                    .addOnSuccessListener(this, location -> {
+                        if (location != null) {
+                            //Save user's current location to the "Pick-point" field in the "Ride" collection
+                            savePickPointToFirestore(location);
+                        }
+                    });
+        } else {
+            // Request the location permission
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION_PERMISSION);
+        }
+    }
+
+    private void savePickPointToFirestore(Location location) {
+        String userId = getUserId();
+
+        if (userId != null) {
+            // Save user's current location to Firestore in the "Ride" collection
+            DocumentReference rideRef = firestore.collection("Ride").document(userId);
+
+            // Assuming you have a model class for the Ride object with a field "pickPoint" of type GeoPoint
+            GeoPoint pickPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
+
+            Map<String, Object> update = new HashMap<>();
+            update.put("pickPoint", pickPoint);
+
+            rideRef.set(update)
+                    .addOnSuccessListener(aVoid -> {
+                        Log.d("UserMapActivity", "Pick-point updated in Ride collection");
+
+                        // Add a marker to the pick-point on the map
+                        addMarkerToPickPoint(new LatLng(location.getLatitude(), location.getLongitude()));
+                    })
+                    .addOnFailureListener(e -> Log.e("UserMapActivity", "Error updating pick-point in Ride collection", e));
+        } else {
+            // Handle the case where the user ID is not available
+            Log.e("UserMapActivity", "User ID is null");
+        }
+    }
+
+    private void addMarkerToPickPoint(LatLng pickPoint) {
+        mMap.clear(); // Clear existing markers
+        mMap.addMarker(new MarkerOptions().position(pickPoint).title("Pick Point"));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(pickPoint, 15f)); // Zoom to the pick point
+    }
+
+    private void showLoadingScreen() {
+        // Hide the bookingDetailSection and show the searchingForDriverSection
+        findViewById(R.id.bookingDetailSection).setVisibility(View.GONE);
+        findViewById(R.id.searchingForDriverSection).setVisibility(View.VISIBLE);
+    }
+
+    //Handle Searching for Driver
+    // TODO: Add function to search for driver within 1 km and send notication
+
+    //Handle user's current location
     private void createLocationRequest() {
         locationRequest = new LocationRequest.Builder(Priority.PRIORITY_BALANCED_POWER_ACCURACY)
                 .setIntervalMillis(2000) // Update interval in milliseconds

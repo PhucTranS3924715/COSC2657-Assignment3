@@ -215,16 +215,16 @@
             </LinearLayout>
 
             <Button
-                android:id="@+id/submitButton"
+                android:id="@+id/btnBooking"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="20dp"
                 android:text="Book Now"
                 android:textSize="16sp"
-                android:textColor="#FFFFFF"
+                android:textColor="@color/white"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
-                android:backgroundTint="#FF6F61"/>
+                android:backgroundTint="@color/red"/>
 
         </LinearLayout>
 
