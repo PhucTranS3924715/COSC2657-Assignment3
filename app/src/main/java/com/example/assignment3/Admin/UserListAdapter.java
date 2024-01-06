@@ -1,4 +1,4 @@
-package com.example.assignment3;
+package com.example.assignment3.Admin;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -10,6 +10,9 @@ import android.widget.Filterable;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+
+import com.example.assignment3.R;
+import com.example.assignment3.Class.User;
 
 import java.util.ArrayList;
 import java.util.List;

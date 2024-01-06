@@ -1,4 +1,4 @@
-package com.example.assignment3;
+package com.example.assignment3.Customer;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -8,7 +8,9 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.text.SimpleDateFormat;
+import com.example.assignment3.R;
+import com.example.assignment3.Class.Voucher;
+
 import java.util.List;
 
 public class CustomVoucherAdapter extends BaseAdapter{

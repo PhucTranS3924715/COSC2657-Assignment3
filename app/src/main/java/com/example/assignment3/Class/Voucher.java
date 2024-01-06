@@ -1,4 +1,4 @@
-package com.example.assignment3;
+package com.example.assignment3.Class;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;

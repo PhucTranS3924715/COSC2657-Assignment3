@@ -1,4 +1,4 @@
-package com.example.assignment3;
+package com.example.assignment3.Admin;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,12 +13,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.Spinner;
 
+import com.example.assignment3.Class.Driver;
+import com.example.assignment3.R;
+import com.example.assignment3.Class.User;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -124,7 +126,7 @@ public class DriverListFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (position > 0) {
-
+                    sortUsers(position);
                 }
             }
 

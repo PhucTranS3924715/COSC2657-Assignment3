@@ -1,4 +1,4 @@
-package com.example.assignment3;
+package com.example.assignment3.Customer;
 
 import android.os.Bundle;
 
@@ -8,7 +8,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class VoucherFragment extends Fragment {
+import com.example.assignment3.R;
+
+public class ActivityFragment extends Fragment {
 
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -17,10 +19,12 @@ public class VoucherFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public VoucherFragment() {}
+    public ActivityFragment() {
+        // Required empty public constructor
+    }
 
-    public static VoucherFragment newInstance(String param1, String param2) {
-        VoucherFragment fragment = new VoucherFragment();
+    public static ActivityFragment newInstance(String param1, String param2) {
+        ActivityFragment fragment = new ActivityFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -40,8 +44,8 @@ public class VoucherFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_voucher, container, false);
-        // TODO: Create voucher UI
+        View view = inflater.inflate(R.layout.fragment_activity, container, false);
+        // TODO: Create activity UI
         return view;
     }
 }

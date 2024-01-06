@@ -23,23 +23,23 @@
             android:label="@string/title_activity_user_map"
             android:theme="@style/Theme.Assignment3" />
         <activity
-            android:name=".CreateDriverAccountActivity"
+            android:name=".Admin.CreateDriverAccountActivity"
             android:exported="false" />
         <activity
-            android:name=".ViewDriverDetailActivity"
+            android:name=".Admin.ViewDriverDetailActivity"
             android:exported="false" />
         <activity
-            android:name=".ViewCustomerDetailActivity"
+            android:name=".Admin.ViewCustomerDetailActivity"
             android:exported="false" />
         <activity
-            android:name=".MessageActivity"
+            android:name=".Customer.MessageActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".EditProfileCustomerActivity"
+            android:name=".Customer.EditProfileCustomerActivity"
             android:exported="false" />
         <activity
-            android:name=".AdminMainActivity"
+            android:name=".Admin.AdminMainActivity"
             android:exported="true"
             android:windowSoftInputMode="adjustPan">
             <intent-filter>
@@ -49,13 +49,13 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".LoginForCustomerActivity"
+            android:name=".Customer.LoginForCustomerActivity"
             android:exported="true" />
         <activity
-            android:name=".CustomerMainActivity"
+            android:name=".Customer.CustomerMainActivity"
             android:exported="false" />
         <activity
-            android:name=".SignUpForCustomerActivity"
+            android:name=".Customer.SignUpForCustomerActivity"
             android:exported="false" />
 
         <meta-data

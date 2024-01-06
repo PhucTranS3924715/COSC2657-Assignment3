@@ -1,4 +1,4 @@
-package com.example.assignment3;
+package com.example.assignment3.Customer;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -10,19 +10,13 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
+import com.example.assignment3.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.messaging.FirebaseMessaging;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
 
 public class CustomerMainActivity extends AppCompatActivity {
     private ViewPager2 viewPager;

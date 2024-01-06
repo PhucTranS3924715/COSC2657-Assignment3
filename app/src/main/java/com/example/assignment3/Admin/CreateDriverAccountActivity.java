@@ -1,8 +1,7 @@
-package com.example.assignment3;
+package com.example.assignment3.Admin;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -11,6 +10,9 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.example.assignment3.Class.Car;
+import com.example.assignment3.Class.Driver;
+import com.example.assignment3.R;
 import com.example.assignment3.databinding.ActivityCreateDriverAccountBinding;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.firebase.auth.FirebaseAuth;

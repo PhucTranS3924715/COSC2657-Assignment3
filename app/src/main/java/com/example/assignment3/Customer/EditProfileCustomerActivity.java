@@ -1,8 +1,10 @@
-package com.example.assignment3;
+package com.example.assignment3.Customer;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+
+import com.example.assignment3.R;
 
 public class EditProfileCustomerActivity extends AppCompatActivity {
 

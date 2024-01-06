@@ -1,12 +1,14 @@
-package com.example.assignment3;
+package com.example.assignment3.Customer;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.assignment3.ChatAdapter;
+import com.example.assignment3.ChatMessage;
+import com.example.assignment3.Class.User;
 import com.example.assignment3.databinding.ActivityMessageBinding;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
