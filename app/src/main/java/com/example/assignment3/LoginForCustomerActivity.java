@@ -24,7 +24,6 @@ public class LoginForCustomerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_for_customer);
 
-        ImageView backButton = findViewById(R.id.backButton);
         EditText emailEditText = findViewById(R.id.emailEditText);
         EditText passwordEditText = findViewById(R.id.passwordEditText);
         Button signInButton = findViewById(R.id.signInButton);
@@ -33,9 +32,6 @@ public class LoginForCustomerActivity extends AppCompatActivity {
         // Create activity launcher
         ActivityResultLauncher<Intent> launcher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(), result -> {});
-
-        // Implement back button
-        backButton.setOnClickListener(v -> finish());
 
         // Create underline for sign up text
         SpannableString content = new SpannableString(signUpText.getText().toString());
@@ -48,8 +44,7 @@ public class LoginForCustomerActivity extends AppCompatActivity {
             launcher.launch(intent);
         });
 
-        // Set up Firestore database and Authentication
-        FirebaseFirestore database = FirebaseFirestore.getInstance();
+        // Set up Firebase Authentication
         FirebaseAuth auth = FirebaseAuth.getInstance();
 
         // Implement sign in button
