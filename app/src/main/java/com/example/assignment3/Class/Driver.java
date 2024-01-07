@@ -14,6 +14,10 @@ public class Driver extends User implements Serializable {
 
     public Driver(String name, String phone, String email, String address, String gender, Car ownedCar) {
         super(name, phone, email, address, gender);
+        this.earning = 0.0;
+        this.totalTrips = 0;
+        this.totalDistance = 0.0;
+        this.reputationPoint = 5.0;
         this.ownedCar = ownedCar;
     }
 

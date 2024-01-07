@@ -110,6 +110,7 @@ public class CreateDriverAccountActivity extends AppCompatActivity {
 
                         Driver driver = new Driver(name, phone, email, address, gender, new Car(carModel, licensePlate, Integer.parseInt(carSeats), uid));
                         database.collection("Drivers").document(uid).set(driver);
+                        setResult(RESULT_OK);
                         finish();
                     }
                 });

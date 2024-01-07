@@ -1,5 +1,7 @@
 package com.example.assignment3.Admin;
 
+import static android.app.Activity.RESULT_OK;
+
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -17,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.example.assignment3.Class.Driver;
 import com.example.assignment3.R;
@@ -37,7 +40,9 @@ public class DriverListFragment extends Fragment {
     private UserListAdapter adapter;
     private SearchView searchView;
     private Spinner sortSpinner;
-    private ImageView addUserButton;
+    private ImageView addDriverButton;
+
+    private FirebaseFirestore database;
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
@@ -63,6 +68,7 @@ public class DriverListFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        getDriverList();
     }
 
     @Override
@@ -72,32 +78,18 @@ public class DriverListFragment extends Fragment {
         driverList = view.findViewById(R.id.driverList);
         searchView = view.findViewById(R.id.searchView);
         sortSpinner = view.findViewById(R.id.sortSpinner);
-        addUserButton = view.findViewById(R.id.addUserButton);
+        addDriverButton = view.findViewById(R.id.addDriverButton);
 
-        // Create activity launcher
-        ActivityResultLauncher<Intent> launcher = registerForActivityResult(
+        // Create activity launcher for ViewDriverDetailActivity
+        ActivityResultLauncher<Intent> launcher1 = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(), result -> {});
-
-        // Get drivers database and put in the list
-        FirebaseFirestore database = FirebaseFirestore.getInstance();
-        database.collection("Drivers").get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                for (QueryDocumentSnapshot document : task.getResult()) {
-                    drivers.add(document.toObject(Driver.class));
-                }
-                adapter = new UserListAdapter(getActivity(), drivers);
-                driverList.setAdapter(adapter);
-            } else {
-                Log.w(TAG, "Error getting documents.", task.getException());
-            }
-        });
 
         // Implement on click listener for item in the list
         driverList.setOnItemClickListener(((parent, view1, position, id) -> {
             Driver driver = (Driver) parent.getItemAtPosition(position);
             Intent intent = new Intent(view.getContext(), ViewDriverDetailActivity.class);
             intent.putExtra("driver", driver);
-            launcher.launch(intent);
+            launcher1.launch(intent);
         }));
 
         // Implement search view
@@ -136,6 +128,24 @@ public class DriverListFragment extends Fragment {
             }
         });
 
+        // Create activity launcher for CreateDriverAccountActivity
+        ActivityResultLauncher<Intent> launcher2 = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(), result -> {
+                    if (result.getResultCode() == RESULT_OK) {
+                        Toast.makeText(view.getContext(), "Driver account created!",
+                                Toast.LENGTH_SHORT).show();
+                        getDriverList();
+                    } else {
+                        Toast.makeText(view.getContext(), "Failed to create driver account",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+        // Implement add driver button
+        addDriverButton.setOnClickListener(v -> {
+            Intent intent = new Intent(view.getContext(), CreateDriverAccountActivity.class);
+            launcher2.launch(intent);
+        });
         return view;
     }
 
@@ -156,5 +166,21 @@ public class DriverListFragment extends Fragment {
             });
         }
         adapter.updateUsers(drivers);
+    }
+
+    private void getDriverList() {
+        database = FirebaseFirestore.getInstance();
+        database.collection("Drivers").get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                drivers.clear();
+                for (QueryDocumentSnapshot document : task.getResult()) {
+                    drivers.add(document.toObject(Driver.class));  // Error
+                }
+                adapter = new UserListAdapter(getActivity(), drivers);
+                driverList.setAdapter(adapter);
+            } else {
+                Log.w(TAG, "Error getting documents.", task.getException());
+            }
+        });
     }
 }

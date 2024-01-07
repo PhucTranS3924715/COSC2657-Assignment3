@@ -1,6 +1,7 @@
 package com.example.assignment3.Class;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Customer extends User implements Serializable {
@@ -10,6 +11,8 @@ public class Customer extends User implements Serializable {
 
     public Customer(String name, String phone, String email) {
         super(name, phone, email);
+        this.rewardPoint = 0;
+        this.voucherIDs = new ArrayList<>();
     }
 
     public Customer() {}

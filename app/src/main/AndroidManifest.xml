@@ -19,6 +19,18 @@
         android:theme="@style/Theme.Assignment3"
         tools:targetApi="31">
         <activity
+            android:name=".Admin.LoginForAdminActivity"
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".Driver.LoginForDriverActivity"
+            android:exported="false" />
+        <activity
             android:name=".UserMapActivity"
             android:exported="false"
             android:label="@string/title_activity_user_map"
@@ -41,21 +53,14 @@
             android:exported="false" />
         <activity
             android:name=".Admin.AdminMainActivity"
-            android:exported="true"
-            android:windowSoftInputMode="adjustPan">
-        </activity>
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan"/>
         <activity
             android:name=".Customer.LoginForCustomerActivity"
-            android:exported="true" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:exported="true" />
         <activity
             android:name=".Customer.CustomerMainActivity"
-            android:exported="false" >
-        </activity>
+            android:exported="false" />
         <activity
             android:name=".Customer.SignUpForCustomerActivity"
             android:exported="false" />

@@ -27,11 +27,11 @@
             android:layout_marginStart="10dp"
             android:layout_marginTop="20dp"
             android:background="@drawable/custom_edit_text"
-            android:layout_toStartOf="@id/addUserButton"
+            android:layout_toStartOf="@id/addDriverButton"
             android:layout_toEndOf="@id/searchView"/>
 
         <ImageView
-            android:id="@+id/addUserButton"
+            android:id="@+id/addDriverButton"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_marginStart="10dp"
