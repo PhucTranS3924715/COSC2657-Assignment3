@@ -6,12 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".Customer.CustomerMainActivity">
 
-    <Button
-        android:id="@+id/signoutButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Sign out"/>
-
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/viewPager"
         android:layout_width="match_parent"
