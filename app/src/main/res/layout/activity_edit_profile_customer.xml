@@ -188,7 +188,7 @@
             android:layout_centerHorizontal="true"
             android:background="#C0C0C0" />
 
-        <com.google.android.material.button.MaterialButton
+        <Button
             android:id="@+id/deleteButton"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
@@ -199,7 +199,7 @@
             android:layout_marginStart="32dp"
             android:textColor="@color/gray"/>
 
-        <com.google.android.material.button.MaterialButton
+        <Button
             android:id="@+id/updateButton"
             android:layout_width="350dp"
             android:layout_height="55dp"
