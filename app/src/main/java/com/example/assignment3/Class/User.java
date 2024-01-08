@@ -80,4 +80,11 @@ public class User implements Serializable {
         this.profilePicture = profilePicture;
     }
 
+    public GeoPoint getLocation() {
+        return location;
+    }
+
+    public void setLocation(GeoPoint location) {
+        this.location = location;
+    }
 }
