@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
 
     <application
         android:allowBackup="true"
@@ -17,31 +18,18 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Assignment3"
         tools:targetApi="31">
+
+        <service
+            android:name=".MyFirebaseMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
         <activity
-            android:name=".UserMapActivity"
-            android:exported="false"
-            android:label="@string/title_activity_user_map"
-            android:theme="@style/Theme.Assignment3" />
-        <activity
-            android:name=".CreateDriverAccountActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ViewDriverDetailActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ViewCustomerDetailActivity"
-            android:exported="false" />
-        <activity
-            android:name=".MessageActivity"
-            android:exported="false"
-            android:windowSoftInputMode="adjustResize" />
-        <activity
-            android:name=".EditProfileActivity"
-            android:exported="false" />
-        <activity
-            android:name=".AdminMainActivity"
-            android:exported="true"
-            android:windowSoftInputMode="adjustPan">
+            android:name=".Admin.LoginForAdminActivity"
+            android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -49,18 +37,46 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".LoginForCustomerActivity"
+            android:name=".Driver.LoginForDriverActivity"
+            android:exported="false" />
+        <activity
+            android:name=".DriverMapActivity"
+            android:exported="false"
+            android:label="@string/title_activity_driver_map" />
+        <activity
+            android:name=".UserMapActivity"
+            android:exported="false"
+            android:label="@string/title_activity_user_map"
+            android:theme="@style/Theme.Assignment3" />
+        <activity
+            android:name=".Admin.CreateDriverAccountActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Admin.ViewDriverDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Admin.ViewCustomerDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Customer.MessageActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".Customer.EditProfileCustomerActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Admin.AdminMainActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan"/>
+        <activity
+            android:name=".Customer.LoginForCustomerActivity"
             android:exported="true" />
         <activity
-            android:name=".CustomerMainActivity"
+            android:name=".Customer.CustomerMainActivity"
             android:exported="false" />
         <activity
-            android:name=".SignUpForCustomerActivity"
+            android:name=".Customer.SignUpForCustomerActivity"
             android:exported="false" />
-
-        <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="@string/api_key" />
     </application>
 
 </manifest>

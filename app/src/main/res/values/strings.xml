@@ -1,12 +1,15 @@
 <resources>
     <string name="app_name">Assignment3</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
     <string-array name="users_sort_options">
         <item>Sort…</item>
         <item>Sort by Name</item>
         <item>Sort by Email</item>
     </string-array>
+
     <string name="Choose_amount"><u>Choose other amount</u></string>
+
     <string-array name="gender_types">
         <item>Gender…</item>
         <item>Male</item>
@@ -14,6 +17,11 @@
         <item>Other</item>
     </string-array>
     <string name="title_activity_user_map">UserMapActivity</string>
+
+    <!-- Account for admin -->
+    <string name="admin_username"><u>admin@gmail.com</u></string>
+    <string name="admin_password"><u>123456</u></string>
+
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
     <string name="second_fragment_label">Second Fragment</string>
@@ -56,4 +64,6 @@
         libero vel nunc consequat, quis tincidunt nisl eleifend. Cras bibendum enim a justo luctus
         vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
     </string>
+    <string name="title_activity_driver_map_view">DriverMapView</string>
+    <string name="title_activity_driver_map">DriverMapActivity</string>
 </resources>
