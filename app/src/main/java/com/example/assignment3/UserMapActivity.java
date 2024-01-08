@@ -12,6 +12,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.example.assignment3.Class.Customer;
+import com.example.assignment3.Class.Driver;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -24,14 +26,22 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.TaskCompletionSource;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
+import com.google.firebase.firestore.ListenerRegistration;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class UserMapActivity extends AppCompatActivity implements OnMapReadyCallback {
@@ -40,8 +50,10 @@ public class UserMapActivity extends AppCompatActivity implements OnMapReadyCall
     private FusedLocationProviderClient fusedLocationClient;
     private LocationRequest locationRequest;
     private LocationCallback locationCallback;
-
     private FirebaseFirestore firestore;
+    private List<Driver> nearbyDrivers;
+    private static ListenerRegistration driversListener;
+    private GeoPoint currentLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +85,9 @@ public class UserMapActivity extends AppCompatActivity implements OnMapReadyCall
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         createLocationRequest();
         createLocationCallback();
+        currentLocation = getCurrentLocation();
+        nearbyDrivers = findNearbyDrivers(currentLocation, 1);
+
     }
 
     //Handle Booking
@@ -135,6 +150,62 @@ public class UserMapActivity extends AppCompatActivity implements OnMapReadyCall
 
     //Handle Searching for Driver
     // TODO: Add function to search for driver within 1 km and send notication
+    public static List<Driver> findNearbyDrivers(GeoPoint userLocation, double radiusInKm) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        CollectionReference driversRef = db.collection("drivers");
+
+        TaskCompletionSource<List<Driver>> taskCompletionSource = new TaskCompletionSource<>();
+
+        driversRef.addSnapshotListener((queryDocumentSnapshots, e) -> {
+            if (e != null) {
+                Log.w("UserMapActivity", "Listen failed.", e);
+                taskCompletionSource.setException(e);
+                return;
+            }
+
+            List<Driver> allDrivers = new ArrayList<>();
+            if (queryDocumentSnapshots != null) {
+                for (DocumentSnapshot document : queryDocumentSnapshots.getDocuments()) {
+                    GeoPoint driverLocation = document.getGeoPoint("location");
+                    if (driverLocation != null) {
+                        Driver driver = new Driver();
+                        driver.setLocation(driverLocation);
+                        allDrivers.add(driver);
+                    }
+                }
+            }
+
+            List<Driver> nearbyDrivers = new ArrayList<>();
+            for (Driver driver : allDrivers) {
+                GeoPoint driverLocation = driver.getLocation();
+                double distance = calculateDistance(userLocation, driverLocation);
+
+                if (distance <= radiusInKm) {
+                    nearbyDrivers.add(driver);
+                }
+            }
+
+            // Now 'nearbyDrivers' contains the list of drivers within the 1km radius.
+            taskCompletionSource.setResult(nearbyDrivers);
+        });
+
+        try {
+            Tasks.await(taskCompletionSource.getTask());
+        } catch (Exception e) {
+            // Handle the exception if any
+            Log.e("UserMapActivity", "Error while waiting for result", e);
+        }
+
+        return taskCompletionSource.getTask().getResult();
+    }
+
+    // Stop listening to Firestore updates when needed
+    public static void stopListeningToDrivers() {
+        if (driversListener != null) {
+            driversListener.remove();
+        }
+    }
+
 
     //Handle user's current location
     private void createLocationRequest() {
@@ -219,6 +290,45 @@ public class UserMapActivity extends AppCompatActivity implements OnMapReadyCall
         customerRef.update(update)
                 .addOnSuccessListener(aVoid -> Log.d("UserMapActivity", "Location updated in Customer collection"))
                 .addOnFailureListener(e -> Log.e("UserMapActivity", "Error updating location in Customer collection", e));
+    }
+
+    // Haversine formula to calculate distance between two GeoPoint points
+    private static double calculateDistance(GeoPoint point1, GeoPoint point2) {
+        double R = 6371; // Earth radius in kilometers
+
+        double lat1 = Math.toRadians(point1.getLatitude());
+        double lon1 = Math.toRadians(point1.getLongitude());
+        double lat2 = Math.toRadians(point2.getLatitude());
+        double lon2 = Math.toRadians(point2.getLongitude());
+
+        double dLat = lat2 - lat1;
+        double dLon = lon2 - lon1;
+
+        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(lat1) * Math.cos(lat2) *
+                        Math.sin(dLon / 2) * Math.sin(dLon / 2);
+
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+        return R * c; // Distance in kilometers
+    }
+
+    // Get current location (store in variable)
+    private GeoPoint getCurrentLocation() {
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            // Request last known location and return the GeoPoint
+            Location lastLocation = fusedLocationClient.getLastLocation().getResult();
+            if (lastLocation != null) {
+                return new GeoPoint(lastLocation.getLatitude(), lastLocation.getLongitude());
+            } else {
+                // Handle the case where last known location is not available
+                return null;
+            }
+        } else {
+            // If permission is not granted, return null or handle accordingly
+            Log.e("Location", "Location permission denied");
+            return null;
+        }
     }
 
     @Override
