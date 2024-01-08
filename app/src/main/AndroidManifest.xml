@@ -31,6 +31,10 @@
             android:name=".Driver.LoginForDriverActivity"
             android:exported="false" />
         <activity
+            android:name=".DriverMapActivity"
+            android:exported="false"
+            android:label="@string/title_activity_driver_map" />
+        <activity
             android:name=".UserMapActivity"
             android:exported="false"
             android:label="@string/title_activity_user_map"
@@ -64,10 +68,6 @@
         <activity
             android:name=".Customer.SignUpForCustomerActivity"
             android:exported="false" />
-
-        <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="@string/api_key" />
     </application>
 
 </manifest>
