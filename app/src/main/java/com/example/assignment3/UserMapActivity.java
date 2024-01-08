@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.example.assignment3.Class.Car;
 import com.example.assignment3.Class.Customer;
 import com.example.assignment3.Class.Driver;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -169,8 +170,20 @@ public class UserMapActivity extends AppCompatActivity implements OnMapReadyCall
                         GeoPoint driverLocation = document.getGeoPoint("location");
                         if (driverLocation != null) {
                             Driver driver = new Driver();
+                            driver.setName(document.getString("name"));
                             driver.setLocation(driverLocation);
                             driver.setReputationPoint(document.getLong("reputationPoint").intValue());
+                            // Retrieve the Car information as a Map from the Firestore document
+                            Map<String, Object> carMap = (Map<String, Object>) document.getData().get("ownedCar");
+
+                            // Create a Car object based on the Map
+                            Car ownedCar = new Car();
+                            if (carMap != null) {
+                                ownedCar.setDriverID((String) carMap.get("driverID"));
+                                ownedCar.setModel((String) carMap.get("model"));
+                                ownedCar.setLicensePlate((String) carMap.get("licensePlate"));
+                                ownedCar.setSeat(((Long) carMap.get("seat")).intValue());
+                            }
                             allDrivers.add(driver);
                         }
                     }
@@ -220,11 +233,12 @@ public class UserMapActivity extends AppCompatActivity implements OnMapReadyCall
     private static List<Driver> filterDriversByRadius(GeoPoint userLocation, List<Driver> allDrivers, double radiusInKm) {
         List<Driver> nearbyDrivers = new ArrayList<>();
         for (Driver driver : allDrivers) {
-            GeoPoint driverLocation = driver.getLocation();
-            double distance = calculateDistance(userLocation, driverLocation);
-
-            if (distance <= radiusInKm) {
-                nearbyDrivers.add(driver);
+            if ("available".equals(driver.getStatus())) {
+                GeoPoint driverLocation = driver.getLocation();
+                double distance = calculateDistance(userLocation, driverLocation);
+                if (distance <= radiusInKm) {
+                    nearbyDrivers.add(driver);
+                }
             }
         }
         return nearbyDrivers;
