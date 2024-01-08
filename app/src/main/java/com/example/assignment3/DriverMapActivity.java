@@ -47,13 +47,8 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_driver_map);
 
-
         // Initialize Firebase
         FirebaseApp.initializeApp(this);
-
-        // Initialize Firestore
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-
 
         // Initialize Firestore
         firestore = FirebaseFirestore.getInstance();

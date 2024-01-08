@@ -38,11 +38,15 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.ListenerRegistration;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 public class UserMapActivity extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -149,44 +153,57 @@ public class UserMapActivity extends AppCompatActivity implements OnMapReadyCall
     }
 
     //Handle Searching for Driver
-    // TODO: Add function to search for driver within 1 km and send notication
     public static List<Driver> findNearbyDrivers(GeoPoint userLocation, double radiusInKm) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        CollectionReference driversRef = db.collection("drivers");
+        CollectionReference driversRef = db.collection("Drivers");
 
         TaskCompletionSource<List<Driver>> taskCompletionSource = new TaskCompletionSource<>();
 
-        driversRef.addSnapshotListener((queryDocumentSnapshots, e) -> {
-            if (e != null) {
-                Log.w("UserMapActivity", "Listen failed.", e);
-                taskCompletionSource.setException(e);
-                return;
-            }
+        driversRef.get().addOnCompleteListener(queryTask -> {
+            if (queryTask.isSuccessful()) {
+                List<Driver> allDrivers = new ArrayList<>();
+                QuerySnapshot querySnapshot = queryTask.getResult();
 
-            List<Driver> allDrivers = new ArrayList<>();
-            if (queryDocumentSnapshots != null) {
-                for (DocumentSnapshot document : queryDocumentSnapshots.getDocuments()) {
-                    GeoPoint driverLocation = document.getGeoPoint("location");
-                    if (driverLocation != null) {
-                        Driver driver = new Driver();
-                        driver.setLocation(driverLocation);
-                        allDrivers.add(driver);
+                if (querySnapshot != null) {
+                    for (DocumentSnapshot document : querySnapshot.getDocuments()) {
+                        GeoPoint driverLocation = document.getGeoPoint("location");
+                        if (driverLocation != null) {
+                            Driver driver = new Driver();
+                            driver.setLocation(driverLocation);
+                            driver.setReputationPoint(document.getLong("reputationPoint").intValue());
+                            allDrivers.add(driver);
+                        }
                     }
+
+                    // Filter drivers within the specified radius
+                    List<Driver> nearbyDrivers = filterDriversByRadius(userLocation, allDrivers, radiusInKm);
+
+                    // Sort the list of nearby drivers based on reputation points
+                    Collections.sort(nearbyDrivers, (driver1, driver2) ->
+                            Double.compare(driver2.getReputationPoint(), driver1.getReputationPoint()));
+
+
+                    List<Driver> selectedDrivers = null;
+
+                    if (!nearbyDrivers.isEmpty()) {
+                        // If multiple drivers have the same highest reputation, select randomly
+                        int highestReputation = (int) nearbyDrivers.get(0).getReputationPoint();
+                        List<Driver> highestReputationDrivers = getDriversWithHighestReputation(nearbyDrivers, highestReputation);
+
+                        // Select a driver randomly from the ones with the highest reputation
+                        selectedDrivers = getRandomDriver(highestReputationDrivers);
+                    }
+
+                    // Complete the task with the selected drivers
+                    taskCompletionSource.setResult(selectedDrivers);
+                } else {
+                    Log.e("UserMapActivity", "QuerySnapshot is null");
+                    taskCompletionSource.setException(new Exception("QuerySnapshot is null"));
                 }
+            } else {
+                Log.e("UserMapActivity", "Error getting documents.", queryTask.getException());
+                taskCompletionSource.setException(queryTask.getException());
             }
-
-            List<Driver> nearbyDrivers = new ArrayList<>();
-            for (Driver driver : allDrivers) {
-                GeoPoint driverLocation = driver.getLocation();
-                double distance = calculateDistance(userLocation, driverLocation);
-
-                if (distance <= radiusInKm) {
-                    nearbyDrivers.add(driver);
-                }
-            }
-
-            // Now 'nearbyDrivers' contains the list of drivers within the 1km radius.
-            taskCompletionSource.setResult(nearbyDrivers);
         });
 
         try {
@@ -199,13 +216,50 @@ public class UserMapActivity extends AppCompatActivity implements OnMapReadyCall
         return taskCompletionSource.getTask().getResult();
     }
 
+
+    private static List<Driver> filterDriversByRadius(GeoPoint userLocation, List<Driver> allDrivers, double radiusInKm) {
+        List<Driver> nearbyDrivers = new ArrayList<>();
+        for (Driver driver : allDrivers) {
+            GeoPoint driverLocation = driver.getLocation();
+            double distance = calculateDistance(userLocation, driverLocation);
+
+            if (distance <= radiusInKm) {
+                nearbyDrivers.add(driver);
+            }
+        }
+        return nearbyDrivers;
+    }
+
+    //Get driver with the highest reputation point
+    private static List<Driver> getDriversWithHighestReputation(List<Driver> drivers, int highestReputation) {
+        List<Driver> highestReputationDrivers = new ArrayList<>();
+        for (Driver driver : drivers) {
+            if (driver.getReputationPoint() == highestReputation) {
+                highestReputationDrivers.add(driver);
+            } else {
+                // The list is sorted, so break once a driver with lower reputation is encountered
+                break;
+            }
+        }
+        return highestReputationDrivers;
+    }
+
+    //Get random driver if there are drivers with the same reputation points
+    private static List<Driver> getRandomDriver(List<Driver> drivers) {
+        List<Driver> randomDrivers = new ArrayList<>();
+        if (!drivers.isEmpty()) {
+            int randomIndex = new Random().nextInt(drivers.size());
+            randomDrivers.add(drivers.get(randomIndex));
+        }
+        return randomDrivers;
+    }
+
     // Stop listening to Firestore updates when needed
     public static void stopListeningToDrivers() {
         if (driversListener != null) {
             driversListener.remove();
         }
     }
-
 
     //Handle user's current location
     private void createLocationRequest() {
