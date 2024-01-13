@@ -15,6 +15,7 @@ import androidx.core.content.ContextCompat;
 import com.example.assignment3.Class.Car;
 import com.example.assignment3.Class.Customer;
 import com.example.assignment3.Class.Driver;
+import com.example.assignment3.Class.Ride;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -74,6 +75,12 @@ public class UserMapActivity extends AppCompatActivity implements OnMapReadyCall
         // Initialize Firestore
         firestore = FirebaseFirestore.getInstance();
 
+        // Get customer UID
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        FirebaseUser user = auth.getCurrentUser();
+        assert user != null;
+        String uid = user.getUid();
+
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
 
         if (mapFragment != null) {
@@ -93,10 +100,55 @@ public class UserMapActivity extends AppCompatActivity implements OnMapReadyCall
         currentLocation = getCurrentLocation();
         nearbyDrivers = findNearbyDrivers(currentLocation, 1);
 
+        // Get details from driver to search on firestore
+        String driverName = nearbyDrivers.get(0).getName();
+        double reputationPoints = nearbyDrivers.get(0).getReputationPoint();
+
+        // get driverID base on provided data
+        String driverID = getDriverId(driverName, reputationPoints);
+
+        // Ride data
+        Ride rideInfo = getRideForCustomer(uid);
     }
 
-    //Handle Booking
-    // TODO: Add function to type Pick-Up point and Drop off point
+    // get Ride data from firestore base on customerID
+    public static Ride getRideForCustomer(String customerId) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        CollectionReference ridesRef = db.collection("Rides");
+
+        TaskCompletionSource<Ride> taskCompletionSource = new TaskCompletionSource<>();
+
+        ridesRef.whereEqualTo("uidCustomer", customerId)
+                .whereEqualTo("uidDriver", null)
+                .get()
+                .addOnCompleteListener(queryTask -> {
+                    if (queryTask.isSuccessful()) {
+                        QuerySnapshot querySnapshot = queryTask.getResult();
+
+                        if (querySnapshot != null && !querySnapshot.isEmpty()) {
+                            DocumentSnapshot document = querySnapshot.getDocuments().get(0); // Assuming a customer has at most one active ride
+
+                            // Use the Ride constructor to create a Ride object
+                            Ride ride = new Ride(document);
+
+                            taskCompletionSource.setResult(ride);
+                        } else {
+                            taskCompletionSource.setResult(null); // No active ride for the customer
+                        }
+                    } else {
+                        taskCompletionSource.setException(queryTask.getException());
+                    }
+                });
+
+        try {
+            Tasks.await(taskCompletionSource.getTask());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return taskCompletionSource.getTask().getResult();
+    }
+
     public void onBookingClicked(){
         showLoadingScreen();
         //Get user's current location
@@ -430,5 +482,45 @@ public class UserMapActivity extends AppCompatActivity implements OnMapReadyCall
     protected void onPause() {
         super.onPause();
         fusedLocationClient.removeLocationUpdates(locationCallback);
+    }
+
+    public static String getDriverId(String driverName, double reputation) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        CollectionReference driversRef = db.collection("Drivers");
+
+        TaskCompletionSource<String> taskCompletionSource = new TaskCompletionSource<>();
+        driversRef.whereEqualTo("name", driverName)
+                .whereEqualTo("reputationPoint", reputation)
+                .get()
+                .addOnCompleteListener(queryTask -> {
+                    if (queryTask.isSuccessful()) {
+                        QuerySnapshot querySnapshot = queryTask.getResult();
+
+                        if (querySnapshot != null && !querySnapshot.isEmpty()) {
+                            // Assuming there's only one document with the given name and reputation
+                            DocumentSnapshot documentSnapshot = querySnapshot.getDocuments().get(0);
+
+                            // Get the document ID
+                            String documentId = documentSnapshot.getId();
+
+                            taskCompletionSource.setResult(documentId);
+                        } else {
+                            Log.e("FirestoreQuery", "No document found with the given name and reputation: " +
+                                    driverName + ", " + reputation);
+                            taskCompletionSource.setResult(null);
+                        }
+                    } else {
+                        Log.e("FirestoreQuery", "Error getting documents.", queryTask.getException());
+                        taskCompletionSource.setException(queryTask.getException());
+                    }
+                });
+
+        try {
+            Tasks.await(taskCompletionSource.getTask());
+        } catch (Exception e) {
+            Log.e("FirestoreQuery", "Error while waiting for result", e);
+        }
+
+        return taskCompletionSource.getTask().getResult();
     }
 }
