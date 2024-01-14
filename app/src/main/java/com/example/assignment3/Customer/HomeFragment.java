@@ -32,6 +32,7 @@ import com.google.android.libraries.places.api.model.RectangularBounds;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
+import com.google.firebase.firestore.GeoPoint;
 
 import java.util.Arrays;
 
@@ -112,28 +113,31 @@ public class HomeFragment extends Fragment implements HomeFragmentListener{
 
         PlacesClient placesClient = Places.createClient(requireActivity());
 
-        AutocompleteSupportFragment startLocationAutocompleteFragment = (AutocompleteSupportFragment)
-                getChildFragmentManager().findFragmentById(R.id.startLocationAutoComplete);
+        AutocompleteSupportFragment pickupLocationAutocompleteFragment = (AutocompleteSupportFragment)
+                getChildFragmentManager().findFragmentById(R.id.pickupLocationAutoComplete);
 
-        startLocationAutocompleteFragment.setLocationBias(RectangularBounds.newInstance(
+        pickupLocationAutocompleteFragment.setLocationBias(RectangularBounds.newInstance(
                 new LatLng(10.769444, 106.681944),
                 new LatLng(10.769444, 106.681944)));
 
-        startLocationAutocompleteFragment.setCountries("VN");
+        pickupLocationAutocompleteFragment.setCountries("VN");
 
         // Specify the types of place data to return.
-        startLocationAutocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.NAME, Place.Field.ADDRESS, Place.Field.LAT_LNG));
+        pickupLocationAutocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.NAME, Place.Field.ADDRESS, Place.Field.LAT_LNG));
 
         // Set up a PlaceSelectionListener to handle the response.
-        startLocationAutocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+        pickupLocationAutocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(@NonNull Place place) {
-                LatLng startLocation = place.getLatLng();
+                LatLng pickupLocation = place.getLatLng();
+
+                pickupLocationAutocompleteFragment.setText(place.getName());
 
                 MarkerOptions startMarkerOptions = new MarkerOptions().position(place.getLatLng()).title(place.getName());
                 mMap.clear();
                 mMap.addMarker(startMarkerOptions);
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(startLocation, 14));
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(pickupLocation, 14));
+                GeoPoint startGeoPoint = new GeoPoint(pickupLocation.latitude, pickupLocation.longitude);
                 Log.i(TAG, "Place: " + ", " + place.getName() + place.getAddress() + ", " + place.getLatLng());
             }
 
@@ -161,10 +165,13 @@ public class HomeFragment extends Fragment implements HomeFragmentListener{
             public void onPlaceSelected(@NonNull Place place) {
                 LatLng destinationLocation = place.getLatLng();
 
+                destinationAutocompleteFragment.setText(place.getName());
+
                 MarkerOptions destinationMarkerOptions = new MarkerOptions().position(place.getLatLng()).title(place.getName());
                 mMap.clear();
                 mMap.addMarker(destinationMarkerOptions);
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(destinationLocation, 14));
+                GeoPoint destinationGeoPoint = new GeoPoint(destinationLocation.latitude, destinationLocation.longitude);
                 Log.i(TAG, "Place: " + ", " + place.getName() + place.getAddress() + ", " + place.getLatLng());
             }
 
