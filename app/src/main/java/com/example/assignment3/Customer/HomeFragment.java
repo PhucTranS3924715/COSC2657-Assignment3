@@ -32,9 +32,15 @@ import com.google.android.libraries.places.api.model.RectangularBounds;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 public class HomeFragment extends Fragment implements HomeFragmentListener{
 
@@ -45,6 +51,9 @@ public class HomeFragment extends Fragment implements HomeFragmentListener{
     private String mParam1;
     private String mParam2;
     private Button btnBooking;
+
+    private LatLng pickupLocation;
+    private LatLng destinationLocation;
 
     public HomeFragment() {}
 
@@ -87,6 +96,34 @@ public class HomeFragment extends Fragment implements HomeFragmentListener{
         btnBooking.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // Create new ride object has pick up location, destination, and customerID
+
+                // Set up Firestore database and Authentication
+                FirebaseFirestore database = FirebaseFirestore.getInstance();
+                FirebaseAuth auth = FirebaseAuth.getInstance();
+                FirebaseUser user = auth.getCurrentUser();
+                assert user != null;
+                // Get current customer ID
+                String uid = user.getUid();
+
+                Map<String, Object> data = new HashMap<>();
+                data.put("uidCustomer", uid);
+                data.put("uidDriver", null);
+                data.put("PickPoint", pickupLocation);
+                data.put("DropPoint", destinationLocation);
+                data.put("status", "Incomplete");
+                data.put("DriverLocation", null);
+
+                // Add data to firestore
+                DocumentReference docRef = database.collection("Ride").document();
+                docRef.set(data).addOnSuccessListener(aVoid -> {
+                    // Handle success if needed
+                    Log.d("HomeFragment", "DocumentSnapshot added with ID: " + docRef.getId());
+                }).addOnFailureListener(e -> {
+                    // Handle failure if needed
+                    Log.e("HomeFragment", "Error adding document: " + e.getMessage());
+                });
+
                 // Open the BookingFragment when the "Book Now" button is clicked
                 BookingFragment bookingFragment = new BookingFragment();
                 getActivity().getSupportFragmentManager().beginTransaction()
@@ -129,7 +166,7 @@ public class HomeFragment extends Fragment implements HomeFragmentListener{
         pickupLocationAutocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(@NonNull Place place) {
-                LatLng pickupLocation = place.getLatLng();
+                pickupLocation = place.getLatLng();
 
                 pickupLocationAutocompleteFragment.setText(place.getName());
 
@@ -163,7 +200,7 @@ public class HomeFragment extends Fragment implements HomeFragmentListener{
         destinationAutocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(@NonNull Place place) {
-                LatLng destinationLocation = place.getLatLng();
+                destinationLocation = place.getLatLng();
 
                 destinationAutocompleteFragment.setText(place.getName());
 
@@ -227,6 +264,11 @@ public class HomeFragment extends Fragment implements HomeFragmentListener{
         });
         // TODO: Create home UI
         return view;
+    }
+
+    // Convert LatLng into geo point
+    GeoPoint convertLatLngToGeoPoint(LatLng latLng) {
+        return new GeoPoint(latLng.latitude, latLng.longitude);
     }
 
     @Override

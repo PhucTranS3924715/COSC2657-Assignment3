@@ -27,7 +27,7 @@ public class Ride implements Serializable {
     }
 
     public Ride (DocumentSnapshot document){
-        this.uidDriver = document.getString("uidCustomer");
+        this.uidDriver = document.getString("uidDriver");
         this.uidCustomer = document.getString("uidCustomer");
         this.DriverLocation = document.getGeoPoint("DriverLocation");
         this.DropPoint = document.getGeoPoint("DropPoint");
