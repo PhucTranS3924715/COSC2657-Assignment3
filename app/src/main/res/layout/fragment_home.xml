@@ -89,6 +89,7 @@
                         android:orientation="vertical"
                         android:layout_gravity="center_vertical"
                         android:layout_marginStart="8dp">
+
                         <TextView
                             android:id="@+id/bikeText"
                             android:layout_width="wrap_content"
@@ -96,14 +97,14 @@
                             android:text="Bike"
                             android:textColor="#6DBAED"
                             android:textSize="15sp"
-                            android:textStyle="bold"/>
+                            android:textStyle="bold" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="2 seater"
                             android:textColor="#9C9C9C"
-                            android:textSize="10sp"/>
+                            android:textSize="10sp" />
                     </LinearLayout>
                 </LinearLayout>
 

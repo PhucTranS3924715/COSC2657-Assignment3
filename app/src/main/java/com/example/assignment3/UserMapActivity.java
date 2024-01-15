@@ -48,6 +48,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Random;
 
 public class UserMapActivity extends AppCompatActivity implements OnMapReadyCallback {
@@ -114,7 +115,7 @@ public class UserMapActivity extends AppCompatActivity implements OnMapReadyCall
     // get Ride data from firestore base on customerID
     public static Ride getRideForCustomer(String customerId) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        CollectionReference ridesRef = db.collection("Rides");
+        CollectionReference ridesRef = db.collection("Ride");
 
         TaskCompletionSource<Ride> taskCompletionSource = new TaskCompletionSource<>();
 
@@ -199,6 +200,7 @@ public class UserMapActivity extends AppCompatActivity implements OnMapReadyCall
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(pickPoint, 15f)); // Zoom to the pick point
     }
 
+    // TODO: Create new doc for new Ride
     private void showLoadingScreen() {
         // Hide the bookingDetailSection and show the searchingForDriverSection
         findViewById(R.id.bookingDetailSection).setVisibility(View.GONE);
@@ -224,7 +226,7 @@ public class UserMapActivity extends AppCompatActivity implements OnMapReadyCall
                             Driver driver = new Driver();
                             driver.setName(document.getString("name"));
                             driver.setLocation(driverLocation);
-                            driver.setReputationPoint(document.getLong("reputationPoint").intValue());
+                            driver.setReputationPoint(Objects.requireNonNull(document.getLong("reputationPoint")).intValue());
                             // Retrieve the Car information as a Map from the Firestore document
                             Map<String, Object> carMap = (Map<String, Object>) document.getData().get("ownedCar");
 

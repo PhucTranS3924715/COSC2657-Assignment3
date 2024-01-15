@@ -51,7 +51,7 @@ public class HomeFragment extends Fragment implements HomeFragmentListener{
     private String mParam1;
     private String mParam2;
     private Button btnBooking;
-
+    public String rideDocumentId;
     private LatLng pickupLocation;
     private LatLng destinationLocation;
 
@@ -118,7 +118,8 @@ public class HomeFragment extends Fragment implements HomeFragmentListener{
                 DocumentReference docRef = database.collection("Ride").document();
                 docRef.set(data).addOnSuccessListener(aVoid -> {
                     // Handle success if needed
-                    Log.d("HomeFragment", "DocumentSnapshot added with ID: " + docRef.getId());
+                    rideDocumentId = docRef.getId();
+                    Log.d("HomeFragment", "DocumentSnapshot added with ID: " + rideDocumentId);
                 }).addOnFailureListener(e -> {
                     // Handle failure if needed
                     Log.e("HomeFragment", "Error adding document: " + e.getMessage());
