@@ -30,6 +30,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
 import com.google.android.gms.tasks.Tasks;
@@ -43,6 +44,10 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.Query;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -63,6 +68,7 @@ public class UserMapActivity extends AppCompatActivity implements OnMapReadyCall
     private List<Driver> nearbyDrivers;
     private static ListenerRegistration driversListener;
     private GeoPoint currentLocation;
+    private String documentID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,7 +88,7 @@ public class UserMapActivity extends AppCompatActivity implements OnMapReadyCall
         FirebaseAuth auth = FirebaseAuth.getInstance();
         FirebaseUser user = auth.getCurrentUser();
         assert user != null;
-        String uid = user.getUid();
+        String uidCustomer = user.getUid();
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
 
@@ -111,7 +117,21 @@ public class UserMapActivity extends AppCompatActivity implements OnMapReadyCall
         String driverID = getDriverId(driverName, reputationPoints);
 
         // Ride data
-        Ride rideInfo = getRideForCustomer(uid);
+        Ride rideInfo = getRideForCustomer(uidCustomer);
+
+        // Get pick point and drop point
+        GeoPoint pickPoint = rideInfo.getPickPoint();
+        GeoPoint dropPoint = rideInfo.getDropPoint();
+        getDocumentIdByFieldValue("Ride", "uidCustomer", uidCustomer);
+
+    }
+
+    private void showNotification() {
+        String documentId = documentID;
+        String title = "New Booking";
+        String message = "You have a new booking";
+
+        NotificationService.sendNotificationToDriver(this, documentId, title, message);
     }
 
     // get Ride data from firestore base on customerID
@@ -122,7 +142,7 @@ public class UserMapActivity extends AppCompatActivity implements OnMapReadyCall
         TaskCompletionSource<Ride> taskCompletionSource = new TaskCompletionSource<>();
 
         ridesRef.whereEqualTo("uidCustomer", customerId)
-                .whereEqualTo("uidDriver", null)
+                //.whereEqualTo("uidDriver", null)
                 .get()
                 .addOnCompleteListener(queryTask -> {
                     if (queryTask.isSuccessful()) {
@@ -531,5 +551,37 @@ public class UserMapActivity extends AppCompatActivity implements OnMapReadyCall
         }
 
         return taskCompletionSource.getTask().getResult();
+    }
+
+    // Get documentID base on key and value of specific collection
+    private void getDocumentIdByFieldValue(String collectionPath, String fieldName, String targetValue) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        // Create a query to find the document with the specified field value
+        Query query = db.collection(collectionPath).whereEqualTo(fieldName, targetValue);
+
+        query.get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                            // Retrieve the document ID
+                            documentID = documentSnapshot.getId();
+                            // Use the retrieved document ID
+                            Log.d("UserMapActivity", "Document ID: " + documentID);
+                            return; // Stop after finding the first matching document
+                        }
+
+                        // If no matching document is found
+                        Log.e("UserMapActivity", "No document found with the specified criteria");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        // Handle the error
+                        Log.e("UserMapActivity", "Error getting documents: " + e.getMessage());
+                    }
+                });
     }
 }
