@@ -68,4 +68,11 @@ public class Driver extends User implements Serializable {
     public void setOwnedCar(Car ownedCar) {
         this.ownedCar = ownedCar;
     }
+
+    public void setDocumentId(String id) {
+    }
+
+    public String getDocumentId() {
+        return null;
+    }
 }

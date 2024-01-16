@@ -40,7 +40,15 @@ public class RideDetailsActivity extends AppCompatActivity {
                                     if (customerSnapshot.exists()) {
                                         // Retrieve customer information and update UI
                                         String customerName = customerSnapshot.getString("name");
-                                        // ... Update other UI elements with customer information
+                                        TextView customerNameTextView = findViewById(R.id.customerNameTextView);
+                                        customerNameTextView.setText(customerName);
+                                        String gender = customerSnapshot.getString("gender");
+                                        TextView genderTextView = findViewById(R.id.genderTextView);
+                                        genderTextView.setText(gender);
+                                        String customerPhoneNumber = customerSnapshot.getString("phone");
+                                        TextView phoneNumberTextView = findViewById(R.id.phoneNumberTextView);
+                                        phoneNumberTextView.setText(customerPhoneNumber);
+
                                     }
                                 })
                                 .addOnFailureListener(e -> {

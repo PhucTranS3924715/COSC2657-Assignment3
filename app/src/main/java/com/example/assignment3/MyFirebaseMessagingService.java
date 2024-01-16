@@ -37,6 +37,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
             Intent intent = new Intent(this, RideDetailsActivity.class);
             intent.putExtra("rideDocumentId", remoteMessage.getData().get("rideDocumentId"));
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
         }
     }

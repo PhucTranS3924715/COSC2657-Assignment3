@@ -1,5 +1,7 @@
 package com.example.assignment3;
 
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
@@ -224,6 +226,7 @@ public class UserMapActivity extends AppCompatActivity implements OnMapReadyCall
                         GeoPoint driverLocation = document.getGeoPoint("location");
                         if (driverLocation != null) {
                             Driver driver = new Driver();
+                            driver.setDocumentId(document.getId());
                             driver.setName(document.getString("name"));
                             driver.setLocation(driverLocation);
                             driver.setReputationPoint(Objects.requireNonNull(document.getLong("reputationPoint")).intValue());
@@ -254,6 +257,7 @@ public class UserMapActivity extends AppCompatActivity implements OnMapReadyCall
 
                     if (!nearbyDrivers.isEmpty()) {
                         // If multiple drivers have the same highest reputation, select randomly
+                        nearbyDrivers.get(0).getDocumentId();
                         int highestReputation = (int) nearbyDrivers.get(0).getReputationPoint();
                         List<Driver> highestReputationDrivers = getDriversWithHighestReputation(nearbyDrivers, highestReputation);
 
@@ -321,6 +325,9 @@ public class UserMapActivity extends AppCompatActivity implements OnMapReadyCall
         }
         return randomDrivers;
     }
+
+    // Method to send a notification to a driver
+
 
     // Stop listening to Firestore updates when needed
     public static void stopListeningToDrivers() {

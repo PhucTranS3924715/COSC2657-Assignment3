@@ -14,7 +14,7 @@ public class NotificationService {
     private static final String CHANNEL_NAME = "DriverNotification";
     private static final int NOTIFICATION_ID = 1;
 
-    public static void sendNotificationToDriver(Context context, String customerUid, String title, String message) {
+    public static void sendNotificationToDriver(Context context, String documentId, String title, String message) {
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
