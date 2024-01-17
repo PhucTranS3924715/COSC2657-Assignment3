@@ -64,28 +64,26 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/round_box" />
-
         <TextView
             android:id="@+id/nameTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="YOUR NAME"
-            android:textSize="18sp"
+            android:textSize="13sp"
             android:background="@android:color/transparent"
-            android:layout_marginTop="60dp"
+            android:layout_marginTop="50dp"
             android:layout_marginStart="32dp"
-            android:paddingBottom="8dp"/>
+/>
 
         <EditText
             android:id="@+id/nameInput"
             android:layout_width="wrap_content"
-            android:layout_height="48dp"
+            android:layout_height="35dp"
             android:layout_below="@id/nameTextView"
             android:background="@android:color/transparent"
             android:hint="Name here"
-            android:textSize="18sp"
+            android:textSize="13sp"
             android:layout_marginStart="32dp"
-            android:paddingBottom="7dp"
             android:textColor="@color/black" />
 
         <View
@@ -100,23 +98,21 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="EMAIL"
-            android:textSize="18sp"
+            android:textSize="13sp"
             android:background="@android:color/transparent"
             android:layout_below="@id/nameInput"
             android:layout_marginTop="20dp"
-            android:layout_marginStart="32dp"
-            android:paddingBottom="8dp"/>
+            android:layout_marginStart="32dp" />
 
         <EditText
             android:id="@+id/emailInput"
             android:layout_width="wrap_content"
-            android:layout_height="48dp"
+            android:layout_height="35dp"
             android:layout_below="@id/emailTextView"
             android:background="@android:color/transparent"
             android:hint="Email here"
-            android:textSize="18sp"
+            android:textSize="13sp"
             android:layout_marginStart="32dp"
-            android:paddingBottom="7dp"
             android:textColor="@color/black"/>
 
         <View
@@ -131,23 +127,21 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="PHONE NUMBER"
-            android:textSize="18sp"
+            android:textSize="13sp"
             android:background="@android:color/transparent"
             android:layout_below="@id/emailInput"
             android:layout_marginTop="20dp"
-            android:layout_marginStart="32dp"
-            android:paddingBottom="8dp"/>
+            android:layout_marginStart="32dp" />
 
         <EditText
             android:id="@+id/phoneInput"
             android:layout_width="wrap_content"
-            android:layout_height="48dp"
+            android:layout_height="35dp"
             android:layout_below="@id/phoneTextView"
             android:background="@android:color/transparent"
             android:hint="Phone here"
-            android:textSize="18sp"
+            android:textSize="13sp"
             android:layout_marginStart="32dp"
-            android:paddingBottom="7dp"
             android:textColor="@color/black" />
 
         <View
@@ -162,23 +156,21 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="ADDRESS"
-            android:textSize="18sp"
+            android:textSize="13sp"
             android:background="@android:color/transparent"
             android:layout_below="@id/phoneInput"
             android:layout_marginTop="20dp"
-            android:layout_marginStart="32dp"
-            android:paddingBottom="8dp"/>
+            android:layout_marginStart="32dp" />
 
         <EditText
             android:id="@+id/addressInput"
             android:layout_width="wrap_content"
-            android:layout_height="48dp"
+            android:layout_height="35dp"
             android:layout_below="@id/addressTextView"
             android:background="@android:color/transparent"
             android:hint="Address here"
-            android:textSize="18sp"
+            android:textSize="13sp"
             android:layout_marginStart="32dp"
-            android:paddingBottom="7dp"
             android:textColor="@color/black" />
 
         <View
@@ -188,16 +180,66 @@
             android:layout_centerHorizontal="true"
             android:background="#C0C0C0" />
 
+        <TextView
+            android:id="@+id/passwordTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="PASSWORD"
+            android:textSize="13sp"
+            android:background="@android:color/transparent"
+            android:layout_below="@id/addressInput"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="32dp" />
+
+        <EditText
+            android:id="@+id/passwordInput"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:layout_below="@id/passwordTextView"
+            android:background="@android:color/transparent"
+            android:hint="Password here"
+            android:textSize="13sp"
+            android:layout_marginStart="32dp"
+            android:textColor="@color/black"
+            android:inputType="textPassword"/>
+
+        <View
+            android:layout_width="350dp"
+            android:layout_height="2dp"
+            android:layout_below="@id/passwordInput"
+            android:layout_centerHorizontal="true"
+            android:background="#C0C0C0" />
+
+        <TextView
+            android:id="@+id/genderTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="GENDER"
+            android:textSize="13sp"
+            android:background="@android:color/transparent"
+            android:layout_below="@id/passwordInput"
+            android:layout_marginTop="15dp"
+            android:layout_marginStart="32dp" />
+
+        <Spinner
+            android:id="@+id/spinnerGender"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:entries="@array/gender_options"
+            android:layout_below="@id/genderTextView"
+            android:layout_marginStart="25dp"
+            android:layout_marginTop="7dp" />
+
         <Button
             android:id="@+id/deleteButton"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:text="DELETE ACCOUNT"
             android:background="@drawable/delete_button"
-            android:layout_below="@id/addressInput"
+            android:layout_below="@id/spinnerGender"
             android:layout_marginTop="15dp"
-            android:layout_marginStart="32dp"
-            android:textColor="@color/gray"/>
+            android:textColor="@color/gray"
+            android:layout_centerHorizontal="true"/>
 
         <Button
             android:id="@+id/updateButton"
@@ -210,7 +252,6 @@
             android:background="@drawable/round_button"
             android:layout_below="@+id/deleteButton"
             android:layout_marginTop="15dp"
-            android:layout_marginStart="32dp"
             android:layout_centerHorizontal="true"
             android:backgroundTint="@color/red"/>
 
