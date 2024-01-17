@@ -65,6 +65,10 @@ public class HomeFragment extends Fragment implements HomeFragmentListener{
     private String pickupLocationName;
     private String destinationLocationName;
 
+    private TextView tripPriceBike;
+    private TextView tripPriceCar4;
+    private TextView tripPriceCar7;
+
     private double discount = 1;
 
     public HomeFragment() {}
@@ -313,9 +317,9 @@ public class HomeFragment extends Fragment implements HomeFragmentListener{
         });
 
         LinearLayout voucherLayout = view.findViewById(R.id.voucherLayout);
-        TextView tripPriceBike = view.findViewById(R.id.tripPriceBike);
-        TextView tripPriceCar4 = view.findViewById(R.id.tripPriceCar4);
-        TextView tripPriceCar7 = view.findViewById(R.id.tripPriceCar7);
+        tripPriceBike = view.findViewById(R.id.tripPriceBike);
+        tripPriceCar4 = view.findViewById(R.id.tripPriceCar4);
+        tripPriceCar7 = view.findViewById(R.id.tripPriceCar7);
 
         double priceBike = Double.parseDouble(tripPriceBike.getText().toString());
         double priceCar4 = Double.parseDouble(tripPriceCar4.getText().toString());
