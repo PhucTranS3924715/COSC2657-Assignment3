@@ -1,9 +1,6 @@
 package com.example.assignment3.Driver;
 
-import com.example.assignment3.R;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FirebaseFirestore;
-
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -11,6 +8,11 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.assignment3.DriverMapActivity;
+import com.example.assignment3.R;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class RideDetailsActivity extends AppCompatActivity {
 
@@ -64,7 +66,7 @@ public class RideDetailsActivity extends AppCompatActivity {
         acceptButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Handle the logic when the driver accepts the ride
+                //rideDocRef.update("uidDriver", uidDriver); insert the Driver UID into Ride.
                 finish();
             }
         });
@@ -72,8 +74,8 @@ public class RideDetailsActivity extends AppCompatActivity {
         declineButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Handle the logic when the driver declines the ride
-                finish();
+                Intent intent = new Intent(RideDetailsActivity.this, DriverMapActivity.class);
+                startActivity(intent);
             }
         });
     }

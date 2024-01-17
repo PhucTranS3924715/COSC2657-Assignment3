@@ -123,6 +123,13 @@ public class HomeFragment extends Fragment implements HomeFragmentListener{
                 .apiKey(getString(R.string.api_key)) // Replace with your API key
                 .build();
 
+        MarkerOptions pickupMarkerOptions = new MarkerOptions().
+                position(pickupLocation).title("Pick-up Location").
+                icon(BitmapDescriptorFactory.fromResource(R.drawable.pickup));
+        MarkerOptions destinationMarkerOptions = new MarkerOptions().
+                position(destinationLocation).title("Destination Location").
+                icon(BitmapDescriptorFactory.fromResource(R.drawable.destination));
+
         DirectionsResult result;
         try {
             result = DirectionsApi.newRequest(context)
@@ -140,8 +147,8 @@ public class HomeFragment extends Fragment implements HomeFragmentListener{
                 mMap.clear();
 
                 // Add markers for pick-up and destination
-                mMap.addMarker(new MarkerOptions().position(pickupLocation).title("Pick-up Location"));
-                mMap.addMarker(new MarkerOptions().position(destinationLocation).title("Destination Location"));
+                pickupMarker = mMap.addMarker(pickupMarkerOptions);
+                destinationMarker = mMap.addMarker(destinationMarkerOptions);
 
                 // Draw the route on the map
                 PolylineOptions polylineOptions = new PolylineOptions();
