@@ -34,6 +34,8 @@ public class AdminMainActivity extends AppCompatActivity {
                         return new CustomerListFragment();
                     case 1:
                         return new DriverListFragment();
+                    case 2:
+                        return new VoucherListFragment();
                     default:
                         return new CustomerListFragment();
                 }
@@ -41,7 +43,7 @@ public class AdminMainActivity extends AppCompatActivity {
 
             @Override
             public int getItemCount() {
-                return 2;
+                return 3;
             }
         };
         viewPager.setAdapter(adapter);
@@ -54,6 +56,9 @@ public class AdminMainActivity extends AppCompatActivity {
                     break;
                 case 1:
                     tab.setText("Driver");
+                    break;
+                case 2:
+                    tab.setText("Voucher");
                     break;
             }
         }).attach();
