@@ -228,7 +228,7 @@ public class UserMapActivity extends AppCompatActivity implements OnMapReadyCall
     }
 
     //Handle Searching for Driver
-    public static List<Driver> findNearbyDrivers(GeoPoint userLocation, double radiusInKm) {
+    public List<Driver> findNearbyDrivers(GeoPoint userLocation, double radiusInKm) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         CollectionReference driversRef = db.collection("Drivers");
 
@@ -284,7 +284,8 @@ public class UserMapActivity extends AppCompatActivity implements OnMapReadyCall
                     }
 
                     // Complete the task with the selected drivers
-                    //Call the Notification here
+                    //Call the Notification
+                    showNotification();
                     taskCompletionSource.setResult(selectedDrivers);
                 } else {
                     Log.e("UserMapActivity", "QuerySnapshot is null");
