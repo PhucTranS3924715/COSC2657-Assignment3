@@ -30,7 +30,6 @@
         <activity
             android:name=".Driver.RideDetailsActivity"
             android:exported="false" />
-
         <service
             android:name=".MyFirebaseMessagingService"
             android:exported="false">
