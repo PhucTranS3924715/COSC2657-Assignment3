@@ -31,7 +31,9 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
@@ -44,9 +46,18 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
+import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.maps.DirectionsApi;
+import com.google.maps.GeoApiContext;
+import com.google.maps.model.DirectionsLeg;
+import com.google.maps.model.DirectionsResult;
+import com.google.maps.model.EncodedPolyline;
+import com.google.maps.model.TravelMode;
+
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class HomeFragment extends Fragment implements HomeFragmentListener{
@@ -68,6 +79,8 @@ public class HomeFragment extends Fragment implements HomeFragmentListener{
     private TextView tripPriceBike;
     private TextView tripPriceCar4;
     private TextView tripPriceCar7;
+    private Marker pickupMarker;
+    private Marker destinationMarker;
 
     private double discount = 1;
 
@@ -95,11 +108,78 @@ public class HomeFragment extends Fragment implements HomeFragmentListener{
         }
     }
 
+
     private void replaceFragment(Fragment fragment) {
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.mapContainer, fragment);
         transaction.addToBackStack(null); // Add the transaction to the back stack
         transaction.commit();
+    }
+
+    //Draw direction between Pick up point and Destination.
+    public void drawRoute() {
+        // Use the Google Directions API to get the route information
+        GeoApiContext context = new GeoApiContext.Builder()
+                .apiKey(getString(R.string.api_key)) // Replace with your API key
+                .build();
+
+        DirectionsResult result;
+        try {
+            result = DirectionsApi.newRequest(context)
+                    .origin(new com.google.maps.model.LatLng(pickupLocation.latitude, pickupLocation.longitude))
+                    .destination(new com.google.maps.model.LatLng(destinationLocation.latitude, destinationLocation.longitude))
+                    .mode(TravelMode.DRIVING) // You can change the mode based on your requirements
+                    .await();
+
+            if (result.routes != null && result.routes.length > 0) {
+                // Extract the polyline from the result and add it to the map
+                EncodedPolyline points = result.routes[0].overviewPolyline;
+                List<com.google.maps.model.LatLng> decodedPath = points.decodePath();
+
+                // Clear previous markers and polylines
+                mMap.clear();
+
+                // Add markers for pick-up and destination
+                mMap.addMarker(new MarkerOptions().position(pickupLocation).title("Pick-up Location"));
+                mMap.addMarker(new MarkerOptions().position(destinationLocation).title("Destination Location"));
+
+                // Draw the route on the map
+                PolylineOptions polylineOptions = new PolylineOptions();
+                for (com.google.maps.model.LatLng latLng : decodedPath) {
+                    polylineOptions.add(new LatLng(latLng.lat, latLng.lng));
+                }
+
+                int polylineColor = ContextCompat.getColor(requireContext(), R.color.red);
+                polylineOptions.color(polylineColor);
+
+                mMap.addPolyline(polylineOptions);
+
+                // TODO: Implement discount
+                // Calculate total distance
+                if (result.routes != null && result.routes.length > 0) {
+                    DirectionsLeg leg = result.routes[0].legs[0];
+                    double distanceInMeters = ((DirectionsLeg) leg).distance.inMeters;
+                    double distanceInKilometers = distanceInMeters / 1000.0;
+
+                    // Define price rates
+                    double priceRateBike = 8000.0;
+                    double priceRateCar4 = 15000.0;
+                    double priceRateCar7 = 20000.0;
+
+                    // Calculate prices for each vehicle
+                    double priceBike = distanceInKilometers * priceRateBike * discount;
+                    double priceCar4 = distanceInKilometers * priceRateCar4 * discount;
+                    double priceCar7 = distanceInKilometers * priceRateCar7 * discount;
+
+                    // Update the TextViews with the calculated prices
+                    tripPriceBike.setText(String.valueOf(priceBike));
+                    tripPriceCar4.setText(String.valueOf(priceCar4));
+                    tripPriceCar7.setText(String.valueOf(priceCar7));
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -190,12 +270,18 @@ public class HomeFragment extends Fragment implements HomeFragmentListener{
 
                 pickupLocationAutocompleteFragment.setText(place.getName());
 
-                MarkerOptions startMarkerOptions = new MarkerOptions().position(place.getLatLng()).title(place.getName());
+                MarkerOptions startMarkerOptions = new MarkerOptions()
+                        .position(place.getLatLng()).title(place.getName())
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.pickup));
                 mMap.clear();
                 mMap.addMarker(startMarkerOptions);
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(pickupLocation, 14));
                 GeoPoint startGeoPoint = new GeoPoint(pickupLocation.latitude, pickupLocation.longitude);
                 Log.i(TAG, "Place: " + ", " + place.getName() + place.getAddress() + ", " + place.getLatLng());
+
+                if (destinationLocation != null) {
+                    drawRoute();
+                }
             }
 
             @Override
@@ -225,12 +311,18 @@ public class HomeFragment extends Fragment implements HomeFragmentListener{
 
                 destinationAutocompleteFragment.setText(place.getName());
 
-                MarkerOptions destinationMarkerOptions = new MarkerOptions().position(place.getLatLng()).title(place.getName());
+                MarkerOptions destinationMarkerOptions = new MarkerOptions()
+                        .position(place.getLatLng()).title(place.getName())
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.destination));
                 mMap.clear();
                 mMap.addMarker(destinationMarkerOptions);
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(destinationLocation, 14));
                 GeoPoint destinationGeoPoint = new GeoPoint(destinationLocation.latitude, destinationLocation.longitude);
                 Log.i(TAG, "Place: " + ", " + place.getName() + place.getAddress() + ", " + place.getLatLng());
+
+                if (pickupLocation != null) {
+                    drawRoute();
+                }
             }
 
             @Override
@@ -238,6 +330,8 @@ public class HomeFragment extends Fragment implements HomeFragmentListener{
                 Log.i(TAG, "An error occurred: " + status);
             }
         });
+
+
 
         bikeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
