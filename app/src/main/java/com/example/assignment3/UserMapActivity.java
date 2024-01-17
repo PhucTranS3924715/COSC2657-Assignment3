@@ -113,7 +113,6 @@ public class UserMapActivity extends AppCompatActivity implements OnMapReadyCall
         String driverName = nearbyDrivers.get(0).getName();
         double reputationPoints = nearbyDrivers.get(0).getReputationPoint();
 
-        // get driverID base on provided data
         String driverID = getDriverId(driverName, reputationPoints);
 
         // Ride data
@@ -124,14 +123,6 @@ public class UserMapActivity extends AppCompatActivity implements OnMapReadyCall
         GeoPoint dropPoint = rideInfo.getDropPoint();
         getDocumentIdByFieldValue("Ride", "uidCustomer", uidCustomer);
 
-    }
-
-    private void showNotification() {
-        String documentId = documentID;
-        String title = "New Booking";
-        String message = "You have a new booking";
-
-        NotificationService.sendNotificationToDriver(this, documentId, title, message);
     }
 
     // get Ride data from firestore base on customerID
@@ -222,11 +213,18 @@ public class UserMapActivity extends AppCompatActivity implements OnMapReadyCall
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(pickPoint, 15f)); // Zoom to the pick point
     }
 
-    // TODO: Create new doc for new Ride
     private void showLoadingScreen() {
         // Hide the bookingDetailSection and show the searchingForDriverSection
         findViewById(R.id.bookingDetailSection).setVisibility(View.GONE);
         findViewById(R.id.searchingForDriverSection).setVisibility(View.VISIBLE);
+    }
+
+    private void showNotification() {
+        String documentId = documentID;
+        String title = "New Booking";
+        String message = "Wake up! It's time to make some money!";
+
+        NotificationService.sendNotificationToDriver(this, documentId, title, message);
     }
 
     //Handle Searching for Driver
@@ -286,6 +284,7 @@ public class UserMapActivity extends AppCompatActivity implements OnMapReadyCall
                     }
 
                     // Complete the task with the selected drivers
+                    //Call the Notification here
                     taskCompletionSource.setResult(selectedDrivers);
                 } else {
                     Log.e("UserMapActivity", "QuerySnapshot is null");
@@ -345,9 +344,6 @@ public class UserMapActivity extends AppCompatActivity implements OnMapReadyCall
         }
         return randomDrivers;
     }
-
-    // Method to send a notification to a driver
-
 
     // Stop listening to Firestore updates when needed
     public static void stopListeningToDrivers() {

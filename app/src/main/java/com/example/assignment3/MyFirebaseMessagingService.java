@@ -25,8 +25,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         // Log the new token to the console
         Log.d(TAG, "Refreshed token: " + token);
-
-        // TODO: Implement your logic for handling the new FCM token.
         updateDriverFCMToken(token);
     }
 
