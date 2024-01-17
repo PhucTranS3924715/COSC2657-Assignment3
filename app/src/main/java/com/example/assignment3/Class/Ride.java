@@ -6,27 +6,32 @@ import com.google.firebase.firestore.GeoPoint;
 import java.io.Serializable;
 
 public class Ride implements Serializable {
-
     private GeoPoint DriverLocation;
     private GeoPoint DropPoint;
     private GeoPoint PickPoint;
+    private String pickPointName;
+    private String dropPointName;
     private String status;
     private String uidCustomer;
     private String uidDriver;
+    private int tripPrice;
 
-    public Ride(){}
+    public Ride() {}
 
-    public Ride(GeoPoint driverLocation, GeoPoint dropPoint, GeoPoint pickPoint, String status,
-                String uidCustomer, String uidDriver) {
+    public Ride(GeoPoint driverLocation, GeoPoint dropPoint, GeoPoint pickPoint,
+                String pickPointName, String dropPointName, String status, String uidCustomer,
+                String uidDriver) {
         DriverLocation = driverLocation;
         DropPoint = dropPoint;
         PickPoint = pickPoint;
+        this.pickPointName = pickPointName;
+        this.dropPointName = dropPointName;
         this.status = status;
         this.uidCustomer = uidCustomer;
         this.uidDriver = uidDriver;
     }
 
-    public Ride (DocumentSnapshot document){
+    public Ride(DocumentSnapshot document) {
         this.uidDriver = document.getString("uidDriver");
         this.uidCustomer = document.getString("uidCustomer");
         this.DriverLocation = document.getGeoPoint("DriverLocation");
@@ -45,6 +50,22 @@ public class Ride implements Serializable {
 
     public GeoPoint getPickPoint() {
         return PickPoint;
+    }
+
+    public String getPickPointName() {
+        return pickPointName;
+    }
+
+    public void setPickPointName(String pickPointName) {
+        this.pickPointName = pickPointName;
+    }
+
+    public String getDropPointName() {
+        return dropPointName;
+    }
+
+    public void setDropPointName(String dropPointName) {
+        this.dropPointName = dropPointName;
     }
 
     public String getStatus() {
@@ -81,6 +102,14 @@ public class Ride implements Serializable {
 
     public void setUidDriver(String uidDriver) {
         this.uidDriver = uidDriver;
+    }
+
+    public int getTripPrice() {
+        return tripPrice;
+    }
+
+    public void setTripPrice(int tripPrice) {
+        this.tripPrice = tripPrice;
     }
 }
 

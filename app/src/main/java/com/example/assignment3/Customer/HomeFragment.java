@@ -1,8 +1,11 @@
 package com.example.assignment3.Customer;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -12,9 +15,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.fragment.app.FragmentResultListener;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.assignment3.BookingFragment;
 import com.example.assignment3.HomeFragmentListener;
@@ -50,10 +57,15 @@ public class HomeFragment extends Fragment implements HomeFragmentListener{
 
     private String mParam1;
     private String mParam2;
+
     private Button btnBooking;
     public String rideDocumentId;
     private LatLng pickupLocation;
     private LatLng destinationLocation;
+    private String pickupLocationName;
+    private String destinationLocationName;
+
+    private double discount = 1;
 
     public HomeFragment() {}
 
@@ -111,6 +123,8 @@ public class HomeFragment extends Fragment implements HomeFragmentListener{
                 data.put("uidDriver", null);
                 data.put("PickPoint", pickupLocation);
                 data.put("DropPoint", destinationLocation);
+                data.put("pickPointName", pickupLocationName);
+                data.put("dropPointName", destinationLocationName);
                 data.put("status", "Incomplete");
                 data.put("DriverLocation", null);
 
@@ -168,6 +182,7 @@ public class HomeFragment extends Fragment implements HomeFragmentListener{
             @Override
             public void onPlaceSelected(@NonNull Place place) {
                 pickupLocation = place.getLatLng();
+                pickupLocationName = place.getName();
 
                 pickupLocationAutocompleteFragment.setText(place.getName());
 
@@ -202,6 +217,7 @@ public class HomeFragment extends Fragment implements HomeFragmentListener{
             @Override
             public void onPlaceSelected(@NonNull Place place) {
                 destinationLocation = place.getLatLng();
+                destinationLocationName = place.getName();
 
                 destinationAutocompleteFragment.setText(place.getName());
 
@@ -263,7 +279,66 @@ public class HomeFragment extends Fragment implements HomeFragmentListener{
                 car7Text.setTextColor(Color.parseColor("#FFFFFFFF"));
             }
         });
-        // TODO: Create home UI
+
+        LinearLayout paymentMethodLayout = view.findViewById(R.id.paymentMethodLayout);
+        ImageView paymentMethodIcon = view.findViewById(R.id.paymentMethodIcon);
+        TextView paymentMethodText = view.findViewById(R.id.paymentMethodText);
+
+        // Create activity launcher for PaymentMethodActivity
+        ActivityResultLauncher<Intent> launcher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(), result -> {
+                    if (result.getResultCode() == 101) {
+                        assert result.getData() != null;
+                        int method = result.getData().getIntExtra("method", -1);
+                        switch (method) {
+                            case 0:
+                                paymentMethodIcon.setImageResource(R.drawable.paypal_icon);
+                                paymentMethodText.setText("Paypal");
+                                break;
+                            case 1:
+                                paymentMethodIcon.setImageResource(R.drawable.cash_icon);
+                                paymentMethodText.setText("Cash");
+                                break;
+                            case 2:
+                                paymentMethodIcon.setImageResource(R.drawable.credit_card_icon);
+                                paymentMethodText.setText("Credit Card");
+                                break;
+                        }
+                    }
+                });
+
+        paymentMethodLayout.setOnClickListener(v -> {
+            Intent intent = new Intent(view.getContext(), PaymentMethodActivity.class);
+            launcher.launch(intent);
+        });
+
+        LinearLayout voucherLayout = view.findViewById(R.id.voucherLayout);
+        TextView tripPriceBike = view.findViewById(R.id.tripPriceBike);
+        TextView tripPriceCar4 = view.findViewById(R.id.tripPriceCar4);
+        TextView tripPriceCar7 = view.findViewById(R.id.tripPriceCar7);
+
+        double priceBike = Double.parseDouble(tripPriceBike.getText().toString());
+        double priceCar4 = Double.parseDouble(tripPriceCar4.getText().toString());
+        double priceCar7 = Double.parseDouble(tripPriceCar7.getText().toString());
+
+        // Set on click listener for voucher fragment
+        voucherLayout.setOnClickListener(v -> {
+            // Navigate to the VoucherFragment
+            ViewPager2 viewPager = getActivity().findViewById(R.id.viewPager);
+            viewPager.setCurrentItem(2);
+        });
+
+        // Update the price after the user choose a voucher
+        getParentFragmentManager().setFragmentResultListener("discountedPrice", this, new FragmentResultListener() {
+            @Override
+            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
+                discount = result.getDouble("discountedPrice");
+                tripPriceBike.setText(String.valueOf(priceBike * discount));
+                tripPriceCar4.setText(String.valueOf(priceCar4 * discount));
+                tripPriceCar7.setText(String.valueOf(priceCar7 * discount));
+            }
+        });
+
         return view;
     }
 

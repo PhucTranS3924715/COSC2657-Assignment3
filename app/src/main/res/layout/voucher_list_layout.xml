@@ -4,6 +4,7 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
+    android:gravity="center"
     android:padding="16dp">
 
     <ImageView
@@ -24,24 +25,19 @@
             android:id="@+id/voucherName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="First Item"
-            android:layout_marginBottom="25dp"
-            android:textColor="@color/black"/>
+            android:text="Voucher name"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:layout_marginBottom="5dp" />
 
         <TextView
             android:id="@+id/voucherExpirationDate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Second Item"
+            android:text="Voucher expire date"
             android:textColor="@color/red"
-            android:textSize="10dp"
+            android:textSize="12sp"
+            android:textStyle="bold"
             android:paddingBottom="2dp"/>
     </LinearLayout>
-
-    <com.google.android.material.button.MaterialButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background = "@drawable/use_button"
-        android:text="Use"
-        android:layout_marginTop="35dp" />
 </LinearLayout>

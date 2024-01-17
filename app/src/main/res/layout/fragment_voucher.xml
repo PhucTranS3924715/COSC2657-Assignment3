@@ -14,16 +14,6 @@
         app:layout_constraintWidth="match_parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <!--    TODO: Remove back icon-->
-        <ImageView
-            android:id="@+id/backImage"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_alignParentStart="true"
-            android:layout_marginStart="1dp"
-            android:src="@drawable/back_icon"
-            android:layout_marginTop="15dp"/>
-
         <TextView
             android:id="@+id/voucherHeading"
             android:layout_width="match_parent"
@@ -32,7 +22,6 @@
             android:textSize="30sp"
             android:textColor="@color/white"
             android:textStyle="bold"
-            android:layout_toEndOf="@id/backImage"
             android:layout_alignParentTop="true"
             android:layout_alignParentBottom="true"
             android:layout_marginStart="8dp"
@@ -65,14 +54,13 @@
             android:padding="8dp"/>
 
         <ListView
+            android:id="@+id/voucherList"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/voucherTextView"
             android:layout_marginTop="8dp"
             android:padding="8dp"/>
 
-
     </RelativeLayout>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
