@@ -135,9 +135,6 @@ public class DriverListFragment extends Fragment {
                         Toast.makeText(view.getContext(), "Driver account created!",
                                 Toast.LENGTH_SHORT).show();
                         getDriverList();
-                    } else {
-                        Toast.makeText(view.getContext(), "Failed to create driver account",
-                                Toast.LENGTH_SHORT).show();
                     }
                 });
 

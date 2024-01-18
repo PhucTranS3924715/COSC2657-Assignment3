@@ -48,6 +48,10 @@
         <activity
             android:name=".Admin.LoginForAdminActivity"
             android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".Driver.LoginForDriverActivity"
@@ -84,11 +88,6 @@
         <activity
             android:name=".Customer.LoginForCustomerActivity"
             android:exported="true" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".Customer.CustomerMainActivity"
