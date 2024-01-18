@@ -13,8 +13,13 @@ import com.example.assignment3.DriverMapActivity;
 import com.example.assignment3.R;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.GeoPoint;
 
 public class RideDetailsActivity extends AppCompatActivity {
+    private GeoPoint pickPoint;
+    private GeoPoint dropPoint;
+    private String pickPointName;
+    private String dropPointName;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -29,6 +34,22 @@ public class RideDetailsActivity extends AppCompatActivity {
         Button declineButton = findViewById(R.id.declineButton);
 
         DocumentReference rideDocRef = FirebaseFirestore.getInstance().collection("Ride").document(rideDocumentId);
+
+        // Get Pick Point and Drop Point
+        rideDocRef.get()
+                        .addOnSuccessListener(documentSnapshot -> {
+                            pickPoint = documentSnapshot.getGeoPoint("PickPoint");
+                            dropPoint = documentSnapshot.getGeoPoint("DropPoint");
+                            pickPointName = documentSnapshot.getString("pickPointName");
+                            dropPointName = documentSnapshot.getString("dropPointName");
+                            TextView pickPointNameTextView = findViewById(R.id.pickUpLocationTextView);
+                            pickPointNameTextView.setText(pickPointName);
+                            TextView dropPointNameTextView = findViewById(R.id.dropOffLocationTextView);
+                            dropPointNameTextView.setText(dropPointName);
+        })
+                                .addOnFailureListener(e ->{
+                                    // Handle failure
+                                });
 
         rideDocRef.get()
                 .addOnSuccessListener(documentSnapshot -> {
