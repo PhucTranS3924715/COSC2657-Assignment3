@@ -114,6 +114,8 @@ public class UserMapActivity extends AppCompatActivity implements OnMapReadyCall
         double reputationPoints = nearbyDrivers.get(0).getReputationPoint();
 
         String driverID = getDriverId(driverName, reputationPoints);
+        AppData.getInstance().setDriverID(driverID);
+        AppData.getInstance().setUidCustomer(uidCustomer);
 
         // Ride data
         Ride rideInfo = getRideForCustomer(uidCustomer);
@@ -581,4 +583,5 @@ public class UserMapActivity extends AppCompatActivity implements OnMapReadyCall
                     }
                 });
     }
+
 }

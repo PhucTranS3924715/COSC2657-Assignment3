@@ -9,6 +9,7 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.assignment3.AppData;
 import com.example.assignment3.DriverMapActivity;
 import com.example.assignment3.R;
 import com.google.firebase.firestore.DocumentReference;
@@ -20,6 +21,9 @@ public class RideDetailsActivity extends AppCompatActivity {
     private GeoPoint dropPoint;
     private String pickPointName;
     private String dropPointName;
+
+    String driverID = AppData.getInstance().getDriverID();
+    String uidCustomer = AppData.getInstance().getUidCustomer();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -87,8 +91,8 @@ public class RideDetailsActivity extends AppCompatActivity {
         acceptButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //rideDocRef.update("uidDriver", uidDriver); insert the Driver UID into Ride.
-                finish();
+               rideDocRef.update("driverUid", driverID);
+               finish();
             }
         });
 
