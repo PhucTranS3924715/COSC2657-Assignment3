@@ -7,18 +7,30 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.assignment3.R;
+import com.google.android.material.imageview.ShapeableImageView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 public class ProfileFragment extends Fragment {
 
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private ShapeableImageView profilePicture;
 
     private String mParam1;
     private String mParam2;
@@ -60,6 +72,43 @@ public class ProfileFragment extends Fragment {
         informationSection.setOnClickListener(v -> {
             Intent intent = new Intent(view.getContext(), EditProfileCustomerActivity.class);
             launcher.launch(intent);
+        });
+
+        profilePicture = view.findViewById(R.id.avatarImage);
+        // Set up Firestore database and Authentication
+        FirebaseFirestore database = FirebaseFirestore.getInstance();
+
+        StorageReference storageRef = FirebaseStorage.getInstance().getReference();
+
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        FirebaseUser user = auth.getCurrentUser();
+        assert user != null;
+        String uid = user.getUid();
+
+        // Create reference for current user
+        DocumentReference customerRef = database.collection("Customers").document(uid);
+
+        customerRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot document = task.getResult();
+                if (document.exists()) {
+                    // Retrieve the profileImageUri from the document
+                    String profileImageUri = document.getString("profileImageUri");
+
+                    // Now you can use profileImageUri to load the image with Glide or any other library
+                    if (profileImageUri != null) {
+                        Glide.with(this)
+                                .load(profileImageUri)
+                                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                                .skipMemoryCache(true)
+                                .into(profilePicture);
+                    }
+                } else {
+                    Log.d("ProfileFragment", "No such document");
+                }
+            } else {
+                Log.d("ProfileFragment", "get failed with ", task.getException());
+            }
         });
         return view;
     }
