@@ -18,6 +18,9 @@ import com.example.assignment3.Class.Customer;
 import com.example.assignment3.Class.Ride;
 import com.example.assignment3.Class.Voucher;
 import com.example.assignment3.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -67,15 +70,25 @@ public class ActivityFragment extends Fragment {
 
         rideActivityList = view.findViewById(R.id.rideActivityList);
         FirebaseFirestore database = FirebaseFirestore.getInstance();
-        database.collection("Vouchers").get().addOnCompleteListener(task -> {
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        FirebaseUser user = auth.getCurrentUser();
+        assert user != null;
+        String uid = user.getUid();
+        // How to access the rides list of the current user using Firebase Firestore?
+        database.collection("Customers").document(uid).get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                for (QueryDocumentSnapshot document : task.getResult()) {
-                    rides.add(document.toObject(Ride.class));
+                DocumentSnapshot document = task.getResult();
+                if (document.exists()) {
+                    Customer customer = document.toObject(Customer.class);
+                    assert customer != null;
+
+                    rides = customer.getHistoryRides();
+
+                    adapter = new RideListAdapter(view.getContext(), rides);
+                    rideActivityList.setAdapter(adapter);
                 }
-                adapter = new RideListAdapter(getActivity(), rides);
-                rideActivityList.setAdapter(adapter);
             } else {
-                Log.w(TAG, "Error getting documents.", task.getException());
+                Log.d(TAG, "get failed with ", task.getException());
             }
         });
 

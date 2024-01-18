@@ -31,6 +31,8 @@ public class CustomerMainActivity extends AppCompatActivity {
         viewPager = findViewById(R.id.viewPager);
         bottomNavigation = findViewById(R.id.bottom_navigation);
 
+        viewPager.setUserInputEnabled(false);
+
         // Set up the ViewPager and adapter
         FragmentStateAdapter adapter = new FragmentStateAdapter(this) {
             @NonNull

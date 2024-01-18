@@ -26,6 +26,11 @@ public class RideListAdapter extends ArrayAdapter<Ride> {
     @NonNull
     @Override
     public View getView(int position, android.view.View convertView, @NonNull ViewGroup parent) {
+        if (rides.isEmpty()) {
+            // If the list is empty, return an empty view
+            return new View(getContext());
+        }
+
         Ride ride = getItem(position);
 
         if (convertView == null) {

@@ -7,12 +7,13 @@ import java.util.List;
 public class Customer extends User implements Serializable {
     private int rewardPoint;
     private List<Voucher> voucherIDs;
-
+    private List<Ride> historyRides;
 
     public Customer(String name, String phone, String email) {
         super(name, phone, email);
         this.rewardPoint = 0;
         this.voucherIDs = new ArrayList<>();
+        this.historyRides = new ArrayList<>();
     }
 
     public Customer() {}
@@ -31,5 +32,13 @@ public class Customer extends User implements Serializable {
 
     public void setVoucherIDs(List<Voucher> voucherIDs) {
         this.voucherIDs = voucherIDs;
+    }
+
+    public List<Ride> getHistoryRides() {
+        return historyRides;
+    }
+
+    public void setHistoryRides(List<Ride> historyRides) {
+        this.historyRides = historyRides;
     }
 }
