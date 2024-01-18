@@ -75,6 +75,10 @@ public class HomeFragment extends Fragment implements HomeFragmentListener{
     private LatLng destinationLocation;
     private String pickupLocationName;
     private String destinationLocationName;
+    private String distanceInKilometers;
+    private String selectedVehicleType = "";
+    private double Price = 0.0;
+
 
     private TextView tripPriceBike;
     private TextView tripPriceCar4;
@@ -216,6 +220,9 @@ public class HomeFragment extends Fragment implements HomeFragmentListener{
                 data.put("DropPoint", destinationLocation);
                 data.put("pickPointName", pickupLocationName);
                 data.put("dropPointName", destinationLocationName);
+                data.put("distance", distanceInKilometers);
+                data.put("vehicleType",selectedVehicleType);
+                data.put("price",Price);
                 data.put("status", "Incomplete");
                 data.put("DriverLocation", null);
 
@@ -352,6 +359,10 @@ public class HomeFragment extends Fragment implements HomeFragmentListener{
                 bikeText.setTextColor(Color.parseColor("#FFFFFFFF"));
                 car4Text.setTextColor(Color.parseColor("#6DBAED"));
                 car7Text.setTextColor(Color.parseColor("#6DBAED"));
+
+                //Save the price
+                selectedVehicleType = "Bike";
+                Price = Double.parseDouble(tripPriceBike.getText().toString());
             }
         });
 
@@ -367,6 +378,10 @@ public class HomeFragment extends Fragment implements HomeFragmentListener{
                 bikeText.setTextColor(Color.parseColor("#6DBAED"));
                 car4Text.setTextColor(Color.parseColor("#FFFFFFFF"));
                 car7Text.setTextColor(Color.parseColor("#6DBAED"));
+
+                //Save the price
+                selectedVehicleType = "Car4";
+                Price = Double.parseDouble(tripPriceCar4.getText().toString());
             }
         });
 
@@ -382,6 +397,10 @@ public class HomeFragment extends Fragment implements HomeFragmentListener{
                 bikeText.setTextColor(Color.parseColor("#6DBAED"));
                 car4Text.setTextColor(Color.parseColor("#6DBAED"));
                 car7Text.setTextColor(Color.parseColor("#FFFFFFFF"));
+
+                //Save the price
+                selectedVehicleType = "Car7";
+                Price = Double.parseDouble(tripPriceCar7.getText().toString());
             }
         });
 
