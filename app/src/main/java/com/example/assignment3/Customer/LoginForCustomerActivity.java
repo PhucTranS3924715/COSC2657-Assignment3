@@ -5,6 +5,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.view.View;
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.style.UnderlineSpan;
@@ -27,6 +28,7 @@ public class LoginForCustomerActivity extends AppCompatActivity {
         EditText passwordEditText = findViewById(R.id.passwordEditText);
         Button signInButton = findViewById(R.id.signInButton);
         TextView signUpText = findViewById(R.id.signUpText);
+        TextView forgotPasswordText = findViewById(R.id.forgotPasswordText);
 
         // Create activity launcher
         ActivityResultLauncher<Intent> launcher = registerForActivityResult(
@@ -45,6 +47,13 @@ public class LoginForCustomerActivity extends AppCompatActivity {
 
         // Set up Firebase Authentication
         FirebaseAuth auth = FirebaseAuth.getInstance();
+
+        //Implement Reset password
+        forgotPasswordText.setOnClickListener(v -> {
+            // Start the MessageActivity
+            Intent intent = new Intent(LoginForCustomerActivity.this, ResetPasswordActivity.class);
+            startActivity(intent);
+        });
 
         // Implement sign in button
         signInButton.setOnClickListener(v -> {
