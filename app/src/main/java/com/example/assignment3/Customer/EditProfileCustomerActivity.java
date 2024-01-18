@@ -93,6 +93,21 @@ public class EditProfileCustomerActivity extends AppCompatActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerGender.setAdapter(adapter);
 
+        spinnerGender.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView,
+                                       int position, long id) {
+                // Retrieve the selected gender
+                selectedGender = getResources().getStringArray(
+                        R.array.gender_options)[position];
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+                // Do nothing if nothing is selected
+            }
+        });
+
         customerRef.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 DocumentSnapshot document = task.getResult();
@@ -135,10 +150,9 @@ public class EditProfileCustomerActivity extends AppCompatActivity {
                         spinnerGender.setSelection(position);
                     } else {
                         // Set a default value for the spinner
-                        spinnerGender.setSelection(
-                                0); // Change this to the position of your default value
+                        int defaultPosition = adapter.getPosition("Gender..."); // Change this to the default gender value
+                        spinnerGender.setSelection(defaultPosition);
                     }
-
                 }
             } else {
                 Log.d(TAG, "get failed with ", task.getException());
@@ -152,21 +166,8 @@ public class EditProfileCustomerActivity extends AppCompatActivity {
             String email = emailInput.getText().toString();
             String phone = phoneInput.getText().toString();
             String address = addressInput.getText().toString();
+            selectedGender = spinnerGender.getSelectedItem().toString();
             //String password = passwordInput.getText().toString();
-            spinnerGender.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> parentView, View selectedItemView,
-                                           int position, long id) {
-                    // Retrieve the selected gender
-                    selectedGender = getResources().getStringArray(
-                            R.array.gender_options)[position];
-                }
-
-                @Override
-                public void onNothingSelected(AdapterView<?> parentView) {
-                    // Do nothing if nothing is selected
-                }
-            });
 
             // Create an alert dialog to confirm
             new AlertDialog.Builder(this).setTitle("Confirm save")
@@ -181,25 +182,11 @@ public class EditProfileCustomerActivity extends AppCompatActivity {
                                                 task1.getException());
                                     }
                                 });
-//                            user.updatePassword(password)
-//                                    .addOnCompleteListener(task2 -> {
-//                                        if (task2.isSuccessful()) {
-//                                            Log.d(TAG, "User password updated.");
-//                                            Toast.makeText(EditProfileCustomerActivity.this,
-//                                                    "User password updated.",
-//                                                    Toast.LENGTH_SHORT).show();
-//                                        } else {
-//                                            Log.w(TAG, "Failed to update password.",
-//                                                    task2.getException());
-//                                            Toast.makeText(EditProfileCustomerActivity.this,
-//                                                    "Failed to update password",
-//                                                    Toast.LENGTH_SHORT).show();
-//                                        }
-//                                    });
                         update.put("name", name);
                         update.put("phone", phone);
                         update.put("address", address);
                         update.put("gender", selectedGender);
+                        customerRef.update(update);
                         uploadImageToStorageAndFirestore(imageUri, customerRef);
                     }).setNegativeButton(android.R.string.no, null)
                     .setIcon(android.R.drawable.ic_dialog_alert).show();
@@ -259,30 +246,23 @@ public class EditProfileCustomerActivity extends AppCompatActivity {
     }
 
     private void uploadImageToStorageAndFirestore(Uri imageUri, DocumentReference customerRef) {
-        // Initialize Firebase Storage
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference storageRef = storage.getReference();
+        // Check if an image is selected
+        if (imageUri != null) {
+            // Initialize Firebase Storage
+            FirebaseStorage storage = FirebaseStorage.getInstance();
+            StorageReference storageRef = storage.getReference();
 
-        // Create a reference to the location where you want to store the image
-        // Using the user's UID as a unique identifier for the image
-        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        StorageReference imageRef = storageRef.child("profile_images/" + uid + "/profile.jpg");
+            // Create a reference to the location where you want to store the image
+            // Using the user's UID as a unique identifier for the image
+            String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+            StorageReference imageRef = storageRef.child("profile_images/" + uid + "/profile.jpg");
 
-        // Check if an older image exists
-        imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
-            // Older image exists, delete it
-            imageRef.delete().addOnSuccessListener(aVoid -> {
-                // Upload the new image
-                uploadNewImage(imageUri, imageRef, customerRef);
-            }).addOnFailureListener(e -> {
-                // Handle failure to delete the older image
-                Toast.makeText(EditProfileCustomerActivity.this, "Failed to delete the older image",
-                        Toast.LENGTH_SHORT).show();
-            });
-        }).addOnFailureListener(e -> {
-            // No older image exists, upload the new image directly
-            uploadNewImage(imageUri, imageRef, customerRef);
-        });
+            // Delete the older image and upload the new one
+            deleteOldImageAndUploadNew(imageUri, imageRef, customerRef);
+        } else {
+            // No new image selected, update Firestore with the existing image URI
+            updateExistingImageUriInFirestore(customerRef);
+        }
     }
 
     private void updateImageUriInFirestore(String newImageUri, DocumentReference customerRef) {
@@ -321,5 +301,40 @@ public class EditProfileCustomerActivity extends AppCompatActivity {
                     Toast.makeText(EditProfileCustomerActivity.this, "Failed to upload image",
                             Toast.LENGTH_SHORT).show();
                 });
+    }
+
+    private void deleteOldImageAndUploadNew(Uri imageUri, StorageReference imageRef, DocumentReference customerRef) {
+        // Check if an older image exists
+        imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
+            // Older image exists, delete it
+            imageRef.delete().addOnSuccessListener(aVoid -> {
+                // Upload the new image after deleting the older one
+                uploadNewImage(imageUri, imageRef, customerRef);
+            }).addOnFailureListener(e -> {
+                // Handle failure to delete the older image
+                Toast.makeText(EditProfileCustomerActivity.this, "Failed to delete the older image",
+                        Toast.LENGTH_SHORT).show();
+            });
+        }).addOnFailureListener(e -> {
+            // No older image exists, upload the new image directly
+            uploadNewImage(imageUri, imageRef, customerRef);
+        });
+    }
+
+    private void updateExistingImageUriInFirestore(DocumentReference customerRef) {
+        // Get the existing image URI from Firestore and update it
+        customerRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot document = task.getResult();
+                if (document.exists()) {
+                    String existingImageUri = document.getString("profileImageUri");
+                    if (existingImageUri != null) {
+                        updateImageUriInFirestore(existingImageUri, customerRef);
+                    }
+                }
+            } else {
+                Log.d(TAG, "get failed with ", task.getException());
+            }
+        });
     }
 }
