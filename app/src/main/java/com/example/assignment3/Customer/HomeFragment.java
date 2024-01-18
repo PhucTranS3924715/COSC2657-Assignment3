@@ -60,7 +60,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class HomeFragment extends Fragment implements HomeFragmentListener{
+public class HomeFragment extends Fragment implements HomeFragmentListener, OnMapReadyCallback{
 
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -253,8 +253,8 @@ public class HomeFragment extends Fragment implements HomeFragmentListener{
         car4Text = view.findViewById(R.id.car4Text);
         car7Text = view.findViewById(R.id.car7Text);
 
-        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
-        mapFragment.getMapAsync((OnMapReadyCallback) HomeFragment.this);
+//        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
+//        mapFragment.getMapAsync((OnMapReadyCallback) HomeFragment.this);
 
         String apiKey = getString(R.string.api_key);
         if (!Places.isInitialized()){
@@ -474,5 +474,11 @@ public class HomeFragment extends Fragment implements HomeFragmentListener{
     @Override
     public void onBookingClicked() {
         replaceFragment(new BookingFragment());
+    }
+
+    @Override
+    public void onMapReady(@NonNull GoogleMap googleMap) {
+        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
+        mapFragment.getMapAsync((OnMapReadyCallback) HomeFragment.this);
     }
 }

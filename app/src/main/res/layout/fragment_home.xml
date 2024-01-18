@@ -113,14 +113,17 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="50.000"
+                        android:visibility="invisible"
                         android:textColor="@color/black"
                         android:textStyle="bold"
                         android:layout_marginStart="180dp"/>
 
                     <TextView
+                        android:id="@+id/currencyUnitBike"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="đ"
+                        android:visibility="invisible"
                         android:textColor="@color/black"
                         android:textStyle="bold"
                         android:layout_marginStart="5dp"/>
@@ -170,14 +173,17 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="50.000"
+                        android:visibility="invisible"
                         android:textColor="@color/black"
                         android:textStyle="bold"
                         android:layout_marginStart="170dp"/>
 
                     <TextView
+                        android:id="@+id/currencyUnitCar4"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="đ"
+                        android:visibility="invisible"
                         android:textColor="@color/black"
                         android:textStyle="bold"
                         android:layout_marginStart="5dp"/>
@@ -226,14 +232,17 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="50.000"
+                        android:visibility="invisible"
                         android:textColor="@color/black"
                         android:textStyle="bold"
                         android:layout_marginStart="170dp"/>
 
                     <TextView
+                        android:id="@+id/currencyUnitCar7"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="đ"
+                        android:visibility="invisible"
                         android:textColor="@color/black"
                         android:textStyle="bold"
                         android:layout_marginStart="5dp"/>

@@ -4,6 +4,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.view.View;
 import android.os.Bundle;
@@ -55,6 +56,12 @@ public class LoginForCustomerActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
+        // Create a loading dialog
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(false);
+        builder.setView(R.layout.loading_dialog);
+        AlertDialog dialog = builder.create();
+
         // Implement sign in button
         signInButton.setOnClickListener(v -> {
             String email = emailEditText.getText().toString();
@@ -71,12 +78,15 @@ public class LoginForCustomerActivity extends AppCompatActivity {
             }
 
             if (isValid) {
+                dialog.show();
                 auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {  // If sign in success
                         Intent intent = new Intent(LoginForCustomerActivity.this, CustomerMainActivity.class);
                         launcher.launch(intent);
+                        dialog.dismiss();
                     } else {
                         Toast.makeText(this, "Sign in failed", Toast.LENGTH_SHORT).show();
+                        dialog.dismiss();
                     }
                 });
             }

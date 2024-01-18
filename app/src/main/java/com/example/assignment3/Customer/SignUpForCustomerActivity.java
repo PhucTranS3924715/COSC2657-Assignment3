@@ -4,17 +4,22 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.example.assignment3.Class.Customer;
 import com.example.assignment3.R;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.Objects;
 
 public class SignUpForCustomerActivity extends AppCompatActivity {
 
@@ -41,6 +46,12 @@ public class SignUpForCustomerActivity extends AppCompatActivity {
         FirebaseFirestore database = FirebaseFirestore.getInstance();
         FirebaseAuth auth = FirebaseAuth.getInstance();
 
+        // Create a loading dialog
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(false);
+        builder.setView(R.layout.loading_dialog);
+        AlertDialog dialog = builder.create();
+
         // Implement sign up button
         signUpButton.setOnClickListener(v -> {
             String name = nameEditText.getText().toString();
@@ -66,7 +77,9 @@ public class SignUpForCustomerActivity extends AppCompatActivity {
                 isValid = false;
             }
 
+            // If everything is valid
             if (isValid) {
+                dialog.show();
                 auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
                         FirebaseUser user = auth.getCurrentUser();
@@ -78,6 +91,18 @@ public class SignUpForCustomerActivity extends AppCompatActivity {
 
                         Intent intent = new Intent(SignUpForCustomerActivity.this, CustomerMainActivity.class);
                         launcher.launch(intent);
+                        dialog.dismiss();
+                    } else {
+                        String errorMessage;
+                        if (task.getException() instanceof FirebaseAuthWeakPasswordException) {
+                            errorMessage = "The password is not strong enough.";
+                        } else {
+                            errorMessage = "Authentication failed: " +
+                                    Objects.requireNonNull(task.getException()).getMessage();
+                        }
+                        Toast.makeText(SignUpForCustomerActivity.this, errorMessage,
+                                Toast.LENGTH_SHORT).show();
+                        dialog.dismiss();
                     }
                 });
             }

@@ -19,6 +19,9 @@
         android:theme="@style/Theme.Assignment3"
         tools:targetApi="31">
         <activity
+            android:name=".Customer.PaymentMethodActivity"
+            android:exported="false" />
+        <activity
             android:name=".Admin.CreateVoucherActivity"
             android:exported="false" />
         <activity
@@ -45,11 +48,6 @@
         <activity
             android:name=".Admin.LoginForAdminActivity"
             android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".Driver.LoginForDriverActivity"
@@ -85,13 +83,20 @@
             android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".Customer.LoginForCustomerActivity"
-            android:exported="true" />
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".Customer.CustomerMainActivity"
             android:exported="false" />
         <activity
             android:name=".Customer.SignUpForCustomerActivity"
             android:exported="false" />
+        <meta-data android:name="com.google.android.geo.API_KEY" android:value="@string/api_key"/>
     </application>
 
 </manifest>
