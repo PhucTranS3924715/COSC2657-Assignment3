@@ -21,14 +21,23 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
+import com.google.maps.DirectionsApi;
+import com.google.maps.GeoApiContext;
+import com.google.maps.model.DirectionsLeg;
+import com.google.maps.model.DirectionsResult;
+import com.google.maps.model.EncodedPolyline;
+import com.google.maps.model.TravelMode;
 
 import java.util.HashMap;
 import java.util.List;
@@ -40,6 +49,9 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
     private LocationRequest locationRequest;
     private LocationCallback locationCallback;
     private FirebaseFirestore firestore;
+    private GeoPoint currentLocation;
+    private Marker pickupMarker;
+    private Marker destinationMarker;
     private static final String TAG = "DriverMapActivity";
     private List<Customer> nearbyCustomers;
     @Override
@@ -69,6 +81,7 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         createLocationRequest();
         createLocationCallback();
+        currentLocation = getCurrentLocation();
     }
 
     private void createLocationRequest() {
@@ -125,6 +138,23 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
         }
     }
 
+    private GeoPoint getCurrentLocation() {
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            // Request last known location and return the GeoPoint
+            Location lastLocation = fusedLocationClient.getLastLocation().getResult();
+            if (lastLocation != null) {
+                return new GeoPoint(lastLocation.getLatitude(), lastLocation.getLongitude());
+            } else {
+                // Handle the case where last known location is not available
+                return null;
+            }
+        } else {
+            // If permission is not granted, return null or handle accordingly
+            Log.e("Location", "Location permission denied");
+            return null;
+        }
+    }
+
     private void updateMapLocation(Location location) {
         String userId = getUserId();
 
@@ -153,6 +183,69 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
         driverRef.update(update)
                 .addOnSuccessListener(aVoid -> Log.d(TAG, "Location updated in Drivers collection"))
                 .addOnFailureListener(e -> Log.e(TAG, "Error updating location in Drivers collection", e));
+    }
+
+    public void drawRoute(GeoPoint pickLocation, GeoPoint dropLocation) {
+        // Use the Google Directions API to get the route information
+        GeoApiContext context = new GeoApiContext.Builder()
+                .apiKey(getString(R.string.api_key)) // Replace with your API key
+                .build();
+
+        LatLng pickupLocation = convertToGoogleMapsLatLng(pickLocation);
+        LatLng destinationLocation = convertToGoogleMapsLatLng(dropLocation);
+
+        MarkerOptions pickupMarkerOptions = new MarkerOptions()
+                .position(pickupLocation)
+                .title("Pick-up Location")
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.pickup));
+
+        MarkerOptions destinationMarkerOptions = new MarkerOptions()
+                .position(destinationLocation)
+                .title("Destination Location")
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.destination));
+
+        DirectionsResult result;
+        try {
+            result = DirectionsApi.newRequest(context)
+                    .origin(new com.google.maps.model.LatLng(pickupLocation.latitude, pickupLocation.longitude))
+                    .destination(new com.google.maps.model.LatLng(destinationLocation.latitude, destinationLocation.longitude))
+                    .mode(TravelMode.DRIVING) // You can change the mode based on your requirements
+                    .await();
+
+            if (result.routes != null && result.routes.length > 0) {
+                // Extract the polyline from the result and add it to the map
+                EncodedPolyline points = result.routes[0].overviewPolyline;
+                List<com.google.maps.model.LatLng> decodedPath = points.decodePath();
+
+                // Clear previous markers and polylines
+                mMap.clear();
+
+                // Add markers for pick-up and destination
+                pickupMarker = mMap.addMarker(pickupMarkerOptions);
+                destinationMarker = mMap.addMarker(destinationMarkerOptions);
+
+                // Draw the route on the map
+                PolylineOptions polylineOptions = new PolylineOptions();
+                for (com.google.maps.model.LatLng latLng : decodedPath) {
+                    polylineOptions.add(new com.google.android.gms.maps.model.LatLng(latLng.lat, latLng.lng));
+                }
+
+                int polylineColor = ContextCompat.getColor(this, R.color.red);
+                polylineOptions.color(polylineColor);
+
+                mMap.addPolyline(polylineOptions);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    // Convert Geo Point to LatLng
+    private com.google.android.gms.maps.model.LatLng convertToGoogleMapsLatLng(GeoPoint geoPoint) {
+        double latitude = geoPoint.getLatitude();
+        double longitude = geoPoint.getLongitude();
+        return new com.google.android.gms.maps.model.LatLng(latitude, longitude);
     }
 
     @Override
@@ -187,5 +280,4 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
         super.onPause();
         fusedLocationClient.removeLocationUpdates(locationCallback);
     }
-
 }
