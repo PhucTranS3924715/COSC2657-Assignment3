@@ -46,6 +46,7 @@ public class RideDetailsActivity extends AppCompatActivity {
                             dropPoint = documentSnapshot.getGeoPoint("DropPoint");
                             pickPointName = documentSnapshot.getString("pickPointName");
                             dropPointName = documentSnapshot.getString("dropPointName");
+
                             TextView pickPointNameTextView = findViewById(R.id.pickUpLocationTextView);
                             pickPointNameTextView.setText(pickPointName);
                             TextView dropPointNameTextView = findViewById(R.id.dropOffLocationTextView);
@@ -59,9 +60,8 @@ public class RideDetailsActivity extends AppCompatActivity {
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
                         // Retrieve the information and update UI
-                        String customerUid = documentSnapshot.getString("uidCustomer");
 
-                        DocumentReference customerDocRef = FirebaseFirestore.getInstance().collection("Customers").document(customerUid);
+                        DocumentReference customerDocRef = FirebaseFirestore.getInstance().collection("Customers").document(uidCustomer);
                         customerDocRef.get()
                                 .addOnSuccessListener(customerSnapshot -> {
                                     if (customerSnapshot.exists()) {

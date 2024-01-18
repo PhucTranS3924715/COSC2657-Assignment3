@@ -238,11 +238,12 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, OnMa
                 });
 
                 // Open the BookingFragment when the "Book Now" button is clicked
-                BookingFragment bookingFragment = new BookingFragment();
+                BookingFragment bookingFragment = BookingFragment.newInstance(rideDocumentId);
                 getActivity().getSupportFragmentManager().beginTransaction()
                         .replace(R.id.mapContainer, bookingFragment)
                         .addToBackStack(null)
                         .commit();
+
             }
         });
 

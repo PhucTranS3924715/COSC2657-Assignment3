@@ -1,6 +1,5 @@
 package com.example.assignment3;
 
-import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
@@ -14,7 +13,7 @@ public class NotificationService {
     private static final String CHANNEL_NAME = "DriverNotification";
     private static final int NOTIFICATION_ID = 1;
 
-    public static void sendNotificationToDriver(Context context, String documentId, String title, String message) {
+    public static void sendNotificationToDriver(Context context, String rideDocumentId, String title, String message) {
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -28,7 +27,7 @@ public class NotificationService {
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
                 // TODO: Add app's Icon
-                //.setSmallIcon(R.drawable.ic_notification_icon)
+                .setSmallIcon(R.drawable.logo)
                 .setContentTitle(title)
                 .setContentText(message)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)

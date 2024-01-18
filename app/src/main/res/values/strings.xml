@@ -66,4 +66,7 @@
     </string>
     <string name="title_activity_driver_map_view">DriverMapView</string>
     <string name="title_activity_driver_map">DriverMapActivity</string>
+
+    <string name="distance_format">%s km</string>
+    <string name="price_format">%d VND</string>
 </resources>
