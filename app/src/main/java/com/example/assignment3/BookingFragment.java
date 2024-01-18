@@ -1,12 +1,16 @@
 package com.example.assignment3;
 
 import androidx.fragment.app.Fragment;
+
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import com.example.assignment3.Customer.MessageActivity;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -28,6 +32,17 @@ public class BookingFragment extends Fragment {
         // Initialize your UI elements
         searchingForDriverSection = view.findViewById(R.id.searchingForDriverSection);
         bookingDetailSection = view.findViewById(R.id.bookingDetailSection);
+
+        ImageView messageButton = view.findViewById(R.id.messageButton);
+
+        messageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Start the MessageActivity
+                Intent intent = new Intent(getActivity(), MessageActivity.class);
+                startActivity(intent);
+            }
+        });
 
         // Initialize your Firestore reference (adjust the path accordingly)
         rideDocumentRef = FirebaseFirestore.getInstance().collection("Ride")
