@@ -1,5 +1,7 @@
 package com.example.assignment3.Class;
 
+import com.google.firebase.firestore.GeoPoint;
+
 import java.io.Serializable;
 
 public class Driver extends User implements Serializable {
@@ -9,6 +11,7 @@ public class Driver extends User implements Serializable {
     private String status;
     private double reputationPoint;
     private Car ownedCar;
+    private GeoPoint location;
 
     public Driver() {}
 
