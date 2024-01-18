@@ -35,7 +35,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class EditProfileCustomerActivity extends AppCompatActivity {
-    private ImageView profilePicture;
+    private EditText nameInput;
+    private EditText emailInput;
+    private EditText phoneInput;
+    private EditText addressInput;
+    private EditText passwordInput;
+    private Button updateButton;
+    private Button deleteButton;
+    private Spinner spinnerGender;
+    private ShapeableImageView profilePicture;
+
     private Uri imageUri;
     private DocumentReference userDocRef;
     private String selectedGender;
@@ -53,23 +62,22 @@ public class EditProfileCustomerActivity extends AppCompatActivity {
 
         FirebaseAuth auth = FirebaseAuth.getInstance();
         FirebaseUser user = auth.getCurrentUser();
-//        assert user != null;
-//        String uid = user.getUid();
-        String uid = "zINVK0qzSBRgNKM2BpHBon91O6I3";
+        assert user != null;
+        String uid = user.getUid();
 
         // Create reference for current user
         DocumentReference customerRef = database.collection("Customers").document(uid);
         Map<String, Object> update = new HashMap<>();
 
         // Initialize edit text
-        EditText nameInput = (EditText) findViewById(R.id.nameInput);
-        EditText emailInput = (EditText) findViewById(R.id.emailInput);
-        EditText phoneInput = (EditText) findViewById(R.id.phoneInput);
-        EditText addressInput = (EditText) findViewById(R.id.addressInput);
-        EditText passwordInput = (EditText) findViewById(R.id.passwordInput);
-        Button updateButton = (Button) findViewById(R.id.updateButton);
-        Button deleteButton = (Button) findViewById(R.id.deleteButton);
-        Spinner spinnerGender = findViewById(R.id.spinnerGender);
+        nameInput = (EditText) findViewById(R.id.nameInput);
+        emailInput = (EditText) findViewById(R.id.emailInput);
+        phoneInput = (EditText) findViewById(R.id.phoneInput);
+        addressInput = (EditText) findViewById(R.id.addressInput);
+        passwordInput = (EditText) findViewById(R.id.passwordInput);
+        updateButton = (Button) findViewById(R.id.updateButton);
+        deleteButton = (Button) findViewById(R.id.deleteButton);
+        spinnerGender = findViewById(R.id.spinnerGender);
 
          // Set interaction for update button
         updateButton.setOnClickListener(v -> {
@@ -216,29 +224,19 @@ public class EditProfileCustomerActivity extends AppCompatActivity {
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         StorageReference imageRef = storageRef.child("profile_images/" + uid + "/profile.jpg");
 
-        // Check if an older image exists and delete it
-        imageRef.delete().addOnSuccessListener(aVoid -> {
-            // Upload the new image
-            imageRef.putFile(imageUri)
-                    .addOnSuccessListener(taskSnapshot -> {
-                        // Image uploaded successfully, now get the download URL
-                        imageRef.getDownloadUrl()
-                                .addOnSuccessListener(uri -> {
-                                    // Update Firestore with the download URL
-                                    updateImageUriInFirestore(uri.toString(), customerRef);
-                                })
-                                .addOnFailureListener(e -> {
-                                    // Handle failure to get download URL
-                                    Toast.makeText(EditProfileCustomerActivity.this, "Failed to get download URL", Toast.LENGTH_SHORT).show();
-                                });
-                    })
-                    .addOnFailureListener(e -> {
-                        // Handle failure to upload image
-                        Toast.makeText(EditProfileCustomerActivity.this, "Failed to upload image", Toast.LENGTH_SHORT).show();
-                    });
+        // Check if an older image exists
+        imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
+            // Older image exists, delete it
+            imageRef.delete().addOnSuccessListener(aVoid -> {
+                // Upload the new image
+                uploadNewImage(imageUri, imageRef, customerRef);
+            }).addOnFailureListener(e -> {
+                // Handle failure to delete the older image
+                Toast.makeText(EditProfileCustomerActivity.this, "Failed to delete the older image", Toast.LENGTH_SHORT).show();
+            });
         }).addOnFailureListener(e -> {
-            // Handle failure to delete the older image (optional)
-            Toast.makeText(EditProfileCustomerActivity.this, "Failed to delete the older image", Toast.LENGTH_SHORT).show();
+            // No older image exists, upload the new image directly
+            uploadNewImage(imageUri, imageRef, customerRef);
         });
     }
 
@@ -251,6 +249,27 @@ public class EditProfileCustomerActivity extends AppCompatActivity {
                 .addOnFailureListener(e -> {
                     // Handle failure
                     Toast.makeText(EditProfileCustomerActivity.this, "Failed to update image URI in Firestore", Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    private void uploadNewImage(Uri imageUri, StorageReference imageRef, DocumentReference customerRef) {
+        // Upload the new image
+        imageRef.putFile(imageUri)
+                .addOnSuccessListener(taskSnapshot -> {
+                    // Image uploaded successfully, now get the download URL
+                    imageRef.getDownloadUrl()
+                            .addOnSuccessListener(uri -> {
+                                // Update Firestore with the download URL
+                                updateImageUriInFirestore(uri.toString(), customerRef);
+                            })
+                            .addOnFailureListener(e -> {
+                                // Handle failure to get download URL
+                                Toast.makeText(EditProfileCustomerActivity.this, "Failed to get download URL", Toast.LENGTH_SHORT).show();
+                            });
+                })
+                .addOnFailureListener(e -> {
+                    // Handle failure to upload image
+                    Toast.makeText(EditProfileCustomerActivity.this, "Failed to upload image", Toast.LENGTH_SHORT).show();
                 });
     }
 }
