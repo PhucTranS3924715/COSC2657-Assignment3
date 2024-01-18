@@ -150,12 +150,18 @@ public class EditProfileCustomerActivity extends AppCompatActivity {
                         spinnerGender.setSelection(position);
                     } else {
                         // Set a default value for the spinner
-                        int defaultPosition = adapter.getPosition("Gender..."); // Change this to the default gender value
-                        spinnerGender.setSelection(defaultPosition);
+                        int defaultPosition = adapter.getPosition(
+                                "Gender..."); // Change this to the default gender value
+                        if (defaultPosition >= 0) {
+                            spinnerGender.setSelection(defaultPosition);
+                        } else {
+                            // If "Gender..." is not found, set the default to the first item in the adapter
+                            spinnerGender.setSelection(0);
+                        }
                     }
+                } else {
+                    Log.d(TAG, "get failed with ", task.getException());
                 }
-            } else {
-                Log.d(TAG, "get failed with ", task.getException());
             }
         });
 

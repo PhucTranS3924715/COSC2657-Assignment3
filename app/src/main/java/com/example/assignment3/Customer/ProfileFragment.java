@@ -7,6 +7,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.fragment.app.Fragment;
 
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,6 +32,9 @@ public class ProfileFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     private ShapeableImageView profilePicture;
+    private static final long REFRESH_INTERVAL = 5 * 1000; // 5 seconds
+    private Handler handler = new Handler();
+    private String profileImageUri;
 
     private String mParam1;
     private String mParam2;
@@ -93,7 +97,7 @@ public class ProfileFragment extends Fragment {
                 DocumentSnapshot document = task.getResult();
                 if (document.exists()) {
                     // Retrieve the profileImageUri from the document
-                    String profileImageUri = document.getString("profileImageUri");
+                    profileImageUri = document.getString("profileImageUri");
 
                     // Now you can use profileImageUri to load the image with Glide or any other library
                     if (profileImageUri != null) {
@@ -110,6 +114,23 @@ public class ProfileFragment extends Fragment {
                 Log.d("ProfileFragment", "get failed with ", task.getException());
             }
         });
+        handler.postDelayed(refreshRunnable, REFRESH_INTERVAL);
         return view;
     }
+    // Define a Runnable to update the avatar periodically
+    private Runnable refreshRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (profileImageUri != null) {
+                Glide.with(requireContext())
+                        .load(profileImageUri)
+                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+                        .skipMemoryCache(true)
+                        .into(profilePicture);
+            }
+
+            // After updating, schedule the next refresh
+            handler.postDelayed(this, REFRESH_INTERVAL);
+        }
+    };
 }
