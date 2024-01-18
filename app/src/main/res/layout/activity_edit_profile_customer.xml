@@ -44,7 +44,6 @@
         android:id="@+id/avatarImage"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:background="@drawable/avatar"
         app:layout_constraintTop_toBottomOf="@id/headingSection"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -181,43 +180,13 @@
             android:background="#C0C0C0" />
 
         <TextView
-            android:id="@+id/passwordTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="PASSWORD"
-            android:textSize="13sp"
-            android:background="@android:color/transparent"
-            android:layout_below="@id/addressInput"
-            android:layout_marginTop="20dp"
-            android:layout_marginStart="32dp" />
-
-        <EditText
-            android:id="@+id/passwordInput"
-            android:layout_width="wrap_content"
-            android:layout_height="35dp"
-            android:layout_below="@id/passwordTextView"
-            android:background="@android:color/transparent"
-            android:hint="Password here"
-            android:textSize="13sp"
-            android:layout_marginStart="32dp"
-            android:textColor="@color/black"
-            android:inputType="textPassword"/>
-
-        <View
-            android:layout_width="350dp"
-            android:layout_height="2dp"
-            android:layout_below="@id/passwordInput"
-            android:layout_centerHorizontal="true"
-            android:background="#C0C0C0" />
-
-        <TextView
             android:id="@+id/genderTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="GENDER"
             android:textSize="13sp"
             android:background="@android:color/transparent"
-            android:layout_below="@id/passwordInput"
+            android:layout_below="@id/addressInput"
             android:layout_marginTop="15dp"
             android:layout_marginStart="32dp" />
 

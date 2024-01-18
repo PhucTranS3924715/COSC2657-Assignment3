@@ -21,6 +21,9 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.assignment3.Class.Customer;
 import com.example.assignment3.R;
 import com.google.android.material.button.MaterialButton;
@@ -82,12 +85,36 @@ public class EditProfileCustomerActivity extends AppCompatActivity {
 
         updateButton = (Button) findViewById(R.id.updateButton);
         deleteButton = (Button) findViewById(R.id.deleteButton);
+        profilePicture = findViewById(R.id.avatarImage);
 
         // Set values for gender spinner
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.gender_types, R.layout.spinner_item_text);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerGender.setAdapter(adapter);
+
+        customerRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot document = task.getResult();
+                if (document.exists()) {
+                    // Retrieve the profileImageUri from the document
+                    String profileImageUri = document.getString("profileImageUri");
+
+                    // Now you can use profileImageUri to load the image with Glide or any other library
+                    if (profileImageUri != null) {
+                        Glide.with(this)
+                                .load(profileImageUri)
+                                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                                .skipMemoryCache(true)
+                                .into(profilePicture);
+                    }
+                } else {
+                    Log.d(TAG, "No such document");
+                }
+            } else {
+                Log.d(TAG, "get failed with ", task.getException());
+            }
+        });
 
         // Set old information of the customer
         database.collection("Customers").document(uid).get().addOnCompleteListener(task -> {
@@ -195,8 +222,6 @@ public class EditProfileCustomerActivity extends AppCompatActivity {
             }
         });
 
-        // TODO: Test choose image feature
-        ShapeableImageView profilePicture = findViewById(R.id.avatarImage);
 
         // Create activity launcher
         ActivityResultLauncher<Intent> launcher = registerForActivityResult(
