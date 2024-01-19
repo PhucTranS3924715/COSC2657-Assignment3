@@ -92,7 +92,8 @@ public class RideDetailsActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                rideDocRef.update("driverUid", driverID);
-               finish();
+                Intent intent = new Intent(RideDetailsActivity.this, DriverMapActivity.class);
+                startActivity(intent);
             }
         });
 

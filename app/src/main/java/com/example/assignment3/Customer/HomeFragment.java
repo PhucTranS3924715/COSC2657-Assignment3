@@ -114,6 +114,15 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, OnMa
         }
     }
 
+    @Override
+    public void onMapReady(@NonNull GoogleMap googleMap) {
+        mMap = googleMap;
+
+        // Move map to HCM city
+        LatLng HCMCity = new LatLng(10.832859812678445, 106.62375678797527);
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(HCMCity, 10f));
+    }
+
     private void replaceFragment(Fragment fragment) {
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.mapContainer, fragment);
@@ -192,18 +201,6 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, OnMa
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    @Override
-    public void onMapReady(@NonNull GoogleMap googleMap) {
-        mMap = googleMap;
-
-        // Move map to HCM city
-        LatLng HCMCity = new LatLng(10.832859812678445, 106.62375678797527);
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(HCMCity, 10f));
-
-        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
-        mapFragment.getMapAsync((OnMapReadyCallback) HomeFragment.this);
     }
 
     @Override
@@ -294,9 +291,6 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, OnMa
         bikeText = view.findViewById(R.id.bikeText);
         car4Text = view.findViewById(R.id.car4Text);
         car7Text = view.findViewById(R.id.car7Text);
-
-        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
-        mapFragment.getMapAsync((OnMapReadyCallback) HomeFragment.this);
 
         String apiKey = getString(R.string.api_key);
         if (!Places.isInitialized()){
@@ -515,6 +509,9 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, OnMa
                 tripPriceCar7.setText(String.valueOf(priceCar7 * discount));
             }
         });
+
+        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
 
         return view;
     }
