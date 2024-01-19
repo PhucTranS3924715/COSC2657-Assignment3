@@ -33,6 +33,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.libraries.places.api.Places;
@@ -86,7 +87,6 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, OnMa
     private TextView tripPriceCar4;
     private TextView tripPriceCar7;
     private Marker pickupMarker;
-    private Marker destinationMarker;
 
     private double discount = 1;
 
@@ -113,7 +113,6 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, OnMa
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
-
 
     private void replaceFragment(Fragment fragment) {
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
@@ -154,7 +153,7 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, OnMa
 
                 // Add markers for pick-up and destination
                 pickupMarker = mMap.addMarker(pickupMarkerOptions);
-                destinationMarker = mMap.addMarker(destinationMarkerOptions);
+                mMap.addMarker(destinationMarkerOptions);
 
                 // Draw the route on the map
                 PolylineOptions polylineOptions = new PolylineOptions();
@@ -196,9 +195,49 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, OnMa
     }
 
     @Override
+    public void onMapReady(@NonNull GoogleMap googleMap) {
+        mMap = googleMap;
+
+        // Move map to HCM city
+        LatLng HCMCity = new LatLng(10.832859812678445, 106.62375678797527);
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(HCMCity, 10f));
+
+        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
+        mapFragment.getMapAsync((OnMapReadyCallback) HomeFragment.this);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
+
+        LatLng defaultPickupLocation = new LatLng(10.769444, 106.681944);
+        pickupLocation = defaultPickupLocation;
+        pickupLocationName = "Current Location";
+        MarkerOptions pickupMarkerOptions = new MarkerOptions()
+                .position(pickupLocation)
+                .title("Pick-up Location")
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.pickup));
+        mMap.addMarker(pickupMarkerOptions);
+
+        LatLng defaultDestinationLocation = new LatLng(10.777473, 106.700103);
+        destinationLocation = defaultDestinationLocation;
+        destinationLocationName = "RMIT Vietnam (Saigon South Campus)";
+        MarkerOptions destinationMarkerOptions = new MarkerOptions()
+                .position(destinationLocation)
+                .title("Destination Location")
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.destination));
+        mMap.addMarker(destinationMarkerOptions);
+
+        // Move the camera to show both default pickup and destination locations
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+        builder.include(pickupLocation);
+        builder.include(destinationLocation);
+        LatLngBounds bounds = builder.build();
+        mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 100));
+
+        // Draw the route for the default locations
+        drawRoute();
 
         btnBooking = view.findViewById(R.id.btnBooking);
 
@@ -256,8 +295,8 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, OnMa
         car4Text = view.findViewById(R.id.car4Text);
         car7Text = view.findViewById(R.id.car7Text);
 
-//        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
-//        mapFragment.getMapAsync((OnMapReadyCallback) HomeFragment.this);
+        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
+        mapFragment.getMapAsync((OnMapReadyCallback) HomeFragment.this);
 
         String apiKey = getString(R.string.api_key);
         if (!Places.isInitialized()){
@@ -282,6 +321,7 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, OnMa
         pickupLocationAutocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(@NonNull Place place) {
+                mMap.clear();
                 pickupLocation = place.getLatLng();
                 pickupLocationName = place.getName();
 
@@ -323,6 +363,7 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, OnMa
         destinationAutocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(@NonNull Place place) {
+                mMap.clear();
                 destinationLocation = place.getLatLng();
                 destinationLocationName = place.getName();
 
@@ -486,17 +527,5 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, OnMa
     @Override
     public void onBookingClicked() {
         replaceFragment(new BookingFragment());
-    }
-
-    @Override
-    public void onMapReady(@NonNull GoogleMap googleMap) {
-        mMap = googleMap;
-
-        // Move map to HCM city
-        LatLng HCMCity = new LatLng(10.832859812678445, 106.62375678797527);
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(HCMCity, 10f));
-
-        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
-        mapFragment.getMapAsync((OnMapReadyCallback) HomeFragment.this);
     }
 }
