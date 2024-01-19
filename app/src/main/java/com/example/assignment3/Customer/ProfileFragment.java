@@ -37,6 +37,8 @@ public class ProfileFragment extends Fragment {
     private static final long REFRESH_INTERVAL = 5 * 1000; // 5 seconds
     private Handler handler = new Handler();
     private String profileImageUri;
+    private String name;
+    private TextView nameProfile;
 
     private String mParam1;
     private String mParam2;
@@ -100,6 +102,7 @@ public class ProfileFragment extends Fragment {
                 if (document.exists()) {
                     // Retrieve the profileImageUri from the document
                     profileImageUri = document.getString("profileImageUri");
+                    name = document.getString("name");
 
                     // Now you can use profileImageUri to load the image with Glide or any other library
                     if (profileImageUri != null) {
@@ -116,7 +119,10 @@ public class ProfileFragment extends Fragment {
                 Log.d("ProfileFragment", "get failed with ", task.getException());
             }
         });
-        // Sign out button example
+
+        nameProfile = view.findViewById(R.id.nameProfile);
+        nameProfile.setText(name);
+        // Sign out interaction
         TextView logout = view.findViewById(R.id.logout);
         logout.setOnClickListener(v -> {
             database.collection("Customers").document(uid).update("fcmToken", FieldValue.delete())
@@ -135,13 +141,19 @@ public class ProfileFragment extends Fragment {
     private Runnable refreshRunnable = new Runnable() {
         @Override
         public void run() {
-            if (profileImageUri != null) {
+            // Check if the user is still authenticated
+            FirebaseAuth auth = FirebaseAuth.getInstance();
+            FirebaseUser user = auth.getCurrentUser();
+
+            if (user != null && profileImageUri != null) {
                 Glide.with(requireContext())
                         .load(profileImageUri)
                         .diskCacheStrategy(DiskCacheStrategy.NONE)
                         .skipMemoryCache(true)
                         .into(profilePicture);
             }
+
+            nameProfile.setText(name);
 
             // After updating, schedule the next refresh
             handler.postDelayed(this, REFRESH_INTERVAL);
