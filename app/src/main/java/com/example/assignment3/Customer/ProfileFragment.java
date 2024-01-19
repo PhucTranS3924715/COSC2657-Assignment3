@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -22,6 +23,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -113,6 +115,15 @@ public class ProfileFragment extends Fragment {
             } else {
                 Log.d("ProfileFragment", "get failed with ", task.getException());
             }
+        });
+        // Sign out button example
+        TextView logout = view.findViewById(R.id.logout);
+        logout.setOnClickListener(v -> {
+            database.collection("Customers").document(uid).update("fcmToken", FieldValue.delete())
+                    .addOnSuccessListener(aVoid -> {
+                        Log.d("ProfileFragment", "DocumentSnapshot successfully updated!");
+                        FirebaseAuth.getInstance().signOut();
+                    }).addOnFailureListener(e -> Log.w("ProfileFragment", "Error updating document", e));
         });
         handler.postDelayed(refreshRunnable, REFRESH_INTERVAL);
         return view;

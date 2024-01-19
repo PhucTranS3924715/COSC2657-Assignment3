@@ -100,15 +100,6 @@ public class CustomerMainActivity extends AppCompatActivity {
         FirebaseFirestore database = FirebaseFirestore.getInstance();
         database.collection("Customers").document(uid).update("fcmToken", token);
 
-        // Sign out button example
-        /*Button signoutButton = findViewById(R.id.signoutButton);
-        signoutButton.setOnClickListener(v -> {
-            database.collection("Customers").document(uid).update("fcmToken", FieldValue.delete())
-                    .addOnSuccessListener(aVoid -> {
-                        Log.d(TAG, "DocumentSnapshot successfully updated!");
-                        FirebaseAuth.getInstance().signOut();
-                        finish();
-                    }).addOnFailureListener(e -> Log.w(TAG, "Error updating document", e));
-        });*/
+
     }
 }
