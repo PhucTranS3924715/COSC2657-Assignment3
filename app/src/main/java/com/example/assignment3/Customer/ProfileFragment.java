@@ -122,7 +122,10 @@ public class ProfileFragment extends Fragment {
             database.collection("Customers").document(uid).update("fcmToken", FieldValue.delete())
                     .addOnSuccessListener(aVoid -> {
                         Log.d("ProfileFragment", "DocumentSnapshot successfully updated!");
-                        FirebaseAuth.getInstance().signOut();
+                        Intent intent1 = new Intent(view.getContext(), LoginForCustomerActivity.class);
+                        intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK); // Clear all activities in the stack
+                        FirebaseAuth.getInstance().signOut();  // Sign out current user
+                        launcher.launch(intent1);
                     }).addOnFailureListener(e -> Log.w("ProfileFragment", "Error updating document", e));
         });
         handler.postDelayed(refreshRunnable, REFRESH_INTERVAL);
