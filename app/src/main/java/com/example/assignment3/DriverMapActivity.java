@@ -4,9 +4,11 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
@@ -34,10 +36,11 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
 import com.google.maps.DirectionsApi;
 import com.google.maps.GeoApiContext;
-import com.google.maps.model.DirectionsLeg;
 import com.google.maps.model.DirectionsResult;
 import com.google.maps.model.EncodedPolyline;
 import com.google.maps.model.TravelMode;
+import android.widget.TextView;
+
 
 import java.util.HashMap;
 import java.util.List;
@@ -52,18 +55,73 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
     private GeoPoint currentLocation;
     private Marker pickupMarker;
     private Marker destinationMarker;
+    private String rideDocumentId;
+    private SwitchCompat switchCompat;
+    private TextView statusView;
+    String driverID = AppData.getInstance().getDriverID();
     private static final String TAG = "DriverMapActivity";
-    private List<Customer> nearbyCustomers;
+
+    public DriverMapActivity(String rideDocumentId) {
+        this.rideDocumentId = rideDocumentId;
+    }
+
+    private void updateRideLocation(GeoPoint location) {
+        // Update location field in the Ride collection
+        DocumentReference rideRef = firestore.collection("Ride").document(rideDocumentId);
+
+        Map<String, Object> update = new HashMap<>();
+        update.put("DriverLocation", location);
+
+        rideRef.update(update)
+                .addOnSuccessListener(aVoid -> Log.d(TAG, "Driver location updated in Ride collection"))
+                .addOnFailureListener(e -> Log.e(TAG, "Error updating driver location in Ride collection", e));
+    }
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_driver_map);
+
+        switchCompat = findViewById(R.id.switchCompat);
+        statusView = findViewById(R.id.StatusView);
 
         // Initialize Firebase
         FirebaseApp.initializeApp(this);
 
         // Initialize Firestore
         firestore = FirebaseFirestore.getInstance();
+
+        DocumentReference rideDocRef = FirebaseFirestore.getInstance().collection("Ride").document(rideDocumentId);
+        // Listen for changes in the Ride document
+        rideDocRef.addSnapshotListener((documentSnapshot, e) -> {
+            if (e != null) {
+                Log.w(TAG, "Listen failed.");
+                return;
+            }
+
+            if (documentSnapshot != null && documentSnapshot.exists()) {
+                // Get the value of uidDriver from the document
+                String uidDriver = documentSnapshot.getString("uidDriver");
+
+                // Check if uidDriver is not null
+                if (uidDriver != null) {
+                    // If uidDriver is not null, hide SwitchCompat and StatusView
+                    switchCompat.setVisibility(View.INVISIBLE);
+                    statusView.setVisibility(View.INVISIBLE);
+
+                    // Update the driver's location in the Ride document
+                    GeoPoint driverLocation = getCurrentLocation();
+                    if (driverLocation != null) {
+                        updateRideLocation(driverLocation);
+                    }
+                } else {
+                    // If uidDriver is null, show SwitchCompat and StatusView
+                    switchCompat.setVisibility(View.VISIBLE);
+                    statusView.setVisibility(View.VISIBLE);
+                }
+            }
+        });
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
 
