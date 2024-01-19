@@ -87,6 +87,7 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, OnMa
     private TextView tripPriceCar4;
     private TextView tripPriceCar7;
     private Marker pickupMarker;
+    private Marker destinationMarker;
 
     private double discount = 1;
 
@@ -121,6 +122,12 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, OnMa
         // Move map to HCM city
         LatLng HCMCity = new LatLng(10.832859812678445, 106.62375678797527);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(HCMCity, 10f));
+
+        LatLng defaultPickupLocation = new LatLng(10.769444, 106.681944);
+        if (mMap != null) {
+            drawRoute(convertToGeoPoint(HCMCity), convertToGeoPoint(defaultPickupLocation));
+        } else {
+        }
     }
 
     private void replaceFragment(Fragment fragment) {
@@ -131,18 +138,99 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, OnMa
     }
 
     //Draw direction between Pick up point and Destination.
-    public void drawRoute() {
+//    public void drawRoute() {
+//        // Use the Google Directions API to get the route information
+//        GeoApiContext context = new GeoApiContext.Builder()
+//                .apiKey(getString(R.string.api_key)) // Replace with your API key
+//                .build();
+//
+//        MarkerOptions pickupMarkerOptions = new MarkerOptions().
+//                position(pickupLocation).title("Pick-up Location").
+//                icon(BitmapDescriptorFactory.fromResource(R.drawable.pickup));
+//        MarkerOptions destinationMarkerOptions = new MarkerOptions().
+//                position(destinationLocation).title("Destination Location").
+//                icon(BitmapDescriptorFactory.fromResource(R.drawable.destination));
+//
+//        DirectionsResult result;
+//        try {
+//            result = DirectionsApi.newRequest(context)
+//                    .origin(new com.google.maps.model.LatLng(pickupLocation.latitude, pickupLocation.longitude))
+//                    .destination(new com.google.maps.model.LatLng(destinationLocation.latitude, destinationLocation.longitude))
+//                    .mode(TravelMode.DRIVING) // You can change the mode based on your requirements
+//                    .await();
+//
+//            if (result.routes != null && result.routes.length > 0) {
+//                // Extract the polyline from the result and add it to the map
+//                EncodedPolyline points = result.routes[0].overviewPolyline;
+//                List<com.google.maps.model.LatLng> decodedPath = points.decodePath();
+//
+//                // Clear previous markers and polylines
+//                mMap.clear();
+//
+//                // Add markers for pick-up and destination
+//                pickupMarker = mMap.addMarker(pickupMarkerOptions);
+//                mMap.addMarker(destinationMarkerOptions);
+//
+//                // Draw the route on the map
+//                PolylineOptions polylineOptions = new PolylineOptions();
+//                for (com.google.maps.model.LatLng latLng : decodedPath) {
+//                    polylineOptions.add(new LatLng(latLng.lat, latLng.lng));
+//                }
+//
+//                int polylineColor = ContextCompat.getColor(requireContext(), R.color.red);
+//                polylineOptions.color(polylineColor);
+//
+//                mMap.addPolyline(polylineOptions);
+//
+//                // TODO: Implement discount
+//                // Calculate total distance
+//                if (result.routes != null && result.routes.length > 0) {
+//                    DirectionsLeg leg = result.routes[0].legs[0];
+//                    double distanceInMeters = ((DirectionsLeg) leg).distance.inMeters;
+//                    double distanceInKilometers = distanceInMeters / 1000.0;
+//
+//                    // Define price rates
+//                    double priceRateBike = 8000.0;
+//                    double priceRateCar4 = 15000.0;
+//                    double priceRateCar7 = 20000.0;
+//
+//                    // Calculate prices for each vehicle
+//                    double priceBike = distanceInKilometers * priceRateBike * discount;
+//                    double priceCar4 = distanceInKilometers * priceRateCar4 * discount;
+//                    double priceCar7 = distanceInKilometers * priceRateCar7 * discount;
+//
+//                    // Update the TextViews with the calculated prices
+//                    tripPriceBike.setText(String.valueOf(priceBike));
+//                    tripPriceCar4.setText(String.valueOf(priceCar4));
+//                    tripPriceCar7.setText(String.valueOf(priceCar7));
+//                }
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
+
+    public void drawRoute(GeoPoint pickLocation, GeoPoint dropLocation) {
         // Use the Google Directions API to get the route information
         GeoApiContext context = new GeoApiContext.Builder()
                 .apiKey(getString(R.string.api_key)) // Replace with your API key
                 .build();
 
-        MarkerOptions pickupMarkerOptions = new MarkerOptions().
-                position(pickupLocation).title("Pick-up Location").
-                icon(BitmapDescriptorFactory.fromResource(R.drawable.pickup));
-        MarkerOptions destinationMarkerOptions = new MarkerOptions().
-                position(destinationLocation).title("Destination Location").
-                icon(BitmapDescriptorFactory.fromResource(R.drawable.destination));
+        LatLng pickupLocation = convertToGoogleMapsLatLng(pickLocation);
+        LatLng destinationLocation = convertToGoogleMapsLatLng(dropLocation);
+
+        MarkerOptions pickupMarkerOptions = new MarkerOptions()
+                .position(pickupLocation)
+                .title("Pick-up Location");
+                //.icon(BitmapDescriptorFactory.fromResource(R.drawable.pickup));
+
+        MarkerOptions destinationMarkerOptions = new MarkerOptions()
+                .position(destinationLocation)
+                .title("Destination Location");
+                //.icon(BitmapDescriptorFactory.fromResource(R.drawable.destination));
+
+        pickupMarker = mMap.addMarker(pickupMarkerOptions);
+        destinationMarker = mMap.addMarker(destinationMarkerOptions);
 
         DirectionsResult result;
         try {
@@ -162,79 +250,41 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, OnMa
 
                 // Add markers for pick-up and destination
                 pickupMarker = mMap.addMarker(pickupMarkerOptions);
-                mMap.addMarker(destinationMarkerOptions);
+                destinationMarker = mMap.addMarker(destinationMarkerOptions);
 
                 // Draw the route on the map
                 PolylineOptions polylineOptions = new PolylineOptions();
                 for (com.google.maps.model.LatLng latLng : decodedPath) {
-                    polylineOptions.add(new LatLng(latLng.lat, latLng.lng));
+                    polylineOptions.add(new com.google.android.gms.maps.model.LatLng(latLng.lat, latLng.lng));
                 }
 
                 int polylineColor = ContextCompat.getColor(requireContext(), R.color.red);
                 polylineOptions.color(polylineColor);
 
                 mMap.addPolyline(polylineOptions);
-
-                // TODO: Implement discount
-                // Calculate total distance
-                if (result.routes != null && result.routes.length > 0) {
-                    DirectionsLeg leg = result.routes[0].legs[0];
-                    double distanceInMeters = ((DirectionsLeg) leg).distance.inMeters;
-                    double distanceInKilometers = distanceInMeters / 1000.0;
-
-                    // Define price rates
-                    double priceRateBike = 8000.0;
-                    double priceRateCar4 = 15000.0;
-                    double priceRateCar7 = 20000.0;
-
-                    // Calculate prices for each vehicle
-                    double priceBike = distanceInKilometers * priceRateBike * discount;
-                    double priceCar4 = distanceInKilometers * priceRateCar4 * discount;
-                    double priceCar7 = distanceInKilometers * priceRateCar7 * discount;
-
-                    // Update the TextViews with the calculated prices
-                    tripPriceBike.setText(String.valueOf(priceBike));
-                    tripPriceCar4.setText(String.valueOf(priceCar4));
-                    tripPriceCar7.setText(String.valueOf(priceCar7));
-                }
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+    // Convert Geo Point to LatLng
+    private com.google.android.gms.maps.model.LatLng convertToGoogleMapsLatLng(GeoPoint geoPoint) {
+        double latitude = geoPoint.getLatitude();
+        double longitude = geoPoint.getLongitude();
+        return new com.google.android.gms.maps.model.LatLng(latitude, longitude);
+    }
+
+    private GeoPoint convertToGeoPoint(LatLng latLng) {
+        double latitude = latLng.latitude;
+        double longitude = latLng.longitude;
+        return new GeoPoint(latitude, longitude);
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
-
-        LatLng defaultPickupLocation = new LatLng(10.769444, 106.681944);
-        pickupLocation = defaultPickupLocation;
-        pickupLocationName = "Current Location";
-        MarkerOptions pickupMarkerOptions = new MarkerOptions()
-                .position(pickupLocation)
-                .title("Pick-up Location")
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.pickup));
-        mMap.addMarker(pickupMarkerOptions);
-
-        LatLng defaultDestinationLocation = new LatLng(10.777473, 106.700103);
-        destinationLocation = defaultDestinationLocation;
-        destinationLocationName = "RMIT Vietnam (Saigon South Campus)";
-        MarkerOptions destinationMarkerOptions = new MarkerOptions()
-                .position(destinationLocation)
-                .title("Destination Location")
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.destination));
-        mMap.addMarker(destinationMarkerOptions);
-
-        // Move the camera to show both default pickup and destination locations
-        LatLngBounds.Builder builder = new LatLngBounds.Builder();
-        builder.include(pickupLocation);
-        builder.include(destinationLocation);
-        LatLngBounds bounds = builder.build();
-        mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 100));
-
-        // Draw the route for the default locations
-        drawRoute();
 
         btnBooking = view.findViewById(R.id.btnBooking);
 
@@ -315,7 +365,7 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, OnMa
         pickupLocationAutocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(@NonNull Place place) {
-                mMap.clear();
+//                mMap.clear();
                 pickupLocation = place.getLatLng();
                 pickupLocationName = place.getName();
 
@@ -331,7 +381,7 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, OnMa
                 Log.i(TAG, "Place: " + ", " + place.getName() + place.getAddress() + ", " + place.getLatLng());
 
                 if (destinationLocation != null) {
-                    drawRoute();
+                    //drawRoute();
                 }
             }
 
@@ -357,7 +407,7 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, OnMa
         destinationAutocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(@NonNull Place place) {
-                mMap.clear();
+                //mMap.clear();
                 destinationLocation = place.getLatLng();
                 destinationLocationName = place.getName();
 
@@ -373,7 +423,7 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, OnMa
                 Log.i(TAG, "Place: " + ", " + place.getName() + place.getAddress() + ", " + place.getLatLng());
 
                 if (pickupLocation != null) {
-                    drawRoute();
+                    //drawRoute();
                 }
             }
 
