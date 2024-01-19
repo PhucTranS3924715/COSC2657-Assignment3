@@ -66,6 +66,8 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, OnMa
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
+    private double priceBike = 0, priceCar4 = 0, priceCar7 = 0;
+
     private String mParam1;
     private String mParam2;
 
@@ -442,9 +444,12 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, OnMa
         tripPriceCar4 = view.findViewById(R.id.tripPriceCar4);
         tripPriceCar7 = view.findViewById(R.id.tripPriceCar7);
 
-        double priceBike = Double.parseDouble(tripPriceBike.getText().toString());
-        double priceCar4 = Double.parseDouble(tripPriceCar4.getText().toString());
-        double priceCar7 = Double.parseDouble(tripPriceCar7.getText().toString());
+
+        if (!tripPriceBike.getText().toString().isEmpty() && !tripPriceCar4.getText().toString().isEmpty() && !tripPriceCar7.getText().toString().isEmpty()) {
+            priceBike = Double.parseDouble(tripPriceBike.getText().toString());
+            priceCar4 = Double.parseDouble(tripPriceCar4.getText().toString());
+            priceCar7 = Double.parseDouble(tripPriceCar7.getText().toString());
+        }
 
         // Set on click listener for voucher fragment
         voucherLayout.setOnClickListener(v -> {
@@ -479,6 +484,12 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, OnMa
 
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
+        mMap = googleMap;
+
+        // Move map to HCM city
+        LatLng HCMCity = new LatLng(10.832859812678445, 106.62375678797527);
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(HCMCity, 10f));
+
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync((OnMapReadyCallback) HomeFragment.this);
     }
