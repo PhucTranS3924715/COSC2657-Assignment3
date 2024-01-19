@@ -27,7 +27,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="44dp"
         android:layout_marginTop="72dp"
-        android:text="Welcome\nback!"
+        android:text="Welcome\nback, user!"
         android:textColor="@color/white"
         android:textSize="30sp"
         android:textStyle="bold"

@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import com.example.assignment3.Customer.CustomerMainActivity;
 import com.example.assignment3.Customer.LoginForCustomerActivity;
+import com.example.assignment3.DriverMapActivity;
 import com.example.assignment3.R;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -52,9 +53,8 @@ public class LoginForDriverActivity extends AppCompatActivity {
                 auth.signInWithEmailAndPassword(email, password)
                         .addOnCompleteListener(this, task -> {
                             if (task.isSuccessful()) {  // If sign in success
-                                // TODO: Create driver main activity and fix the intent
                                 Intent intent = new Intent(LoginForDriverActivity.this,
-                                        DriverProfileActivity.class);
+                                        DriverMapActivity.class);
                                 launcher.launch(intent);
                             } else {
                                 Toast.makeText(this, "Sign in failed", Toast.LENGTH_SHORT).show();
