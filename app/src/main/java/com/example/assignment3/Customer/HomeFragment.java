@@ -63,7 +63,6 @@ import java.util.Map;
 
 public class HomeFragment extends Fragment implements HomeFragmentListener, OnMapReadyCallback{
 
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
@@ -120,12 +119,12 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, OnMa
         mMap = googleMap;
 
         // Move map to HCM city
-        LatLng HCMCity = new LatLng(10.832859812678445, 106.62375678797527);
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(HCMCity, 10f));
+        pickupLocation = new LatLng(10.832859812678445, 106.62375678797527);
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(pickupLocation, 10f));
 
-        LatLng defaultPickupLocation = new LatLng(10.769444, 106.681944);
+        destinationLocation = new LatLng(10.769444, 106.681944);
         if (mMap != null) {
-            drawRoute(convertToGeoPoint(HCMCity), convertToGeoPoint(defaultPickupLocation));
+            drawRoute(convertToGeoPoint(pickupLocation), convertToGeoPoint(destinationLocation));
         } else {
         }
     }
