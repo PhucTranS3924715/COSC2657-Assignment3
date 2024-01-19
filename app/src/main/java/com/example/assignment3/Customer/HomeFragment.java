@@ -365,7 +365,9 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, OnMa
 
                 //Save the price
                 selectedVehicleType = "Bike";
-                Price = Double.parseDouble(tripPriceBike.getText().toString());
+                if (!tripPriceBike.getText().toString().isEmpty()) {
+                    Price = Double.parseDouble(tripPriceBike.getText().toString());
+                }
             }
         });
 
@@ -384,7 +386,9 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, OnMa
 
                 //Save the price
                 selectedVehicleType = "Car4";
-                Price = Double.parseDouble(tripPriceCar4.getText().toString());
+                if (!tripPriceCar4.getText().toString().isEmpty()) {
+                    Price = Double.parseDouble(tripPriceCar4.getText().toString());
+                }
             }
         });
 
@@ -403,7 +407,9 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, OnMa
 
                 //Save the price
                 selectedVehicleType = "Car7";
-                Price = Double.parseDouble(tripPriceCar7.getText().toString());
+                if (!tripPriceCar7.getText().toString().isEmpty()) {
+                    Price = Double.parseDouble(tripPriceCar7.getText().toString());
+                }
             }
         });
 
