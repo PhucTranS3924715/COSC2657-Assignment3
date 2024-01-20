@@ -250,7 +250,7 @@
                     android:textStyle="bold" />
             </TableRow>
 
-            <com.google.android.material.button.MaterialButton
+            <Button
                 android:id="@+id/cancelButtonBooking"
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
@@ -259,7 +259,7 @@
                 android:background="@drawable/round_button"
                 android:backgroundTint="#FF6F61"
                 android:gravity="center"
-                android:text="cacel booking"
+                android:text="cancel booking"
                 android:textColor="@color/white" />
 
         </LinearLayout>

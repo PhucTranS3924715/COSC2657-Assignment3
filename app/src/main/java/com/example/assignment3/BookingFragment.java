@@ -2,16 +2,25 @@ package com.example.assignment3;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.fragment.app.Fragment;
 
+import com.example.assignment3.Customer.HomeFragment;
+import com.example.assignment3.Customer.LoginForCustomerActivity;
 import com.example.assignment3.Customer.MessageActivity;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.material.button.MaterialButton;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
@@ -27,6 +36,7 @@ public class BookingFragment extends Fragment {
     private RelativeLayout searchingForDriverSection;
     private RelativeLayout bookingDetailSection;
     private String rideDocumentId;
+    private Button cancelBooking;
     String driverID = AppData.getInstance().getDriverID();
 
     public BookingFragment() {
@@ -45,6 +55,12 @@ public class BookingFragment extends Fragment {
         super.onCreate(savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_booking, container, false);
 
+        // Set up Firestore database
+        FirebaseFirestore database = FirebaseFirestore.getInstance();
+        // Create activity launcher
+        ActivityResultLauncher<Intent> launcher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(), result -> {});
+
         if (getArguments() != null) {
             rideDocumentId = getArguments().getString("rideDocumentId");
         }
@@ -62,7 +78,7 @@ public class BookingFragment extends Fragment {
         });
 
         // Initialize your Firestore reference (adjust the path accordingly)
-        DocumentReference rideDocumentRef = FirebaseFirestore.getInstance().collection("Ride")
+        DocumentReference rideDocumentRef = database.collection("Ride")
                 .document(rideDocumentId);
 
         rideDocumentRef.get()
@@ -135,7 +151,30 @@ public class BookingFragment extends Fragment {
             }
         });
 
+        // Cancel booking
+        cancelBooking = view.findViewById(R.id.cancelButtonBooking);
+        cancelBooking.setOnClickListener( v ->{
+            database.collection("Ride").document(rideDocumentId).delete()
+                    .addOnSuccessListener(aVoid ->{
+                        Log.d("BookingFragment", "Ride document deleted successfully");
+                        Intent intent1 = new Intent(view.getContext(), HomeFragment.class);
+                        intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK); // Clear all activities in the stack
+                        launcher.launch(intent1);
+                    }).addOnFailureListener(e -> Log.w("BookingFragment", "Error deleting document", e));
+        });
         return view;
+    }
+
+    private com.google.android.gms.maps.model.LatLng convertToGoogleMapsLatLng(GeoPoint geoPoint) {
+        double latitude = geoPoint.getLatitude();
+        double longitude = geoPoint.getLongitude();
+        return new com.google.android.gms.maps.model.LatLng(latitude, longitude);
+    }
+
+    private GeoPoint convertToGeoPoint(LatLng latLng) {
+        double latitude = latLng.latitude;
+        double longitude = latLng.longitude;
+        return new GeoPoint(latitude, longitude);
     }
 }
 
