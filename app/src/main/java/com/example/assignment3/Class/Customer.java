@@ -8,12 +8,14 @@ public class Customer extends User implements Serializable {
     private int rewardPoint;
     private List<Voucher> voucherIDs;
     private List<Ride> historyRides;
+    private List<PaymentMethod> paymentMethods;
 
     public Customer(String name, String phone, String email) {
         super(name, phone, email);
         this.rewardPoint = 0;
         this.voucherIDs = new ArrayList<>();
         this.historyRides = new ArrayList<>();
+        this.paymentMethods = new ArrayList<>();
     }
 
     public Customer() {}
@@ -40,5 +42,13 @@ public class Customer extends User implements Serializable {
 
     public void setHistoryRides(List<Ride> historyRides) {
         this.historyRides = historyRides;
+    }
+
+    public List<PaymentMethod> getPaymentMethods() {
+        return paymentMethods;
+    }
+
+    public void setPaymentMethods(List<PaymentMethod> paymentMethods) {
+        this.paymentMethods = paymentMethods;
     }
 }

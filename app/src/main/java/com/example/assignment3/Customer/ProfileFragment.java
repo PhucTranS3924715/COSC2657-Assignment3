@@ -122,6 +122,7 @@ public class ProfileFragment extends Fragment {
 
         nameProfile = view.findViewById(R.id.nameProfile);
         nameProfile.setText(name);
+
         // Sign out interaction
         TextView logout = view.findViewById(R.id.logout);
         logout.setOnClickListener(v -> {
@@ -134,6 +135,14 @@ public class ProfileFragment extends Fragment {
                         launcher.launch(intent1);
                     }).addOnFailureListener(e -> Log.w("ProfileFragment", "Error updating document", e));
         });
+
+        // Add a payment method
+        TextView paymentMethod = view.findViewById(R.id.paymentMethod);
+        paymentMethod.setOnClickListener(v -> {
+            Intent intent = new Intent(view.getContext(), AddPaymentMethodActivity.class);
+            launcher.launch(intent);
+        });
+
         handler.postDelayed(refreshRunnable, REFRESH_INTERVAL);
         return view;
     }
