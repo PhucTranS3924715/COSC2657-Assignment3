@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -74,9 +75,8 @@ public class MessageActivity extends AppCompatActivity {
         receiverID = (String) getIntent().getSerializableExtra("userID");  // TODO: Implement function to send the user ID
         assert receiverUser != null;
 
-        // Set name and picture for other user currently chatting with
-        userName.setText(receiverUser.getName());
         // TODO: Set user's profile picture
+        userName.setText(receiverUser.getName());
 
         // Implement on send message button
         binding.layoutSend.setOnClickListener(v -> {
@@ -88,6 +88,9 @@ public class MessageActivity extends AppCompatActivity {
             database.collection("Chats").add(message);
             binding.messageInput.setText(null);
         });
+
+        ImageView backButton = binding.backButton;
+        backButton.setOnClickListener(v -> finish());
 
         listenMessages();
     }

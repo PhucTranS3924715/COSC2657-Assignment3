@@ -15,6 +15,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.fragment.app.Fragment;
 
+import com.example.assignment3.Class.Driver;
 import com.example.assignment3.Customer.HomeFragment;
 import com.example.assignment3.Customer.LoginForCustomerActivity;
 import com.example.assignment3.Customer.MessageActivity;
@@ -22,10 +23,12 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
 
 public class BookingFragment extends Fragment {
+    private static final String TAG = "BookingFragment";
     private GeoPoint pickPoint;
     private GeoPoint dropPoint;
     private String pickPointName;
@@ -72,9 +75,25 @@ public class BookingFragment extends Fragment {
         ImageView messageButton = view.findViewById(R.id.messageButton);
 
         messageButton.setOnClickListener(v -> {
-            // Start the MessageActivity
-            Intent intent = new Intent(getActivity(), MessageActivity.class);
-            startActivity(intent);
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            db.collection("Drivers").document(driverID).get().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        Driver driver = document.toObject(Driver.class);
+                        // Start the MessageActivity
+                        Intent intent = new Intent(getActivity(), MessageActivity.class);
+                        intent.putExtra("userID", driverID);
+                        intent.putExtra("user", driver);
+                        startActivity(intent);
+                    } else {
+                        Log.d(TAG, "No such document");
+                    }
+                } else {
+                    Log.d(TAG, "get failed with ", task.getException());
+                }
+            });
+
         });
 
         // Initialize your Firestore reference (adjust the path accordingly)
