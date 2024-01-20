@@ -209,6 +209,7 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, OnMa
 //        }
 //    }
 
+    // draw direction between two GeoPoint location
     public void drawRoute(GeoPoint pickLocation, GeoPoint dropLocation) {
         // Use the Google Directions API to get the route information
         GeoApiContext context = new GeoApiContext.Builder()
@@ -261,6 +262,28 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, OnMa
                 polylineOptions.color(polylineColor);
 
                 mMap.addPolyline(polylineOptions);
+
+                // Calculate total distance
+                if (result.routes != null && result.routes.length > 0) {
+                    DirectionsLeg leg = result.routes[0].legs[0];
+                    double distanceInMeters = ((DirectionsLeg) leg).distance.inMeters;
+                    double distanceInKilometers = distanceInMeters / 1000.0;
+
+                    // Define price rates
+                    double priceRateBike = 8000.0;
+                    double priceRateCar4 = 15000.0;
+                    double priceRateCar7 = 20000.0;
+
+                    // Calculate prices for each vehicle
+                    double priceBike = distanceInKilometers * priceRateBike * discount;
+                    double priceCar4 = distanceInKilometers * priceRateCar4 * discount;
+                    double priceCar7 = distanceInKilometers * priceRateCar7 * discount;
+
+                    // Update the TextViews with the calculated prices
+                    tripPriceBike.setText(String.valueOf(priceBike));
+                    tripPriceCar4.setText(String.valueOf(priceCar4));
+                    tripPriceCar7.setText(String.valueOf(priceCar7));
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();

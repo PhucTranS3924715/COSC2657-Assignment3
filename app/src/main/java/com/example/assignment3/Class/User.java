@@ -10,7 +10,7 @@ public class User implements Serializable {
     private String email;
     private String address;
     private String gender;
-    private String profilePicture;
+    private String profileImageUri;
     private GeoPoint location;
 
     public User(String name, String phone, String email) {
@@ -19,7 +19,7 @@ public class User implements Serializable {
         this.email = email;
         this.address = "";
         this.gender = "";
-        this.profilePicture = "";
+        this.profileImageUri = "";
     }
 
     public User(String name, String phone, String email, String address, String gender) {
@@ -73,11 +73,11 @@ public class User implements Serializable {
     }
 
     public String getProfilePicture() {
-        return profilePicture;
+        return profileImageUri;
     }
 
     public void setProfilePicture(String profilePicture) {
-        this.profilePicture = profilePicture;
+        this.profileImageUri = profilePicture;
     }
 
     public GeoPoint getLocation() {

@@ -25,8 +25,6 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
 public class ProfileFragment extends Fragment {
 
@@ -69,7 +67,6 @@ public class ProfileFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
-        // TODO: Create profile UI
 
         // Create activity launcher
         ActivityResultLauncher<Intent> launcher = registerForActivityResult(
@@ -85,8 +82,6 @@ public class ProfileFragment extends Fragment {
         profilePicture = view.findViewById(R.id.avatarImage);
         // Set up Firestore database and Authentication
         FirebaseFirestore database = FirebaseFirestore.getInstance();
-
-        StorageReference storageRef = FirebaseStorage.getInstance().getReference();
 
         FirebaseAuth auth = FirebaseAuth.getInstance();
         FirebaseUser user = auth.getCurrentUser();
@@ -161,9 +156,7 @@ public class ProfileFragment extends Fragment {
                         .skipMemoryCache(true)
                         .into(profilePicture);
             }
-
             nameProfile.setText(name);
-
             // After updating, schedule the next refresh
             handler.postDelayed(this, REFRESH_INTERVAL);
         }
