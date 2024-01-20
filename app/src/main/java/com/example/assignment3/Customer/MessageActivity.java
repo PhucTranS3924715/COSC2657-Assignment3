@@ -1,24 +1,30 @@
 package com.example.assignment3.Customer;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.assignment3.ChatAdapter;
 import com.example.assignment3.ChatMessage;
+import com.example.assignment3.Class.Customer;
+import com.example.assignment3.Class.Driver;
 import com.example.assignment3.Class.User;
 import com.example.assignment3.databinding.ActivityMessageBinding;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -26,6 +32,7 @@ import java.util.List;
 import java.util.Locale;
 
 public class MessageActivity extends AppCompatActivity {
+    private static final String TAG = "MessageActivity";
     private ActivityMessageBinding binding;
     private User receiverUser;
     private String receiverID;  // Other user ID (currently chatting with)
@@ -51,12 +58,14 @@ public class MessageActivity extends AppCompatActivity {
         assert user != null;
         senderID = user.getUid();
 
-        // Get the IDs of the components to set values to them
         TextView userName = binding.userNameText;
         ImageView profilePicture = binding.profilePicture;
 
         chatMessages = new ArrayList<>();
         chatAdapter = new ChatAdapter(chatMessages, senderID);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        layoutManager.setStackFromEnd(true);
+        binding.chatRecycleView.setLayoutManager(layoutManager);
         binding.chatRecycleView.setAdapter(chatAdapter);
         database = FirebaseFirestore.getInstance();
 
@@ -85,12 +94,8 @@ public class MessageActivity extends AppCompatActivity {
 
     private void listenMessages() {
         database.collection("Chats")
-                .whereEqualTo(KEY_SENDER_ID, senderID)
-                .whereEqualTo(KEY_RECEIVER_ID, receiverID)
-                .addSnapshotListener(eventListener);
-        database.collection("Chats")
-                .whereEqualTo(KEY_SENDER_ID, receiverID)
-                .whereEqualTo(KEY_RECEIVER_ID, senderID)
+                .whereIn(KEY_SENDER_ID, Arrays.asList(senderID, receiverID))
+                .whereIn(KEY_RECEIVER_ID, Arrays.asList(senderID, receiverID))
                 .addSnapshotListener(eventListener);
     }
 
@@ -99,7 +104,7 @@ public class MessageActivity extends AppCompatActivity {
             return;
         }
         if (value != null) {
-            int count = chatMessages.size();
+            int oldCount = chatMessages.size();
             for (DocumentChange documentChange : value.getDocumentChanges()) {
                 if (documentChange.getType() == DocumentChange.Type.ADDED) {
                     ChatMessage chatMessage = new ChatMessage();
@@ -112,10 +117,11 @@ public class MessageActivity extends AppCompatActivity {
                 }
             }
             Collections.sort(chatMessages, (obj1, obj2) -> obj1.dateObject.compareTo(obj2.dateObject));
-            if (count == 0) {
+            int newCount = chatMessages.size();
+            if (oldCount == 0) {
                 chatAdapter.notifyDataSetChanged();
-            } else {
-                chatAdapter.notifyItemRangeInserted(chatMessages.size(), chatMessages.size());
+            } else if(newCount > oldCount) {
+                chatAdapter.notifyItemRangeInserted(oldCount, newCount - oldCount);
                 binding.chatRecycleView.smoothScrollToPosition(chatMessages.size() - 1);
             }
         }

@@ -63,7 +63,6 @@ import java.util.Map;
 
 public class HomeFragment extends Fragment implements HomeFragmentListener, OnMapReadyCallback{
 
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
@@ -120,12 +119,12 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, OnMa
         mMap = googleMap;
 
         // Move map to HCM city
-        LatLng HCMCity = new LatLng(10.832859812678445, 106.62375678797527);
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(HCMCity, 10f));
+        pickupLocation = new LatLng(10.832859812678445, 106.62375678797527);
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(pickupLocation, 10f));
 
-        LatLng defaultPickupLocation = new LatLng(10.769444, 106.681944);
+        destinationLocation = new LatLng(10.769444, 106.681944);
         if (mMap != null) {
-            drawRoute(convertToGeoPoint(HCMCity), convertToGeoPoint(defaultPickupLocation));
+            drawRoute(convertToGeoPoint(pickupLocation), convertToGeoPoint(destinationLocation));
         } else {
         }
     }
@@ -210,6 +209,7 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, OnMa
 //        }
 //    }
 
+    // draw direction between two GeoPoint location
     public void drawRoute(GeoPoint pickLocation, GeoPoint dropLocation) {
         // Use the Google Directions API to get the route information
         GeoApiContext context = new GeoApiContext.Builder()
@@ -262,6 +262,28 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, OnMa
                 polylineOptions.color(polylineColor);
 
                 mMap.addPolyline(polylineOptions);
+
+                // Calculate total distance
+                if (result.routes != null && result.routes.length > 0) {
+                    DirectionsLeg leg = result.routes[0].legs[0];
+                    double distanceInMeters = ((DirectionsLeg) leg).distance.inMeters;
+                    double distanceInKilometers = distanceInMeters / 1000.0;
+
+                    // Define price rates
+                    double priceRateBike = 8000.0;
+                    double priceRateCar4 = 15000.0;
+                    double priceRateCar7 = 20000.0;
+
+                    // Calculate prices for each vehicle
+                    double priceBike = distanceInKilometers * priceRateBike * discount;
+                    double priceCar4 = distanceInKilometers * priceRateCar4 * discount;
+                    double priceCar7 = distanceInKilometers * priceRateCar7 * discount;
+
+                    // Update the TextViews with the calculated prices
+                    tripPriceBike.setText(String.valueOf(priceBike));
+                    tripPriceCar4.setText(String.valueOf(priceCar4));
+                    tripPriceCar7.setText(String.valueOf(priceCar7));
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();

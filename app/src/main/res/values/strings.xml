@@ -16,6 +16,7 @@
         <item>Female</item>
         <item>Other</item>
     </string-array>
+
     <string name="title_activity_user_map">UserMapActivity</string>
 
     <!-- Account for admin -->
@@ -27,6 +28,11 @@
     <string name="second_fragment_label">Second Fragment</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
+
+    <string-array name="payment_types">
+        <item>Paypal</item>
+        <item>Credit card</item>
+    </string-array>
 
     <string name="lorem_ipsum">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris
