@@ -28,7 +28,7 @@ Hong Anh:
 - Implement UserMapActivity, which include search for available driver in specific radius, get current user location, implement Haversine formula to calculate distance, get ride document id after driver is found.
 - Implement DriverMapActivity, which include update current location of driver periodically and upload it to Firestore, implement basic draw route method.
 - Implement UI and Java code for Profile, which include update customer avatar periodically.
-- Implement UI and Java code for EditProfile, which include update user new information to firestore, update user's avatar to firebase storage after user choose an image from their gallery.
+- Implement UI and Java code for EditProfile, which include update user new information to Firestore, update user's avatar to firebase storage after user choose an image from their gallery.
 - Implement UI and Java code for BookingFragment, which include draw route from driver current location to pick up point, and route from driver location ( at pick up point) to drop off point, interaction for cancel button.
 - Implement Java code Rating, BadRating, and GoodRating, which include transition depend on customer feedback.
 - Modify OOP for the app, including Ride, Driver, User to suit with the application.
@@ -57,24 +57,29 @@ Technologies used:
 Functionalities:
 General functionalities:
 - Customers can login or sign up.
-- Admin can sign in with a predefined account and can create accounts for drivers.
+- Drivers can login.
+- Admin can sign in with a predefined account (Email: admin@gmail.com; Password: 123456).
 
 Customers:
 - Can view all available vouchers.
+- Can edit their profile information, including change avatar, can delete their account.
+- Can add payment methods and choose payment methods when booking a ride.
+- Can view vouchers list.
 - Can edit their profile information, including change avatar.
-- Can set SOS information to include phone and message, or change already existing SOS information.
+- Can set SOS information include phone and message, or change already exist SOS information
 
 Drivers:
-- Can view their profile.
+- Can view, edit and delete their account.
 
 Admin:
 - Can view all users details, including customers and drivers.
 - Can create a driver account.
 - Can view and create more vouchers.
+- Can sort customers and drivers list (sort by name or email).
 
 Issues and bugs:
 - Message feature display some messages with a big space between each message.
+- Only tested message activity for customer app, have not test for driver app (may produces errors).
 - Displaying route is RNG-based due to network issues (Or RMIT wifi is just built differnt).
 - Place API is not usable multiple time a day. We added a default locations and route for demonstration.
-- The SOS function while the customer is on route can click to send an SMS to the SOS phone number with the message. However, the display while on the trip blocks the SOS button so we can't test it.
-
+- The SOS function while the customer on route can click to send sms to the SOS phone number with the message. However the display while on trip got bug that we can't test it.
