@@ -68,7 +68,6 @@ public class ProfileFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
-        // TODO: Create profile UI
 
         // Click SOS lisnter to launch into SOS setup
         sosTextView = view.findViewById((R.id.sos));
@@ -159,17 +158,35 @@ public class ProfileFragment extends Fragment {
             // Check if the user is still authenticated
             FirebaseAuth auth = FirebaseAuth.getInstance();
             FirebaseUser user = auth.getCurrentUser();
+            assert user != null;
+            String uid = user.getUid();
+
+            FirebaseFirestore database = FirebaseFirestore.getInstance();
+            DocumentReference customerRef = database.collection("Customers").document(uid);
+
+            customerRef.get().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        // Retrieve the profileImageUri from the document
+                        profileImageUri = document.getString("profileImageUri");
+                        name = document.getString("name");
+                    } else {
+                        Log.d("ProfileFragment", "No such document");
+                    }
+                } else {
+                    Log.d("ProfileFragment", "get failed with ", task.getException());
+                }
+            });
 
             if (user != null && profileImageUri != null) {
+                nameProfile.setText(name);
                 Glide.with(requireContext())
                         .load(profileImageUri)
                         .diskCacheStrategy(DiskCacheStrategy.NONE)
                         .skipMemoryCache(true)
                         .into(profilePicture);
             }
-
-            nameProfile.setText(name);
-
             // After updating, schedule the next refresh
             handler.postDelayed(this, REFRESH_INTERVAL);
         }
