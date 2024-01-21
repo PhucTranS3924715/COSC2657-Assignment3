@@ -16,7 +16,7 @@ Bao:
 - Implement UI for customer activity.
 - Modify profile fragment UI and Java code, which allow customer to enter SOS setup.
 - Implement UI and Java code for SOS setup, which include storing customer sosPhone and sosMessage.
-- Modify UI and Java code for BookingFragment, which is SOS button and SmsManager function to send SOS message base on sos'sphone number and sos's message of customer from database.
+- Modify UI and Java code for BookingFragment, which is SOS button and SmsManager function to send SOS message base on sos's phone number and sos's message of customer from database.
 
 Hong Anh:
 - Implement UI for voucher screen.
