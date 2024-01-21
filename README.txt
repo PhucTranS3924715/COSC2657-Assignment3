@@ -36,7 +36,15 @@ Hong Anh:
 
 Khanh:
 - Implement UI for payment method screen.
-
+- Implement MyFireBaseMessagingService and NotificationService in handling notification.
+- Implement Booking process in UserMapActivity.
+- Implement resetting password for Firebase Authentication.
+- Implement trip's price logic and route generating in HomeFragment.
+- Implement DriverMapActivity, handling: + Accepting Ride from the Customer (RideDetailsActivity).
+                                         + Navigation from the driver's current location to the pick up point.
+                                         + Navigation from the pick up point to the destination.
+                                         + Salary for the driver after the trip is completed.
+                                         + Saving the ride detail in History.
 Technologies used:
 - Google Map View API: For customers and drivers to view the map. The customer can select the pickup point and destination, view the directions of the selected locations and view location of the driver. Driver can see the customer’s pickup location and view the direction.
 - Places API: For customers to search for pickup locations and destinations.
@@ -65,3 +73,6 @@ Admin:
 
 Issues and bugs:
 - Message feature display some messages with a big space between each message.
+- Displaying route is RNG-based due to network issues (Or RMIT wifi is just built differnt).
+- Place API is not usable multiple time a day. We added a default locations and route for demonstration.
+
