@@ -62,7 +62,7 @@ General functionalities:
 Customers:
 - Can view all available vouchers.
 - Can edit their profile information, including change avatar.
-- Can set SOS information include phone and message, or change already exist SOS information
+- Can set SOS information to include phone and message, or change already existing SOS information.
 
 Drivers:
 - Can view their profile.
@@ -76,5 +76,5 @@ Issues and bugs:
 - Message feature display some messages with a big space between each message.
 - Displaying route is RNG-based due to network issues (Or RMIT wifi is just built differnt).
 - Place API is not usable multiple time a day. We added a default locations and route for demonstration.
-- The SOS function while the customer on route can click to send sms to the SOS phone number with the message. However the display while on trip got bug that we can't test it.
+- The SOS function while the customer is on route can click to send an SMS to the SOS phone number with the message. However, the display while on the trip blocks the SOS button so we can't test it.
 
