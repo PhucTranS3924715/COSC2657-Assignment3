@@ -14,7 +14,16 @@ Bao:
 - Implement UI and Java code for customer home screen, including Places API and autocomplete fragment.
 - Implement UI for bad rating screen.
 Hong Anh:
-- Implement UI for voucher screen, UI and Java code for customer edit profile.
+- Implement UI for voucher screen.
+- Implement Java code for MyFireBaseMessagingService, which include update driver FCM token.
+- Implement UserMapActivity, which include search for available driver in specific radius, get current user location, implement Haversine formula to calculate distance, get ride document id after driver is found.
+- Implement DriverMapActivity, which include update current location of driver periodically and upload it to Firestore, implement basic draw route method.
+- Implement UI and Java code for Profile, which include update customer avatar periodically.
+- Implement UI and Java code for EditProfile, which include update user new information to firestore, update user's avatar to firebase storage after user choose an image from their gallery.
+- Implement UI and Java code for BookingFragment, which include draw route from driver current location to pick up point, and route from driver location ( at pick up point) to drop off point, interaction for cancel button.
+- Implement Java code Rating, BadRating, and GoodRating, which include transition depend on customer feedback.
+- Modify OOP for the app, including Ride, Driver, User to suit with the application.
+- Modify draw route and Autocomplete interaction in HomeFragment for desired functionality.
 
 Khanh:
 - Implement UI for payment method screen.
@@ -26,6 +35,7 @@ Technologies used:
 - Firebase Authentication: for user authentication and security, allows users to sign up or login.
 - Firebase Firestore: stores and retrieves all users data, ensuring real time data sync.
 - Firebase Messaging: allows the app to send notifications to drivers when a customer wants to book a trip and notifies users when a driver has accepted their request.
+- Firebase Storage: allow the app to store user avatar.
 
 Functionalities:
 General functionalities:
@@ -34,7 +44,7 @@ General functionalities:
 
 Customers:
 - Can view all available vouchers.
-- Can edit their profile information.
+- Can edit their profile information, including change avatar.
 
 Drivers:
 - Can view their profile.

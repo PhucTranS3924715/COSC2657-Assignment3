@@ -27,7 +27,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:showText="true"
-        app:thumb="@drawable/thumb"
+        android:thumb="@drawable/thumb"
         app:track="@drawable/track" />
 
     <TextView
