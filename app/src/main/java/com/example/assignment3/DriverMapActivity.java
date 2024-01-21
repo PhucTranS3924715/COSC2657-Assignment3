@@ -1,8 +1,11 @@
 package com.example.assignment3;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -17,8 +20,11 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 
+import com.example.assignment3.Customer.HomeFragment;
 import com.example.assignment3.Driver.DriverProfileActivity;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -50,12 +56,17 @@ import com.google.maps.model.TravelMode;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCallback{
+
+public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
+
     public interface RouteDrawingCallback {
         void onRouteDrawn();
     }
+
+    private static final String CHANNEL_ID = "arrival_notification_channel";
+    private static final int NOTIFICATION_ID = 1;
     private FusedLocationProviderClient fusedLocationClient;
     private LocationRequest locationRequest;
     private LocationCallback locationCallback;
@@ -100,7 +111,8 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
                 .addOnFailureListener(e -> Log.e(TAG, "Error updating driver location in Ride collection", e));
     }
 
-    public DriverMapActivity() {}
+    public DriverMapActivity() {
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,6 +123,8 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
         statusView = findViewById(R.id.StatusView);
         bookingDriver = findViewById(R.id.bookingDriver);
         cancelRide = findViewById(R.id.cancelButtonBooking);
+
+        createNotificationChannel();
 
         // Initialize Firebase
         FirebaseApp.initializeApp(this);
@@ -212,9 +226,20 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
             Log.e(TAG, "Map fragment is null");
         }
 
+        // Cancel Ride
+        cancelRide = findViewById(R.id.cancelButtonBooking);
+        cancelRide.setOnClickListener(v -> {
+            firestore.collection("Ride").document(rideDocumentId).delete()
+                    .addOnSuccessListener(aVoid -> {
+                        Log.d("DriverMapActivty", "Ride document deleted successfully");
+                    }).addOnFailureListener(
+                            e -> Log.w("DriverMapActivty", "Error deleting document", e));
+        });
+
         // Create activity launcher
         ActivityResultLauncher<Intent> launcher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(), result -> {});
+                new ActivityResultContracts.StartActivityForResult(), result -> {
+                });
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         createLocationRequest();
@@ -226,6 +251,20 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
             Intent intent = new Intent(DriverMapActivity.this, DriverProfileActivity.class);
             launcher.launch(intent);
         });
+    }
+
+    private void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "Arrival Notification";
+            String description = "Notification for driver arrival";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+            channel.setDescription(description);
+
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
     }
 
     private void drawRouteFromDriverToPickup() {
@@ -260,7 +299,7 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
                                 }
                             });
                         }
-                    }  else {
+                    } else {
                         // Handle non-existent document
                         Log.e(TAG, "Ride document does not exist");
                         if (callback != null) {
@@ -392,6 +431,8 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
             mMap.clear(); // Clear existing markers
             mMap.addMarker(new MarkerOptions().position(latLng).title("Current Location"));
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15f)); // Zoom to the current location
+
+            checkArrivalAtDestination();
         } else {
             // Handle the case where the user ID is not available
             Log.e(TAG, "User ID is null");
@@ -497,6 +538,69 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
         }
     }
 
+    private void checkArrivalAtDestination() {
+        if (currentLocation != null && destinationLocation != null) {
+            if (currentLocation.getLatitude() == destinationLocation.latitude
+                    && currentLocation.getLongitude() == destinationLocation.longitude) {
+                // Driver has arrived at the destination
+                bookingDriver.setVisibility(View.GONE);
+                addEarningAndNotify();
+
+            }
+        }
+    }
+
+    private void addEarningAndNotify() {
+        //Salary for Driver
+        addEarningToDriver();
+
+        // Display in-app notification
+        displayNotification("You have arrived!");
+    }
+
+    private void addEarningToDriver() {
+        // Update the "earning" field in the "Drivers" collection
+        String userId = getUserId();
+
+        if (userId != null) {
+            DocumentReference driverRef = firestore.collection("Drivers").document(userId);
+
+            // Retrieve the current earning value
+            driverRef.get().addOnSuccessListener(documentSnapshot -> {
+                if (documentSnapshot.exists()) {
+                    double currentEarning = documentSnapshot.getDouble("earning");
+
+                    // Add the "price" value from the Ride Collection to the current earning
+                    double updatedEarning = currentEarning + Price;
+
+                    // Update the "earning" field in the Drivers collection
+                    Map<String, Object> update = new HashMap<>();
+                    update.put("earning", updatedEarning);
+
+                    driverRef.update(update)
+                            .addOnSuccessListener(aVoid -> Log.d(TAG, "Earning updated in Drivers collection"))
+                            .addOnFailureListener(e -> Log.e(TAG, "Error updating earning in Drivers collection", e));
+                }
+            });
+        } else {
+            // Handle the case where the user ID is not available
+            Log.e(TAG, "User ID is null");
+        }
+    }
+
+    private void displayNotification(String message) {
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
+                .setSmallIcon(R.drawable.logo)
+                .setContentTitle("Arrival Notification")
+                .setContentText(message)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        notificationManager.notify(NOTIFICATION_ID, builder.build());
+    }
     @Override
     protected void onResume() {
         super.onResume();
