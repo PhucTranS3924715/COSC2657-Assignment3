@@ -68,7 +68,6 @@ public class ProfileFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
-        // TODO: Create profile UI
 
         // Click SOS lisnter to launch into SOS setup
         sosTextView = view.findViewById((R.id.sos));

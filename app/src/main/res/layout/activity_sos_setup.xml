@@ -56,7 +56,8 @@
             android:layout_below="@id/sosphone"
             android:padding="10dp"
             android:background="@drawable/additional_comment_background"
-            android:hint="0123456789...."
+            android:hint="Enter phone number...."
+            android:inputType="phone"
             android:textColor="#000000"
             android:textSize="16sp"
             android:gravity="top|start"
@@ -69,14 +70,14 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:layout_below="@id/sosPhoneNumber"
-            android:text="Phone number:"
+            android:text="SOS Message:"
             android:textColor="#000000"
             android:textSize="20sp"
             android:textStyle="bold"
             android:layout_marginStart="16dp"/>
 
         <EditText
-            android:id="@+id/message"
+            android:id="@+id/sosMessage"
             android:layout_width="match_parent"
             android:layout_height="150dp"
             android:layout_marginTop="10dp"
@@ -91,10 +92,10 @@
             android:layout_marginEnd="16dp"/>
 
         <Button
-            android:id="@+id/submitButton"
+            android:id="@+id/submitSOSButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/message"
+            android:layout_below="@id/sosMessage"
             android:layout_marginTop="10dp"
             android:padding="8dp"
             android:text="Submit"

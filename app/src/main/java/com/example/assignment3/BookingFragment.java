@@ -5,6 +5,7 @@ import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
+import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +16,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -22,6 +24,7 @@ import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import com.example.assignment3.Class.Customer;
 import com.example.assignment3.Class.Driver;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -78,6 +81,9 @@ import java.util.List;
         private String rideDocumentId;
         private Button cancelBooking;
         String driverID = AppData.getInstance().getDriverID();
+        private Customer customer;
+        private String uid;
+        private Button sosButton;
         private static final String TAG = "BookingFragment";
 
         public BookingFragment() {
@@ -301,6 +307,26 @@ import java.util.List;
                         }).addOnFailureListener(
                                 e -> Log.w("BookingFragment", "Error deleting document", e));
             });
+
+            uid = user.getUid();
+            sosButton = view.findViewById(R.id.sosButton);
+            sosButton.setOnClickListener(v -> {
+                FirebaseFirestore db = FirebaseFirestore.getInstance();
+                db.collection("Customers").document(uid).get().addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document.exists()) {
+                            customer = document.toObject(Customer.class);
+                            sendSOSMessage();
+                        } else {
+                            Log.d(TAG, "No such document");
+                        }
+                    } else {
+                        Log.d(TAG, "get failed with ", task.getException());
+                    }
+                });
+            });
+
             return view;
         }
 
@@ -557,4 +583,14 @@ import java.util.List;
                 }
             }
         };
+
+        private void sendSOSMessage() {
+            if (!customer.getSosPhone().isEmpty() && !customer.getSosMessage().isEmpty()) {
+                SmsManager smsManager = SmsManager.getDefault();
+                smsManager.sendTextMessage(customer.getSosPhone(), null, customer.getSosMessage(), null, null);
+            } else {
+                Toast.makeText(getActivity(), "SOS phone number or message is empty", Toast.LENGTH_SHORT).show();
+            }
+        }
+
     }
