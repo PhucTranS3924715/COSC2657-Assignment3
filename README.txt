@@ -85,3 +85,4 @@ Issues and bugs:
 - Displaying route is inconsistent due to network issues.
 - Place API is not usable multiple time a day. We added a default locations and route for demonstration.
 - The SOS function while the customer is on route can click to send an SMS to the SOS phone number with the message. However, the display while on the trip blocks the SOS button so we can't test it.
+- The application crash due to create ride document fail or unable to retrieve ride documentID
