@@ -8,6 +8,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -18,6 +19,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Assignment3"
         tools:targetApi="31">
+        <activity
+            android:name=".Driver.EditProfileDriverActivity"
+            android:exported="false" />
         <activity
             android:name=".Customer.SOSSetupActivity"
             android:exported="false" />
@@ -54,16 +58,22 @@
         <activity
             android:name=".Admin.LoginForAdminActivity"
             android:exported="true">
-
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".Driver.LoginForDriverActivity"
-            android:exported="true" >
-
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".Driver.DriverProfileActivity"
-            android:exported="false" >
+            android:exported="false">
         </activity>
         <activity
             android:name=".DriverMapActivity"
@@ -96,7 +106,7 @@
             android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".Customer.LoginForCustomerActivity"
-            android:exported="true" >
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -108,7 +118,10 @@
         <activity
             android:name=".Customer.SignUpForCustomerActivity"
             android:exported="false" />
-        <meta-data android:name="com.google.android.geo.API_KEY" android:value="@string/api_key"/>
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/api_key" />
     </application>
 
 </manifest>
