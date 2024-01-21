@@ -34,7 +34,7 @@
             android:id="@+id/nameProfile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Dinh Gia Bao"
+            android:text="Customer Name"
             android:textSize="25sp"
             android:layout_below="@id/avatarImage"
             android:layout_centerHorizontal="true"
