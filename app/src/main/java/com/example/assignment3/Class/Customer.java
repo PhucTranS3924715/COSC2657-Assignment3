@@ -9,6 +9,8 @@ public class Customer extends User implements Serializable {
     private List<Voucher> voucherIDs;
     private List<Ride> historyRides;
     private List<PaymentMethod> paymentMethods;
+    private String sosPhone;
+    private String sosMessage;
 
     public Customer(String name, String phone, String email) {
         super(name, phone, email);
@@ -16,6 +18,8 @@ public class Customer extends User implements Serializable {
         this.voucherIDs = new ArrayList<>();
         this.historyRides = new ArrayList<>();
         this.paymentMethods = new ArrayList<>();
+        this.sosPhone = "";
+        this.sosMessage = "";
     }
 
     public Customer() {}
@@ -50,5 +54,21 @@ public class Customer extends User implements Serializable {
 
     public void setPaymentMethods(List<PaymentMethod> paymentMethods) {
         this.paymentMethods = paymentMethods;
+    }
+
+    public String getSosPhone() {
+        return sosPhone;
+    }
+
+    public void setSosPhone(String sosPhone) {
+        this.sosPhone = sosPhone;
+    }
+
+    public String getSosMessage() {
+        return sosMessage;
+    }
+
+    public void setSosMessage(String sosMessage) {
+        this.sosMessage = sosMessage;
     }
 }

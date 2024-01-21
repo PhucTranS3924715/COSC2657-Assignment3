@@ -262,6 +262,17 @@
                 android:text="cancel booking"
                 android:textColor="@color/white" />
 
+            <Button
+                android:id="@+id/sosButton"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="10dp"
+                android:backgroundTint="#EC1B22"
+                android:gravity="center"
+                android:text="SOS"
+                android:textColor="@color/white" />
+
         </LinearLayout>
 
     </RelativeLayout>

@@ -1,11 +1,18 @@
 package com.example.assignment3;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -13,9 +20,11 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 
-import com.example.assignment3.Class.Customer;
+import com.example.assignment3.Customer.HomeFragment;
 import com.example.assignment3.Driver.DriverProfileActivity;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -44,16 +53,20 @@ import com.google.maps.model.DirectionsResult;
 import com.google.maps.model.EncodedPolyline;
 import com.google.maps.model.TravelMode;
 
-import android.widget.ImageView;
-import android.widget.TextView;
-
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCallback{
+
+public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
+
+    public interface RouteDrawingCallback {
+        void onRouteDrawn();
+    }
+
+    private static final String CHANNEL_ID = "arrival_notification_channel";
+    private static final int NOTIFICATION_ID = 1;
     private FusedLocationProviderClient fusedLocationClient;
     private LocationRequest locationRequest;
     private LocationCallback locationCallback;
@@ -61,17 +74,30 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
     private GeoPoint currentLocation;
     private Marker pickupMarker;
     private Marker destinationMarker;
+    private LatLng pickupLocation;
+    private LatLng destinationLocation;
+    private GeoPoint pickPoint;
+    private GeoPoint dropPoint;
+    private String pickPointName;
+    private String dropPointName;
+    private double Price = 0.0;
+    private String distanceInKilometers;
     private String rideDocumentId;
     private SwitchCompat switchCompat;
     private TextView statusView;
+    private LinearLayout bookingDriver;
+    private Button cancelRide;
     private boolean isOnline;
+    private boolean hasDriverArrived = false;
 
-    String driverID = AppData.getInstance().getDriverID();
+    String uidCustomer = AppData.getInstance().getUidCustomer();
     private static final String TAG = "DriverMapActivity";
 
     public DriverMapActivity(String rideDocumentId) {
         this.rideDocumentId = rideDocumentId;
     }
+
+    private static final int REQUEST_LOCATION_PERMISSION = 1;
 
     private void updateRideLocation(GeoPoint location) {
         // Update location field in the Ride collection
@@ -85,7 +111,8 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
                 .addOnFailureListener(e -> Log.e(TAG, "Error updating driver location in Ride collection", e));
     }
 
-    public DriverMapActivity() {}
+    public DriverMapActivity() {
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,6 +121,10 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
 
         switchCompat = findViewById(R.id.switchCompat);
         statusView = findViewById(R.id.StatusView);
+        bookingDriver = findViewById(R.id.bookingDriver);
+        cancelRide = findViewById(R.id.cancelButtonBooking);
+
+        createNotificationChannel();
 
         // Initialize Firebase
         FirebaseApp.initializeApp(this);
@@ -120,16 +151,64 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
                     // If uidDriver is not null, hide SwitchCompat and StatusView
                     switchCompat.setVisibility(View.INVISIBLE);
                     statusView.setVisibility(View.INVISIBLE);
+                    bookingDriver.setVisibility(View.VISIBLE);
 
                     // Update the driver's location in the Ride document
                     GeoPoint driverLocation = getCurrentLocation();
                     if (driverLocation != null) {
                         updateRideLocation(driverLocation);
+
+                    }
+
+                    rideDocRef.get()
+                            .addOnSuccessListener(rideSnapshot -> {
+                                if (rideSnapshot.exists()) {
+                                    // Retrieve the information and update UI
+                                    DocumentReference customerDocRef =
+                                            FirebaseFirestore.getInstance().collection("Customers")
+                                                    .document(uidCustomer);
+                                    customerDocRef.get()
+                                            .addOnSuccessListener(driverSnapshot -> {
+                                                if (driverSnapshot.exists()) {
+                                                    String customerName =
+                                                            driverSnapshot.getString("name");
+                                                    TextView customerNameTextView = findViewById(R.id.customerName);
+                                                    customerNameTextView.setText(customerName);
+                                                    String phoneNumber =
+                                                            driverSnapshot.getString("phone");
+                                                    TextView phoneTextView = findViewById(R.id.CustomerPhoneNumber);
+                                                    phoneTextView.setText(phoneNumber);
+                                                }
+                                            });
+                                }
+                            });
+
+                    rideDocRef.get()
+                            .addOnSuccessListener(rideSnapshot -> {
+                                pickPoint = rideSnapshot.getGeoPoint("PickPoint");
+                                dropPoint = documentSnapshot.getGeoPoint("DropPoint");
+                                pickPointName = documentSnapshot.getString("pickPointName");
+                                dropPointName = documentSnapshot.getString("dropPointName");
+                                Price = documentSnapshot.getDouble("price");
+                                distanceInKilometers = documentSnapshot.getString("distance");
+                                TextView pickPointNameTextView = findViewById(R.id.pickUp);
+                                pickPointNameTextView.setText(pickPointName);
+                                TextView dropPointNameTextView = findViewById(R.id.destination);
+                                dropPointNameTextView.setText(dropPointName);
+                                TextView distanceTextView = findViewById(R.id.Tripdistance);
+                                distanceTextView.setText(getString(R.string.distance_format, distanceInKilometers));
+                                TextView priceTextView = findViewById(R.id.Tripprice);
+                                priceTextView.setText(getString(R.string.price_format, (int) Price));
+                            });
+
+                    if (rideDocumentId != null && !rideDocumentId.isEmpty()) {
+                        drawRouteFromDriverToPickup();
                     }
                 } else {
                     // If uidDriver is null, show SwitchCompat and StatusView
                     switchCompat.setVisibility(View.VISIBLE);
                     statusView.setVisibility(View.VISIBLE);
+                    bookingDriver.setVisibility(View.INVISIBLE);
                 }
             }
         });
@@ -147,9 +226,20 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
             Log.e(TAG, "Map fragment is null");
         }
 
+        // Cancel Ride
+        cancelRide = findViewById(R.id.cancelButtonBooking);
+        cancelRide.setOnClickListener(v -> {
+            firestore.collection("Ride").document(rideDocumentId).delete()
+                    .addOnSuccessListener(aVoid -> {
+                        Log.d("DriverMapActivty", "Ride document deleted successfully");
+                    }).addOnFailureListener(
+                            e -> Log.w("DriverMapActivty", "Error deleting document", e));
+        });
+
         // Create activity launcher
         ActivityResultLauncher<Intent> launcher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(), result -> {});
+                new ActivityResultContracts.StartActivityForResult(), result -> {
+                });
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         createLocationRequest();
@@ -161,6 +251,74 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
             Intent intent = new Intent(DriverMapActivity.this, DriverProfileActivity.class);
             launcher.launch(intent);
         });
+    }
+
+    private void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "Arrival Notification";
+            String description = "Notification for driver arrival";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+            channel.setDescription(description);
+
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+    }
+
+    private void drawRouteFromDriverToPickup() {
+        drawRouteFromDriverToPickup(null);
+    }
+
+    // Function to draw route from driver's location to pickup point
+    private void drawRouteFromDriverToPickup(RouteDrawingCallback callback) {
+        FirebaseFirestore.getInstance().collection("Ride")
+                .document(rideDocumentId)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (pickPoint != null && currentLocation != null) {
+                        // Check if the driver has arrived at the pickup point
+                        if (!hasDriverArrived && isDriverAtPickup(currentLocation, pickPoint)) {
+                            // Driver has arrived, set the flag and draw route to the destination
+                            hasDriverArrived = true;
+                            cancelRide.setVisibility(View.GONE);
+                            drawRoute(currentLocation, dropPoint, (RouteDrawingCallback) () -> {
+                                if (callback != null) {
+                                    callback.onRouteDrawn();
+                                }
+                            });
+                        } else {
+                            // Driver has not arrived, draw route to the pickup point
+                            drawRoute(currentLocation, pickPoint, new RouteDrawingCallback() {
+                                @Override
+                                public void onRouteDrawn() {
+                                    if (callback != null) {
+                                        callback.onRouteDrawn();
+                                    }
+                                }
+                            });
+                        }
+                    } else {
+                        // Handle non-existent document
+                        Log.e(TAG, "Ride document does not exist");
+                        if (callback != null) {
+                            callback.onRouteDrawn();
+                        }
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    // Handle Firestore retrieval failure
+                    Log.e(TAG, "Error getting pickup location from Firestore", e);
+                    if (callback != null) {
+                        callback.onRouteDrawn();
+                    }
+                });
+    }
+
+    private boolean isDriverAtPickup(GeoPoint driverLocation, GeoPoint pickupPoint) {
+        return driverLocation.getLatitude() == pickupPoint.getLatitude()
+                && driverLocation.getLongitude() == pickupPoint.getLongitude();
     }
 
     // Function to handle SwitchCompat toggle
@@ -210,7 +368,6 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
         };
     }
 
-    private static final int REQUEST_LOCATION_PERMISSION = 1;
     private void startLocationUpdates() {
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, null);
@@ -274,6 +431,8 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
             mMap.clear(); // Clear existing markers
             mMap.addMarker(new MarkerOptions().position(latLng).title("Current Location"));
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15f)); // Zoom to the current location
+
+            checkArrivalAtDestination();
         } else {
             // Handle the case where the user ID is not available
             Log.e(TAG, "User ID is null");
@@ -292,7 +451,7 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
                 .addOnFailureListener(e -> Log.e(TAG, "Error updating location in Drivers collection", e));
     }
 
-    public void drawRoute(GeoPoint pickLocation, GeoPoint dropLocation) {
+    public void drawRoute(GeoPoint pickLocation, GeoPoint dropLocation, RouteDrawingCallback callback) {
         // Use the Google Directions API to get the route information
         GeoApiContext context = new GeoApiContext.Builder()
                 .apiKey(getString(R.string.api_key)) // Replace with your API key
@@ -318,6 +477,10 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
                     .destination(new com.google.maps.model.LatLng(destinationLocation.latitude, destinationLocation.longitude))
                     .mode(TravelMode.DRIVING) // You can change the mode based on your requirements
                     .await();
+
+            if (callback != null) {
+                callback.onRouteDrawn();
+            }
 
             if (result.routes != null && result.routes.length > 0) {
                 // Extract the polyline from the result and add it to the map
@@ -347,7 +510,6 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
         }
     }
 
-
     // Convert Geo Point to LatLng
     private com.google.android.gms.maps.model.LatLng convertToGoogleMapsLatLng(GeoPoint geoPoint) {
         double latitude = geoPoint.getLatitude();
@@ -376,6 +538,69 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
         }
     }
 
+    private void checkArrivalAtDestination() {
+        if (currentLocation != null && destinationLocation != null) {
+            if (currentLocation.getLatitude() == destinationLocation.latitude
+                    && currentLocation.getLongitude() == destinationLocation.longitude) {
+                // Driver has arrived at the destination
+                bookingDriver.setVisibility(View.GONE);
+                addEarningAndNotify();
+
+            }
+        }
+    }
+
+    private void addEarningAndNotify() {
+        //Salary for Driver
+        addEarningToDriver();
+
+        // Display in-app notification
+        displayNotification("You have arrived!");
+    }
+
+    private void addEarningToDriver() {
+        // Update the "earning" field in the "Drivers" collection
+        String userId = getUserId();
+
+        if (userId != null) {
+            DocumentReference driverRef = firestore.collection("Drivers").document(userId);
+
+            // Retrieve the current earning value
+            driverRef.get().addOnSuccessListener(documentSnapshot -> {
+                if (documentSnapshot.exists()) {
+                    double currentEarning = documentSnapshot.getDouble("earning");
+
+                    // Add the "price" value from the Ride Collection to the current earning
+                    double updatedEarning = currentEarning + Price;
+
+                    // Update the "earning" field in the Drivers collection
+                    Map<String, Object> update = new HashMap<>();
+                    update.put("earning", updatedEarning);
+
+                    driverRef.update(update)
+                            .addOnSuccessListener(aVoid -> Log.d(TAG, "Earning updated in Drivers collection"))
+                            .addOnFailureListener(e -> Log.e(TAG, "Error updating earning in Drivers collection", e));
+                }
+            });
+        } else {
+            // Handle the case where the user ID is not available
+            Log.e(TAG, "User ID is null");
+        }
+    }
+
+    private void displayNotification(String message) {
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
+                .setSmallIcon(R.drawable.logo)
+                .setContentTitle("Arrival Notification")
+                .setContentText(message)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        notificationManager.notify(NOTIFICATION_ID, builder.build());
+    }
     @Override
     protected void onResume() {
         super.onResume();
