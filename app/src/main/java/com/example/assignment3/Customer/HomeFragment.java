@@ -229,8 +229,8 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, OnMa
                 .title("Destination Location");
                 //.icon(BitmapDescriptorFactory.fromResource(R.drawable.destination));
 
-        pickupMarker = mMap.addMarker(pickupMarkerOptions);
-        destinationMarker = mMap.addMarker(destinationMarkerOptions);
+//        pickupMarker = mMap.addMarker(pickupMarkerOptions);
+//        destinationMarker = mMap.addMarker(destinationMarkerOptions);
 
         DirectionsResult result;
         try {

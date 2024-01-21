@@ -64,6 +64,8 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
     private String rideDocumentId;
     private SwitchCompat switchCompat;
     private TextView statusView;
+    private boolean isOnline;
+
     String driverID = AppData.getInstance().getDriverID();
     private static final String TAG = "DriverMapActivity";
 
@@ -98,6 +100,8 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
 
         // Initialize Firestore
         firestore = FirebaseFirestore.getInstance();
+
+        switchCompat.setOnCheckedChangeListener((buttonView, isChecked) -> handleSwitchToggle(isChecked));
 
         DocumentReference rideDocRef = FirebaseFirestore.getInstance().collection("Ride").document(rideDocumentId);
         // Listen for changes in the Ride document
@@ -157,6 +161,34 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
             Intent intent = new Intent(DriverMapActivity.this, DriverProfileActivity.class);
             launcher.launch(intent);
         });
+    }
+
+    // Function to handle SwitchCompat toggle
+    private void handleSwitchToggle(boolean isChecked) {
+        // Update the online/offline status
+        isOnline = isChecked;
+
+        // Update the "status" field in the "Drivers" collection
+        updateDriverStatus(isOnline);
+    }
+
+    private void updateDriverStatus(boolean online) {
+        String userId = getUserId();
+
+        if (userId != null) {
+            // Update location field in the Customer collection
+            DocumentReference driverRef = firestore.collection("Drivers").document(userId);
+
+            Map<String, Object> update = new HashMap<>();
+            update.put("status", online ? "Online" : "Offline");
+
+            driverRef.update(update)
+                    .addOnSuccessListener(aVoid -> Log.d(TAG, "Status updated in Drivers collection"))
+                    .addOnFailureListener(e -> Log.e(TAG, "Error updating status in Drivers collection", e));
+        } else {
+            // Handle the case where the user ID is not available
+            Log.e(TAG, "User ID is null");
+        }
     }
 
     private void createLocationRequest() {
