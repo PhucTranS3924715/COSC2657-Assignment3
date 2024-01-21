@@ -19,6 +19,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
@@ -89,10 +90,12 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
     private String rideDocumentId;
     private SwitchCompat switchCompat;
     private TextView statusView;
-    private LinearLayout bookingDriver;
+    private ConstraintLayout bookingDriver;
     private Button cancelRide;
     private boolean isOnline;
     private boolean hasDriverArrived = false;
+
+    private DocumentReference rideDocRef;
 
     String uidCustomer = AppData.getInstance().getUidCustomer();
     private static final String TAG = "DriverMapActivity";
@@ -137,84 +140,88 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
 
         switchCompat.setOnCheckedChangeListener((buttonView, isChecked) -> handleSwitchToggle(isChecked));
 
-        DocumentReference rideDocRef = FirebaseFirestore.getInstance().collection("Ride").document(rideDocumentId);
-        // Listen for changes in the Ride document
-        rideDocRef.addSnapshotListener((documentSnapshot, e) -> {
-            if (e != null) {
-                Log.w(TAG, "Listen failed.");
-                return;
-            }
-
-            if (documentSnapshot != null && documentSnapshot.exists()) {
-                // Get the value of uidDriver from the document
-                String uidDriver = documentSnapshot.getString("uidDriver");
-
-                // Check if uidDriver is not null
-                if (uidDriver != null) {
-                    // If uidDriver is not null, hide SwitchCompat and StatusView
-                    switchCompat.setVisibility(View.INVISIBLE);
-                    statusView.setVisibility(View.INVISIBLE);
-                    bookingDriver.setVisibility(View.VISIBLE);
-
-                    // Update the driver's location in the Ride document
-                    GeoPoint driverLocation = getCurrentLocation();
-                    if (driverLocation != null) {
-                        updateRideLocation(driverLocation);
-
-                    }
-
-                    rideDocRef.get()
-                            .addOnSuccessListener(rideSnapshot -> {
-                                if (rideSnapshot.exists()) {
-                                    // Retrieve the information and update UI
-                                    DocumentReference customerDocRef =
-                                            FirebaseFirestore.getInstance().collection("Customers")
-                                                    .document(uidCustomer);
-                                    customerDocRef.get()
-                                            .addOnSuccessListener(driverSnapshot -> {
-                                                if (driverSnapshot.exists()) {
-                                                    String customerName =
-                                                            driverSnapshot.getString("name");
-                                                    TextView customerNameTextView = findViewById(R.id.customerName);
-                                                    customerNameTextView.setText(customerName);
-                                                    String phoneNumber =
-                                                            driverSnapshot.getString("phone");
-                                                    TextView phoneTextView = findViewById(R.id.CustomerPhoneNumber);
-                                                    phoneTextView.setText(phoneNumber);
-                                                }
-                                            });
-                                }
-                            });
-
-                    rideDocRef.get()
-                            .addOnSuccessListener(rideSnapshot -> {
-                                pickPoint = rideSnapshot.getGeoPoint("PickPoint");
-                                dropPoint = documentSnapshot.getGeoPoint("DropPoint");
-                                pickPointName = documentSnapshot.getString("pickPointName");
-                                dropPointName = documentSnapshot.getString("dropPointName");
-                                Price = documentSnapshot.getDouble("price");
-                                distanceInKilometers = documentSnapshot.getString("distance");
-                                TextView pickPointNameTextView = findViewById(R.id.pickUp);
-                                pickPointNameTextView.setText(pickPointName);
-                                TextView dropPointNameTextView = findViewById(R.id.destination);
-                                dropPointNameTextView.setText(dropPointName);
-                                TextView distanceTextView = findViewById(R.id.Tripdistance);
-                                distanceTextView.setText(getString(R.string.distance_format, distanceInKilometers));
-                                TextView priceTextView = findViewById(R.id.Tripprice);
-                                priceTextView.setText(getString(R.string.price_format, (int) Price));
-                            });
-
-                    if (rideDocumentId != null && !rideDocumentId.isEmpty()) {
-                        drawRouteFromDriverToPickup();
-                    }
-                } else {
-                    // If uidDriver is null, show SwitchCompat and StatusView
-                    switchCompat.setVisibility(View.VISIBLE);
-                    statusView.setVisibility(View.VISIBLE);
-                    bookingDriver.setVisibility(View.INVISIBLE);
+        if (rideDocumentId != null) {
+            rideDocRef = FirebaseFirestore.getInstance().collection("Ride").document(rideDocumentId);
+            // Listen for changes in the Ride document
+            rideDocRef.addSnapshotListener((documentSnapshot, e) -> {
+                if (e != null) {
+                    Log.w(TAG, "Listen failed.");
+                    return;
                 }
-            }
-        });
+
+                if (documentSnapshot != null && documentSnapshot.exists()) {
+                    // Get the value of uidDriver from the document
+                    String uidDriver = documentSnapshot.getString("uidDriver");
+
+                    // Check if uidDriver is not null
+                    if (uidDriver != null) {
+                        // If uidDriver is not null, hide SwitchCompat and StatusView
+                        switchCompat.setVisibility(View.INVISIBLE);
+                        statusView.setVisibility(View.INVISIBLE);
+                        bookingDriver.setVisibility(View.VISIBLE);
+
+                        // Update the driver's location in the Ride document
+                        GeoPoint driverLocation = getCurrentLocation();
+                        if (driverLocation != null) {
+                            updateRideLocation(driverLocation);
+
+                        }
+
+                        rideDocRef.get()
+                                .addOnSuccessListener(rideSnapshot -> {
+                                    if (rideSnapshot.exists()) {
+                                        // Retrieve the information and update UI
+                                        DocumentReference customerDocRef =
+                                                FirebaseFirestore.getInstance().collection("Customers")
+                                                        .document(uidCustomer);
+                                        customerDocRef.get()
+                                                .addOnSuccessListener(driverSnapshot -> {
+                                                    if (driverSnapshot.exists()) {
+                                                        String customerName =
+                                                                driverSnapshot.getString("name");
+                                                        TextView customerNameTextView = findViewById(R.id.customerName);
+                                                        customerNameTextView.setText(customerName);
+                                                        String phoneNumber =
+                                                                driverSnapshot.getString("phone");
+                                                        TextView phoneTextView = findViewById(R.id.CustomerPhoneNumber);
+                                                        phoneTextView.setText(phoneNumber);
+                                                    }
+                                                });
+                                    }
+                                });
+
+                        rideDocRef.get()
+                                .addOnSuccessListener(rideSnapshot -> {
+                                    pickPoint = rideSnapshot.getGeoPoint("PickPoint");
+                                    dropPoint = documentSnapshot.getGeoPoint("DropPoint");
+                                    pickPointName = documentSnapshot.getString("pickPointName");
+                                    dropPointName = documentSnapshot.getString("dropPointName");
+                                    Price = documentSnapshot.getDouble("price");
+                                    distanceInKilometers = documentSnapshot.getString("distance");
+                                    TextView pickPointNameTextView = findViewById(R.id.pickUp);
+                                    pickPointNameTextView.setText(pickPointName);
+                                    TextView dropPointNameTextView = findViewById(R.id.destination);
+                                    dropPointNameTextView.setText(dropPointName);
+                                    TextView distanceTextView = findViewById(R.id.Tripdistance);
+                                    distanceTextView.setText(getString(R.string.distance_format, distanceInKilometers));
+                                    TextView priceTextView = findViewById(R.id.Tripprice);
+                                    priceTextView.setText(getString(R.string.price_format, (int) Price));
+                                });
+
+                        if (rideDocumentId != null && !rideDocumentId.isEmpty()) {
+                            drawRouteFromDriverToPickup();
+                        }
+                    } else {
+                        // If uidDriver is null, show SwitchCompat and StatusView
+                        switchCompat.setVisibility(View.VISIBLE);
+                        statusView.setVisibility(View.VISIBLE);
+                        bookingDriver.setVisibility(View.INVISIBLE);
+                    }
+                }
+            });
+        }
+
+
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
 
