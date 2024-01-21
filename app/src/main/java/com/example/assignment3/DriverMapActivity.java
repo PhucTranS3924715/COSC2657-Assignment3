@@ -1,11 +1,14 @@
 package com.example.assignment3;
 
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
@@ -13,6 +16,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.example.assignment3.Class.Customer;
+import com.example.assignment3.Driver.DriverProfileActivity;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -39,6 +43,8 @@ import com.google.maps.GeoApiContext;
 import com.google.maps.model.DirectionsResult;
 import com.google.maps.model.EncodedPolyline;
 import com.google.maps.model.TravelMode;
+
+import android.widget.ImageView;
 import android.widget.TextView;
 
 
@@ -77,6 +83,7 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
                 .addOnFailureListener(e -> Log.e(TAG, "Error updating driver location in Ride collection", e));
     }
 
+    public DriverMapActivity() {}
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,10 +143,20 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
             Log.e(TAG, "Map fragment is null");
         }
 
+        // Create activity launcher
+        ActivityResultLauncher<Intent> launcher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(), result -> {});
+
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         createLocationRequest();
         createLocationCallback();
         currentLocation = getCurrentLocation();
+
+        ImageView profileButton = findViewById(R.id.profileButton);
+        profileButton.setOnClickListener(v -> {
+            Intent intent = new Intent(DriverMapActivity.this, DriverProfileActivity.class);
+            launcher.launch(intent);
+        });
     }
 
     private void createLocationRequest() {

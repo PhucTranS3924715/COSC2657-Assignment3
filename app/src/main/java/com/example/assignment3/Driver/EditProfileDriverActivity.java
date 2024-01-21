@@ -1,4 +1,4 @@
-package com.example.assignment3.Customer;
+package com.example.assignment3.Driver;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -9,8 +9,6 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -21,14 +19,14 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.assignment3.Class.Customer;
+import com.example.assignment3.Class.Driver;
+import com.example.assignment3.Customer.EditProfileCustomerActivity;
+import com.example.assignment3.Customer.LoginForCustomerActivity;
 import com.example.assignment3.R;
-import com.google.android.material.button.MaterialButton;
 import com.google.android.material.imageview.ShapeableImageView;
-import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -40,7 +38,7 @@ import com.google.firebase.storage.StorageReference;
 import java.util.HashMap;
 import java.util.Map;
 
-public class EditProfileCustomerActivity extends AppCompatActivity {
+public class EditProfileDriverActivity extends AppCompatActivity {
     private EditText nameInput;
     private EditText emailInput;
     private EditText phoneInput;
@@ -54,12 +52,12 @@ public class EditProfileCustomerActivity extends AppCompatActivity {
     private Uri imageUri;
     private DocumentReference userDocRef;
     private String selectedGender;
-    private static final String TAG = "EditProfileCustomer";
+    private static final String TAG = "EditProfileDriver";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_edit_profile_customer);
+        setContentView(R.layout.activity_edit_profile_driver);
 
         // Set up Firestore database and Authentication
         FirebaseFirestore database = FirebaseFirestore.getInstance();
@@ -70,9 +68,10 @@ public class EditProfileCustomerActivity extends AppCompatActivity {
         FirebaseUser user = auth.getCurrentUser();
         assert user != null;
         String uid = user.getUid();
+        uid = "IR2ciX3SKfMGSbIGeqNkDIPfC5H3";
 
         // Create reference for current user
-        DocumentReference customerRef = database.collection("Customers").document(uid);
+        DocumentReference driverRef = database.collection("Drivers").document(uid);
         Map<String, Object> update = new HashMap<>();
 
         // Initialize edit text
@@ -108,7 +107,7 @@ public class EditProfileCustomerActivity extends AppCompatActivity {
             }
         });
 
-        customerRef.get().addOnCompleteListener(task -> {
+        driverRef.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 DocumentSnapshot document = task.getResult();
                 if (document.exists()) {
@@ -131,22 +130,22 @@ public class EditProfileCustomerActivity extends AppCompatActivity {
             }
         });
 
-        // Set old information of the customer
-        database.collection("Customers").document(uid).get().addOnCompleteListener(task -> {
+        // Set old information of the driver
+        database.collection("Drivers").document(uid).get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 DocumentSnapshot document = task.getResult();
                 if (document.exists()) {
-                    Customer customer = document.toObject(Customer.class);
-                    assert customer != null;
+                    Driver driver = document.toObject(Driver.class);
+                    assert driver != null;
 
-                    nameInput.setText(customer.getName());
-                    emailInput.setText(customer.getEmail());
-                    phoneInput.setText(customer.getPhone());
-                    addressInput.setText(customer.getAddress());
+                    nameInput.setText(driver.getName());
+                    emailInput.setText(driver.getEmail());
+                    phoneInput.setText(driver.getPhone());
+                    addressInput.setText(driver.getAddress());
 
                     // Check if the gender field is null or empty
-                    if (customer.getGender() != null && !customer.getGender().isEmpty()) {
-                        int position = adapter.getPosition(customer.getGender());
+                    if (driver.getGender() != null && !driver.getGender().isEmpty()) {
+                        int position = adapter.getPosition(driver.getGender());
                         spinnerGender.setSelection(position);
                     } else {
                         // Set a default value for the spinner
@@ -155,7 +154,8 @@ public class EditProfileCustomerActivity extends AppCompatActivity {
                         if (defaultPosition >= 0) {
                             spinnerGender.setSelection(defaultPosition);
                         } else {
-                            // If "Gender..." is not found, set the default to the first item in the adapter
+                            // If "Gender..." is not found, set the default to the first item in
+                            // the adapter
                             spinnerGender.setSelection(0);
                         }
                     }
@@ -192,27 +192,38 @@ public class EditProfileCustomerActivity extends AppCompatActivity {
                         update.put("phone", phone);
                         update.put("address", address);
                         update.put("gender", selectedGender);
-                        customerRef.update(update);
-                        uploadImageToStorageAndFirestore(imageUri, customerRef);
+                        driverRef.update(update);
+                        uploadImageToStorageAndFirestore(imageUri, driverRef);
+                        finish();
                     }).setNegativeButton(android.R.string.no, null)
                     .setIcon(android.R.drawable.ic_dialog_alert).show();
 
         });
 
-        // Set interaction for delete button
-        deleteButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                customerRef.delete()
-                        .addOnSuccessListener(aVoid -> {
-                            Log.d(TAG, "DocumentSnapshot successfully deleted!");
-                        })
-                        .addOnFailureListener(e -> {
-                            Log.e(TAG, "Error deleting document", e);
-                        });
+        // Create activity launcher
+        ActivityResultLauncher<Intent> launcher1 = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(), result -> {});
 
-                user.delete();
-            }
+        // Set interaction for delete button
+        deleteButton.setOnClickListener(v -> {
+            new AlertDialog.Builder(this).setTitle("Confirm delete")
+                    .setMessage("Are you sure you want to delete account?")
+                    .setPositiveButton(android.R.string.yes, (dialog, which) -> {
+                        driverRef.delete()
+                                .addOnSuccessListener(aVoid -> {
+                                    Log.d(TAG, "DocumentSnapshot successfully deleted!");
+                                })
+                                .addOnFailureListener(e -> {
+                                    Log.e(TAG, "Error deleting document", e);
+                                });
+
+                        user.delete();
+                        Intent intent1 = new Intent(EditProfileDriverActivity.this, LoginForDriverActivity.class);
+                        intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK); // Clear all activities in the stack
+                        FirebaseAuth.getInstance().signOut();  // Sign out current user
+                        launcher1.launch(intent1);
+                    }).setNegativeButton(android.R.string.no, null)
+                    .setIcon(android.R.drawable.ic_dialog_alert).show();
         });
 
 
@@ -275,12 +286,12 @@ public class EditProfileCustomerActivity extends AppCompatActivity {
         customerRef.update("profileImageUri", newImageUri)
                 .addOnSuccessListener(aVoid -> {
                     // Update successful
-                    Toast.makeText(EditProfileCustomerActivity.this,
+                    Toast.makeText(EditProfileDriverActivity.this,
                             "Image URI updated in Firestore", Toast.LENGTH_SHORT).show();
                 })
                 .addOnFailureListener(e -> {
                     // Handle failure
-                    Toast.makeText(EditProfileCustomerActivity.this,
+                    Toast.makeText(EditProfileDriverActivity.this,
                             "Failed to update image URI in Firestore", Toast.LENGTH_SHORT).show();
                 });
     }
@@ -298,18 +309,19 @@ public class EditProfileCustomerActivity extends AppCompatActivity {
                             })
                             .addOnFailureListener(e -> {
                                 // Handle failure to get download URL
-                                Toast.makeText(EditProfileCustomerActivity.this,
+                                Toast.makeText(EditProfileDriverActivity.this,
                                         "Failed to get download URL", Toast.LENGTH_SHORT).show();
                             });
                 })
                 .addOnFailureListener(e -> {
                     // Handle failure to upload image
-                    Toast.makeText(EditProfileCustomerActivity.this, "Failed to upload image",
+                    Toast.makeText(EditProfileDriverActivity.this, "Failed to upload image",
                             Toast.LENGTH_SHORT).show();
                 });
     }
 
-    private void deleteOldImageAndUploadNew(Uri imageUri, StorageReference imageRef, DocumentReference customerRef) {
+    private void deleteOldImageAndUploadNew(Uri imageUri, StorageReference imageRef,
+                                            DocumentReference customerRef) {
         // Check if an older image exists
         imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
             // Older image exists, delete it
@@ -318,7 +330,7 @@ public class EditProfileCustomerActivity extends AppCompatActivity {
                 uploadNewImage(imageUri, imageRef, customerRef);
             }).addOnFailureListener(e -> {
                 // Handle failure to delete the older image
-                Toast.makeText(EditProfileCustomerActivity.this, "Failed to delete the older image",
+                Toast.makeText(EditProfileDriverActivity.this, "Failed to delete the older image",
                         Toast.LENGTH_SHORT).show();
             });
         }).addOnFailureListener(e -> {

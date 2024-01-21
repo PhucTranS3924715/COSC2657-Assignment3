@@ -1,4 +1,6 @@
 Group: ECLAIR_0_1
+IMPORTANT: Note for the app:
+- When installing the app to the phone, there will be 3 app icons. The first icon is the app for Admin, the second is for Customer and the third is for Driver. To open the app for different users, terminate the app first, then click the other icon to open the app for other users.
 Work contribution:
 Phuc:
 - Create basic OOP for the app, including User, Customer, Driver, Admin, PaymentMethod and Voucher class.
