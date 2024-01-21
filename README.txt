@@ -3,7 +3,7 @@ IMPORTANT: Note for the app:
 - When installing the app to the phone, there will be 3 app icons. The first icon is the app for Admin, the second is for Customer and the third is for Driver. To open the app for different users, terminate the app first, then click the other icon to open the app for other users.
 
 Work contribution:
-Phuc:
+Tran Dai Phuc - S3924715:
 - Create basic OOP for the app, including User, Customer, Driver, Admin, PaymentMethod and Voucher class.
 - Implement basic UI and Java code for the customer main screen, which includes a view pager with 4 fragments (Home, Activity, Vouchers and Profile) and a bottom navigation. Can navigate between fragments by clicking on the corresponding icon in the bottom navigation bar.
 - Implement UI and Java code for login and sign up screen for customers.
@@ -13,7 +13,7 @@ Phuc:
 - Implement Java code for choosing payment method before booking a ride, implement UI and Java code to add a payment method to a customer account.
 - Implement Java code for driver profile screen, implement UI and Java code for edit profile information for drivers.
 
-Bao:
+Dinh Gia Bao – S3877923:
 - Implement UI for driver profile.
 - Implement UI for bad rating screen.
 - Implement UI and Java code for customer home screen, including Places API, autocomplete fragment and UI change when select vehicles.
@@ -22,7 +22,7 @@ Bao:
 - Implement UI and Java code for SOS setup, which include storing customer sosPhone and sosMessage.
 - Modify UI and Java code for BookingFragment, which is SOS button and SmsManager function to send SOS message base on sos's phone number and sos's message of customer from database.
 
-Hong Anh:
+Nguyen Hong Anh - S3924711:
 - Implement UI for voucher screen.
 - Implement Java code for MyFireBaseMessagingService, which include update driver FCM token.
 - Implement UserMapActivity, which include search for available driver in specific radius, get current user location, implement Haversine formula to calculate distance, get ride document id after driver is found.
@@ -34,7 +34,7 @@ Hong Anh:
 - Modify OOP for the app, including Ride, Driver, User to suit with the application.
 - Modify draw route and Autocomplete interaction in HomeFragment for desired functionality.
 
-Khanh:
+Vo Hoang Khanh – S3926310:
 - Implement UI for payment method screen.
 - Implement MyFireBaseMessagingService and NotificationService in handling notification.
 - Implement Booking process in UserMapActivity.

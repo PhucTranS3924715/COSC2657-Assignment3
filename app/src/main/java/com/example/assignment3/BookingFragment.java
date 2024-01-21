@@ -184,7 +184,6 @@ import java.util.List;
             bookingDetailSection = view.findViewById(R.id.bookingDetailSection);
 
             ImageView messageButton = view.findViewById(R.id.messageButton);
-
             messageButton.setOnClickListener(v -> {
                 FirebaseFirestore db = FirebaseFirestore.getInstance();
                 db.collection("Drivers").document(driverID).get().addOnCompleteListener(task -> {
