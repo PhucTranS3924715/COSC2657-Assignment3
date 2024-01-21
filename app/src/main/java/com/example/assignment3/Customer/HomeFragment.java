@@ -353,7 +353,6 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, OnMa
                         .replace(R.id.mapContainer, bookingFragment)
                         .addToBackStack(null)
                         .commit();
-
             }
         });
 
@@ -394,8 +393,8 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, OnMa
                 pickupLocationAutocompleteFragment.setText(place.getName());
 
                 MarkerOptions startMarkerOptions = new MarkerOptions()
-                        .position(place.getLatLng()).title(place.getName())
-                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.pickup));
+                        .position(place.getLatLng()).title(place.getName());
+                        //.icon(BitmapDescriptorFactory.fromResource(R.drawable.pickup));
                 mMap.clear();
                 mMap.addMarker(startMarkerOptions);
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(pickupLocation, 14));
@@ -436,8 +435,8 @@ public class HomeFragment extends Fragment implements HomeFragmentListener, OnMa
                 destinationAutocompleteFragment.setText(place.getName());
 
                 MarkerOptions destinationMarkerOptions = new MarkerOptions()
-                        .position(place.getLatLng()).title(place.getName())
-                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.destination));
+                        .position(place.getLatLng()).title(place.getName());
+                        //icon(BitmapDescriptorFactory.fromResource(R.drawable.destination));
                 mMap.clear();
                 mMap.addMarker(destinationMarkerOptions);
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(destinationLocation, 14));

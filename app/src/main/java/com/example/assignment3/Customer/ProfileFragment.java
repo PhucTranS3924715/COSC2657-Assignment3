@@ -40,6 +40,7 @@ public class ProfileFragment extends Fragment {
 
     private String mParam1;
     private String mParam2;
+    private TextView sosTextView;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -67,6 +68,16 @@ public class ProfileFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
+        // TODO: Create profile UI
+
+        // Click SOS lisnter to launch into SOS setup
+        sosTextView = view.findViewById((R.id.sos));
+        sosTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openSOSActivity();
+            }
+        });
 
         // Create activity launcher
         ActivityResultLauncher<Intent> launcher = registerForActivityResult(
@@ -156,9 +167,19 @@ public class ProfileFragment extends Fragment {
                         .skipMemoryCache(true)
                         .into(profilePicture);
             }
+
             nameProfile.setText(name);
+
             // After updating, schedule the next refresh
             handler.postDelayed(this, REFRESH_INTERVAL);
         }
     };
+
+    private void openSOSActivity() {
+        // Create an Intent to start the SOS_set_activity
+        Intent intent = new Intent(requireActivity(), SOSSetupActivity.class);
+
+        // Start the activity
+        startActivity(intent);
+    }
 }
