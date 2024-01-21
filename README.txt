@@ -70,6 +70,8 @@ Customers:
 
 Drivers:
 - Can view, edit and delete their account.
+- Can chat with customer.
+- Accept book order from customer.
 
 Admin:
 - Can view all users details, including customers and drivers.
