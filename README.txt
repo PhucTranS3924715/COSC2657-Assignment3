@@ -82,6 +82,6 @@ Admin:
 Issues and bugs:
 - Message feature display some messages with a big space between each message.
 - Only tested message activity for customer app, have not test for driver app (may produces errors).
-- Displaying route is RNG-based due to network issues (Or RMIT wifi is just built differnt).
+- Displaying route is inconsistent due to network issues.
 - Place API is not usable multiple time a day. We added a default locations and route for demonstration.
 - The SOS function while the customer is on route can click to send an SMS to the SOS phone number with the message. However, the display while on the trip blocks the SOS button so we can't test it.

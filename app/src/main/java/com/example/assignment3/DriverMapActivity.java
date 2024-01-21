@@ -24,7 +24,10 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 
+import com.example.assignment3.Class.Customer;
+import com.example.assignment3.Class.Driver;
 import com.example.assignment3.Customer.HomeFragment;
+import com.example.assignment3.Customer.MessageActivity;
 import com.example.assignment3.Driver.DriverProfileActivity;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -45,6 +48,7 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
 import com.google.maps.DirectionsApi;
@@ -111,8 +115,7 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
                 .addOnFailureListener(e -> Log.e(TAG, "Error updating driver location in Ride collection", e));
     }
 
-    public DriverMapActivity() {
-    }
+    public DriverMapActivity() {}
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -238,8 +241,7 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
 
         // Create activity launcher
         ActivityResultLauncher<Intent> launcher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(), result -> {
-                });
+                new ActivityResultContracts.StartActivityForResult(), result -> {});
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         createLocationRequest();
@@ -250,6 +252,30 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
         profileButton.setOnClickListener(v -> {
             Intent intent = new Intent(DriverMapActivity.this, DriverProfileActivity.class);
             launcher.launch(intent);
+        });
+
+        // Implement message activity
+        ImageView messageButton = findViewById(R.id.messageButton);
+        messageButton.setOnClickListener(v -> {
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            db.collection("Customers").document(uidCustomer).get().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        Customer customer = document.toObject(Customer.class);
+                        // Start the MessageActivity
+                        Intent intent = new Intent(DriverMapActivity.this, MessageActivity.class);
+                        intent.putExtra("userID", uidCustomer);
+                        intent.putExtra("user", customer);
+                        startActivity(intent);
+                    } else {
+                        Log.d(TAG, "No such document");
+                    }
+                } else {
+                    Log.d(TAG, "get failed with ", task.getException());
+                }
+            });
+
         });
     }
 
